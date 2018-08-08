@@ -1,0 +1,12 @@
+/**
+ * @file   ciso646
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  alternative spellings
+ */
+#ifndef __CISO646__
+#define __CISO646__
+
+// empty in C++
+
+#endif /* __CISO646__ */

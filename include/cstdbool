@@ -1,0 +1,12 @@
+/**
+ * @file   cstdbool
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  bool type in C
+ */
+#ifndef __STDBOOL__
+#define __STDBOOL__
+
+#define __bool_true_false_are_defined 1
+
+#endif /* __STDBOOL__ */

@@ -1,0 +1,12 @@
+/**
+ * @file   cstdalign
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  alignment
+ */
+#ifndef __CSTDALIGN__
+#define __CSTDALIGN__
+
+#define __alignas_is_defined 1
+
+#endif /* __CSTDALIGN__ */

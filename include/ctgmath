@@ -1,0 +1,13 @@
+/**
+ * @file   ctgmath
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  type-generic macros
+ */
+#ifndef __CTGMATH__
+#define __CTGMATH__
+
+#include <complex>
+#include <cmath>
+
+#endif /* __CTGMATH__ */

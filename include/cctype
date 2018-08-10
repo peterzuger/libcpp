@@ -1,0 +1,33 @@
+/**
+ * @file   cctype
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  character types
+ */
+#ifndef __CCTYPE__
+#define __CCTYPE__
+
+#include <ctype.h>
+
+namespace std{
+    // Character classification functions
+    using ::isalnum;
+    using ::isalpha;
+    using ::isblank;
+    using ::iscntrl;
+    using ::isdigit;
+    using ::isgraph;
+    using ::islower;
+    using ::isprint;
+    using ::ispunct;
+    using ::isspace;
+    using ::isupper;
+    using ::isxdigit;
+
+
+    // Character case mapping functions
+    using ::tolower;
+    using ::toupper;
+}
+
+#endif /* __CCTYPE__ */

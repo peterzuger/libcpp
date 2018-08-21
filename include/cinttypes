@@ -1,0 +1,27 @@
+/**
+ * @file   cinttypes
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  fixed size integer types
+ */
+#ifndef __CINTTYPES__
+#define __CINTTYPES__
+
+#include <inttypes.h>
+
+namespace std{
+    // types
+    using ::imaxdiv_t;
+    using ::wchar_t;
+
+    using ::imaxabs;
+    using ::imaxdiv;
+
+    using ::strtoimax;
+    using ::strtoumax;
+
+    using ::wcstoimax;
+    using ::wcstoumax;
+}
+
+#endif /* __CINTTYPES__ */

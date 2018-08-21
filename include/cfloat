@@ -1,0 +1,12 @@
+/**
+ * @file   cfloat
+ * @author Peter Zueger
+ * @date   21.08.2018
+ * @brief  floating types
+ */
+#ifndef __CFLOAT__
+#define __CFLOAT__
+
+#include <float.h>
+
+#endif /* __CFLOAT__ */

@@ -1,0 +1,22 @@
+/**
+ * @file   csignal
+ * @author Peter Zueger
+ * @date   21.08.2018
+ * @brief  signals
+ */
+#ifndef __CSIGNAL__
+#define __CSIGNAL__
+
+#include <signal.h>
+
+namespace std{
+    using sig_atomic_t = int;
+
+    // 21.10.4, signal handlers
+    extern "C" using signal_handler = void(int); // exposition only
+    signal_handler* signal(int sig, signal_handler* func);
+
+    int raise(int sig);
+}
+
+#endif /* __CSIGNAL__ */

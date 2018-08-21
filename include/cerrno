@@ -1,0 +1,12 @@
+/**
+ * @file   cerrno
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  system error numbers
+ */
+#ifndef __CERRNO__
+#define __CERRNO__
+
+#include <errno.h>
+
+#endif /* __CERRNO__ */

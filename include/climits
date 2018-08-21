@@ -1,0 +1,12 @@
+/**
+ * @file   climits
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  implementation-defined constants
+ */
+#ifndef __CLIMITS__
+#define __CLIMITS__
+
+#include <limits.h>
+
+#endif /* __CLIMITS__ */

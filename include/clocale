@@ -1,0 +1,20 @@
+/**
+ * @file   clocale
+ * @author Peter Zueger
+ * @date   21.08.2018
+ * @brief  category macros
+ */
+#ifndef __CLOCALE__
+#define __CLOCALE__
+
+#include <locale.h>
+
+namespace std{
+    // types
+    using ::lconv;
+
+    using ::setlocale;
+    using ::localeconv;
+}
+
+#endif /* __CLOCALE__ */

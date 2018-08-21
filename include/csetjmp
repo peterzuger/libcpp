@@ -1,0 +1,17 @@
+/**
+ * @file   csetjmp
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  stack environment declarations
+ */
+#ifndef __CSETJMP__
+#define __CSETJMP__
+
+#include <setjmp.h>
+
+namespace std{
+    using ::jmp_buf;
+    [[noreturn]] void longjmp(jmp_buf env, int val);
+}
+
+#endif /* __CSETJMP__ */

@@ -1,0 +1,16 @@
+/**
+ * @file   cstdarg
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  handle variable argument list
+ */
+#ifndef __CSTDARG__
+#define __CSTDARG__
+
+#include <stdarg.h>
+
+namespace std{
+    using ::va_list;
+}
+
+#endif /* __CSTDARG__ */

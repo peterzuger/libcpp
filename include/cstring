@@ -2,7 +2,7 @@
  * @file   cstring
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  string operations
+ * @brief  C String Handling
  */
 #ifndef __CSTRING__
 #define __CSTRING__

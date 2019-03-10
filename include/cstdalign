@@ -2,7 +2,8 @@
  * @file   cstdalign
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  alignment
+ * @note   part of the freestanding headers
+ * @brief  C Alignment
  */
 #ifndef __CSTDALIGN__
 #define __CSTDALIGN__

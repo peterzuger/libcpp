@@ -2,7 +2,7 @@
  * @file   csetjmp
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  stack environment declarations
+ * @brief  C Nonlocal jumps
  */
 #ifndef __CSETJMP__
 #define __CSETJMP__

@@ -2,7 +2,7 @@
  * @file   ccomplex
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  complex arithmetic
+ * @brief  C Complex arithmetic
  */
 #ifndef __CCOMPLEX__
 #define __CCOMPLEX__

@@ -2,7 +2,7 @@
  * @file   cmath
  * @author Peter Zueger
  * @date   21.08.2018
- * @brief  mathematical declarations
+ * @brief  C Mathematics
  */
 #ifndef __CMATH__
 #define __CMATH__

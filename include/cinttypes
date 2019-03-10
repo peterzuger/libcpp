@@ -2,7 +2,7 @@
  * @file   cinttypes
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  fixed size integer types
+ * @brief  C Format conversion of integer types
  */
 #ifndef __CINTTYPES__
 #define __CINTTYPES__

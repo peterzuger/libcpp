@@ -2,7 +2,7 @@
  * @file   csignal
  * @author Peter Zueger
  * @date   21.08.2018
- * @brief  signals
+ * @brief  C Signal Handling
  */
 #ifndef __CSIGNAL__
 #define __CSIGNAL__

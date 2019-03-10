@@ -2,7 +2,7 @@
  * @file   cassert
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  verify program assertion
+ * @brief  C Diagnostics
  */
 #ifndef __CASSERT__
 #define __CASSERT__

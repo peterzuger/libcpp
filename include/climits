@@ -2,7 +2,8 @@
  * @file   climits
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  implementation-defined constants
+ * @note   part of the freestanding headers
+ * @brief  C Sizes of integer types
  */
 #ifndef __CLIMITS__
 #define __CLIMITS__

@@ -2,7 +2,8 @@
  * @file   cstdarg
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  handle variable argument list
+ * @note   part of the freestanding headers
+ * @brief  C Variable arguments
  */
 #ifndef __CSTDARG__
 #define __CSTDARG__

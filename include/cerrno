@@ -2,7 +2,7 @@
  * @file   cerrno
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  system error numbers
+ * @brief  C Errors
  */
 #ifndef __CERRNO__
 #define __CERRNO__

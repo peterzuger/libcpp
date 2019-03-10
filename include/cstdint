@@ -2,7 +2,8 @@
  * @file   cstdint
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  integer types
+ * @note   part of the freestanding headers
+ * @brief  C Integer types
  */
 #ifndef __CSTDINT__
 #define __CSTDINT__

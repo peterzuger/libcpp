@@ -2,7 +2,7 @@
  * @file   ctgmath
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  type-generic macros
+ * @brief  C Type-generic math
  */
 #ifndef __CTGMATH__
 #define __CTGMATH__

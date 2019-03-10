@@ -2,7 +2,8 @@
  * @file   ciso646
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  alternative spellings
+ * @note   part of the freestanding headers
+ * @brief  C Alternate spellings
  */
 #ifndef __CISO646__
 #define __CISO646__

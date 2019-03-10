@@ -2,7 +2,8 @@
  * @file   cstdbool
  * @author Peter Zueger
  * @date   27.07.2018
- * @brief  bool type in C
+ * @note   part of the freestanding headers
+ * @brief  C Boolean type and values
  */
 #ifndef __STDBOOL__
 #define __STDBOOL__

@@ -2,7 +2,7 @@
  * @file   clocale
  * @author Peter Zueger
  * @date   21.08.2018
- * @brief  category macros
+ * @brief  C Localization
  */
 #ifndef __CLOCALE__
 #define __CLOCALE__

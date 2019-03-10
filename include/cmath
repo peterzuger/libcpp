@@ -10,9 +10,11 @@
 #include <math.h>
 
 namespace std{
+    // types
     using ::float_t;
     using ::double_t;
 
+    // functions
     float acos(float x); // see 20.2
     double acos(double x);
     long double acos(long double x); // see 20.2
@@ -33,7 +35,7 @@ namespace std{
 
     float atan2(float y, float x); // see 20.2
     double atan2(double y, double x);
-    long double atan2(long double y, long double x);
+    long double atan2(long double y, long double x);// see 20.2
     float atan2f(float y, float x);
     long double atan2l(long double y, long double x);
 
@@ -87,7 +89,7 @@ namespace std{
 
     float tanh(float x); // see 20.2
     double tanh(double x);
-    long double tanh(long double x); // see 20.2
+    long double tanh(long double x);
     float tanhf(float x);
     long double tanhl(long double x);
 
@@ -182,12 +184,12 @@ namespace std{
     long double cbrtl(long double x);
 
     // 29.9.2, absolute values
-    int abs(int j);
-    long int abs(long int j);
-    long long int abs(long long int j);
-    float abs(float j);
-    double abs(double j);
-    long double abs(long double j);
+    //int abs(int j);
+    //long int abs(long int j);
+    //long long int abs(long long int j);
+    //float abs(float j);
+    //double abs(double j);
+    //long double abs(long double j);
 
     float fabs(float x); // see 20.2
     double fabs(double x);

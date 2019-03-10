@@ -1,0 +1,89 @@
+/**
+ * @file   cstddef
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @note   part of the freestanding headers
+ * @brief  C Common definitions
+ */
+#ifndef __CSTDDEF__
+#define __CSTDDEF__
+
+#include <stddef.h>
+
+namespace std{
+    using ptrdiff_t   = ::ptrdiff_t;
+    using size_t      = ::size_t;
+    using rsize_t     = ::rsize_t;
+    using max_align_t = ::max_align_t;
+
+    using nullptr_t = decltype(nullptr);
+
+
+    enum class byte : unsigned char {};
+
+    // 21.2.5, byte type operations
+    template<class IntType>
+    constexpr byte& operator<<=(byte& b, IntType shift) noexcept{
+        return b = b << shift;
+    }
+
+    template<class IntType>
+    constexpr byte operator<<(byte b, IntType shift) noexcept{
+        return static_cast<byte>(
+            static_cast<unsigned char>(b) << static_cast<unsigned char>(shift)
+            );
+    }
+
+    template<class IntType>
+    constexpr byte& operator>>=(byte& b, IntType shift) noexcept{
+        return b = b >> shift;
+    }
+
+    template<class IntType>
+    constexpr byte operator>>(byte b, IntType shift) noexcept{
+        return static_cast<byte>(
+            static_cast<unsigned char>(b) >> static_cast<unsigned char>(shift)
+            );
+    }
+
+    constexpr byte operator|(byte l, byte r) noexcept{
+        return static_cast<byte>(
+            static_cast<unsigned char>(l) | static_cast<unsigned char>(r)
+            );
+    }
+
+    constexpr byte& operator|=(byte& l, byte r) noexcept{
+        return l = l | r;
+    }
+
+    constexpr byte operator&(byte l, byte r) noexcept{
+        return static_cast<byte>(
+            static_cast<unsigned char>(l) & static_cast<unsigned char>(r)
+            );
+    }
+
+    constexpr byte& operator&=(byte& l, byte r) noexcept{
+        return l = l & r;
+    }
+
+    constexpr byte operator^(byte l, byte r) noexcept{
+        return static_cast<byte>(
+            static_cast<unsigned char>(l) ^ static_cast<unsigned char>(r)
+            );
+    }
+
+    constexpr byte& operator^=(byte& l, byte r) noexcept{
+        return l = l ^ r;
+    }
+
+    constexpr byte operator ~ (byte b) noexcept{
+        return static_cast<byte>(~static_cast<unsigned char>(b));
+    }
+
+    template<class IntType>
+    constexpr IntType to_integer(byte b) noexcept{
+        return static_cast<IntType>(b);
+    }
+}
+
+#endif /* __CSTDDEF__ */

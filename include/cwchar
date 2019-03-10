@@ -1,0 +1,86 @@
+/**
+ * @file   cwchar
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  C Extended multibyte and wide character utilities
+ */
+#ifndef __CWCHAR__
+#define __CWCHAR__
+
+#include <wchar.h>
+
+namespace std {
+    using ::size_t;
+    using ::mbstate_t;
+    using ::wint_t;
+
+    using ::fwprintf;
+    using ::fwscanf;
+    using ::swprintf;
+    using ::swscanf;
+    using ::vfwprintf;
+    using ::vfwscanf;
+    using ::vswprintf;
+    using ::vswscanf;
+    using ::vwprintf;
+    using ::vwscanf;
+    using ::wprintf;
+    using ::wscanf;
+
+    using ::fgetwc;
+    using ::fgetws;
+    using ::fputwc;
+    using ::fputws;
+    using ::fwide;
+    using ::getwc;
+    using ::getwchar;
+    using ::putwc;
+    using ::putwchar;
+    using ::ungetwc;
+    using ::wcstod;
+    using ::wcstof;
+    using ::wcstold;
+    using ::wcstol;
+    using ::wcstoll;
+    using ::wcstoul;
+    using ::wcstoull;
+    using ::wcscpy;
+    using ::wcsncpy;
+    using ::wmemcpy;
+    using ::wmemmove;
+    using ::wcscat;
+    using ::wcsncat;
+    using ::wcscmp;
+    using ::wcscoll;
+    using ::wcsncmp;
+    using ::wcsxfrm;
+    using ::wmemcmp;
+    using ::wcschr; // see 20.2
+    using ::wcschr; // see 20.2
+    using ::wcscspn;
+    using ::wcspbrk; // see 20.2
+    using ::wcspbrk; // see 20.2
+    using ::wcsrchr; // see 20.2
+    using ::wcsrchr; // see 20.2
+    using ::wcsspn;
+    using ::wcsstr; // see 20.2
+    using ::wcsstr; // see 20.2
+    using ::wcstok;
+    using ::wmemchr; // see 20.2
+    using ::wmemchr; // see 20.2
+    using ::wcslen;
+    using ::wmemset;
+    using ::wcsftime;
+    using ::btowc;
+    using ::wctob;
+
+    // 24.5.6, multibyte / wide string and character conversion functions
+    using ::mbsinit;
+    using ::mbrlen;
+    using ::mbrtowc;
+    using ::wcrtomb;
+    using ::mbsrtowcs;
+    using ::wcsrtombs;
+}
+
+#endif /* __CWCHAR__ */

@@ -10,6 +10,7 @@
 #include <string.h>
 
 namespace std{
+    // types
     using ::size_t;
 
     // Copying functions
@@ -18,11 +19,9 @@ namespace std{
     using ::strcpy;
     using ::strncpy;
 
-
     // Concatenation functions
     using ::strcat;
     using ::strncat;
-
 
     // Comparison functions
     using ::memcmp;
@@ -30,7 +29,6 @@ namespace std{
     using ::strcoll;
     using ::strncmp;
     using ::strxfrm;
-
 
     // Search functions
     const void* memchr(const void* s, int c, size_t n); // see 20.2
@@ -47,7 +45,6 @@ namespace std{
     const char* strstr(const char* s1, const char* s2); // see 20.2
     char* strstr(char* s1, const char* s2); // see 20.2
     using ::strtok;
-
 
     // Miscellaneous functions
     using ::memset;

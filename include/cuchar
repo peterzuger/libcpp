@@ -1,0 +1,22 @@
+/**
+ * @file   cuchar
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  C Unicode utilities
+ */
+#ifndef __CUCHAR__
+#define __CUCHAR__
+
+#include <uchar.h>
+
+namespace std{
+    using ::mbstate_t;
+    using ::size_t;
+
+    using ::mbrtoc16;
+    using ::c16rtomb;
+    using ::mbrtoc32;
+    using ::c32rtomb;
+}
+
+#endif /* __CUCHAR__ */

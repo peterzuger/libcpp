@@ -1,0 +1,33 @@
+/**
+ * @file   ctime
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  C Date and Time
+ */
+#ifndef __CTIME__
+#define __CTIME__
+
+#include <time.h>
+
+namespace std{
+    // types
+    using ::size_t;
+    using ::clock_t;
+    using ::time_t;
+    using ::timespec;
+    using ::size_t;
+
+    // functions
+    using ::clock;
+    using ::difftime;
+    using ::mktime;
+    using ::time;
+    using ::timespec_get;
+    using ::asctime;
+    using ::ctime;
+    using ::gmtime;
+    using ::localtime;
+    using ::strftime;
+}
+
+#endif /* __CTIME__ */

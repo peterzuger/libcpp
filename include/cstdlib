@@ -1,0 +1,76 @@
+/**
+ * @file   cstdlib
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @note   part of the freestanding headers
+ * @brief  C General utilities
+ */
+#ifndef __CSTDLIB__
+#define __CSTDLIB__
+
+#include <stdlib.h>
+
+namespace std{
+    // types
+    using ::size_t;
+    using ::div_t;
+    using ::ldiv_t;
+    using ::lldiv_t;
+
+    // functions
+    // 21.5, start and termination
+    using ::abort;
+    using ::atexit;
+    using ::at_quick_exit;
+    using ::exit;
+    using ::_Exit;
+    using ::quick_exit;
+
+    using ::getenv;
+    using ::system;
+
+    // 23.10.11, C library memory allocation
+    using ::aligned_alloc;
+    using ::calloc;
+    using ::free;
+    using ::malloc;
+    using ::realloc;
+
+    using ::atof;
+    using ::atoi;
+    using ::atol;
+    using ::atoll;
+    using ::strtod;
+    using ::strtof;
+    using ::strtold;
+    using ::strtol;
+    using ::strtoll;
+    using ::strtoul;
+    using ::strtoull;
+
+    // 24.5.6, multibyte / wide string and character conversion functions
+    using ::mblen;
+    using ::mbtowc;
+    using ::wctomb;
+    using ::mbstowcs;
+    using ::wcstombs;
+
+    // 28.8, C standard library algorithms
+    using ::bsearch;
+    using ::qsort;
+
+    // 29.6.9, low-quality random number generation
+    using ::rand;
+    using ::srand;
+
+    // 29.9.2, absolute values
+    using ::abs;
+    using ::labs;
+    using ::llabs;
+
+    using ::div;
+    using ::ldiv;
+    using ::lldiv;
+}
+
+#endif /* __CSTDLIB__ */

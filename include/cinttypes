@@ -7,13 +7,14 @@
 #ifndef __CINTTYPES__
 #define __CINTTYPES__
 
+#include <cstdint>
 #include <inttypes.h>
 
 namespace std{
     // types
     using ::imaxdiv_t;
-    using ::wchar_t;
 
+    //functions
     using ::imaxabs;
     using ::imaxdiv;
 
@@ -22,6 +23,9 @@ namespace std{
 
     using ::wcstoimax;
     using ::wcstoumax;
+
+    std::intmax_t abs(std::intmax_t);
+    std::imaxdiv_t div(std::intmax_t, std::intmax_t);
 }
 
 #endif /* __CINTTYPES__ */

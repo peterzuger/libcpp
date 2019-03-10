@@ -1,0 +1,31 @@
+/**
+ * @file   cfenv
+ * @author Peter Zueger
+ * @date   27.07.2018
+ * @brief  C Floating-point environment
+ */
+#ifndef __CFENV__
+#define __CFENV__
+
+#include <fenv.h>
+
+namespace std{
+    using ::fenv_t;
+    using ::fexcept_t;
+
+    using ::feclearexcept;
+    using ::fegetexceptflag;
+    using ::feraiseexcept;
+    using ::fesetexceptflag;
+    using ::fetestexcept;
+
+    using ::fegetround;
+    using ::fesetround;
+
+    using ::fegetenv;
+    using ::feholdexcept;
+    using ::fesetenv;
+    using ::feupdateenv;
+}
+
+#endif /* __CFENV__ */

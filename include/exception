@@ -1,0 +1,66 @@
+/**
+ * @file   exception
+ * @author Peter Zueger
+ * @date   12.10.2018
+ * @note   part of the freestanding headers
+ * @brief  std::exception
+ */
+#ifndef __EXCEPTION__
+#define __EXCEPTION_
+
+namespace std{
+
+    class exception{
+    public:
+        exception() noexcept;
+        exception(const exception&) noexcept;
+        exception& operator=(const exception&) noexcept;
+        virtual~ exception();
+        virtual const char* what() const noexcept;
+    };
+
+    class bad_exception : public exception{
+    public:
+        bad_exception() noexcept;
+        bad_exception(const bad_exception&) noexcept;
+        bad_exception& operator=(const bad_exception&) noexcept;
+        const char* what() const noexcept override;
+    };
+
+    using exception_ptr = size_t*;
+
+    class nested_exception{
+    public:
+        nested_exception() noexcept;
+        nested_exception(const nested_exception&) noexcept = default;
+        nested_exception& operator=(const nested_exception&) noexcept = default;
+        virtual ~ nested_exception() = default;
+
+        // access functions
+        [[noreturn]] void rethrow_nested() const;
+        exception_ptr nested_ptr() const noexcept;
+    };
+
+    using terminate_handler = void (*)();
+
+    terminate_handler get_terminate() noexcept;
+    terminate_handler set_terminate(terminate_handler f) noexcept;
+
+    [[noreturn]] void terminate() noexcept;
+
+    int uncaught_exceptions() noexcept;
+
+    exception_ptr current_exception() noexcept;
+    [[noreturn]] void rethrow_exception(exception_ptr p);
+
+    template<class E>
+    exception_ptr make_exception_ptr(E e) noexcept;
+
+    template<class T>
+    [[noreturn]] void throw_with_nested(T&& t);
+
+    template<class E>
+    void rethrow_if_nested(const E& e);
+}
+
+#endif /* __EXCEPTION__ */

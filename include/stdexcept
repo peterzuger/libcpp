@@ -1,0 +1,110 @@
+/**
+ * @file   stdexcept
+ * @author Peter Zueger
+ * @date   26.11.2018
+ * @brief  exception classes
+ */
+#ifndef __STDEXCEPT__
+#define __STDEXCEPT__
+
+#if defined(__cpp_exceptions)
+
+#include <exception>
+#include <string>
+
+namespace std{
+
+    class logic_error: public exception{
+    public:
+        explicit logic_error(const string& what_arg);
+        explicit logic_error(const char* what_arg);
+
+        logic_error(const logic_error& err) noexcept;
+        logic_error& operator=(const logic_error& err) noexcept;
+
+        virtual ~logic_error() noexcept;
+
+        virtual const char* what() const noexcept;
+    };
+
+
+    class domain_error: public logic_error{
+    public:
+        explicit domain_error(const string& what_arg): logic_error(what_arg){}
+        explicit domain_error(const char* what_arg)  : logic_error(what_arg){}
+
+        virtual ~domain_error() noexcept;
+    };
+
+
+    class invalid_argument: public logic_error{
+    public:
+        explicit invalid_argument(const string& what_arg): logic_error(what_arg){}
+        explicit invalid_argument(const char* what_arg)  : logic_error(what_arg){}
+
+        virtual ~invalid_argument() noexcept;
+    };
+
+
+    class length_error: public logic_error{
+    public:
+        explicit length_error(const string& what_arg): logic_error(what_arg){}
+        explicit length_error(const char* what_arg)  : logic_error(what_arg){}
+
+        virtual ~length_error() noexcept;
+    };
+
+
+    class out_of_range: public logic_error{
+    public:
+        explicit out_of_range(const string& what_arg): logic_error(what_arg){}
+        explicit out_of_range(const char* what_arg)  : logic_error(what_arg){}
+
+        virtual ~out_of_range() noexcept;
+    };
+
+
+    class runtime_error: public exception{
+    public:
+        explicit runtime_error(const string& what_arg);
+        explicit runtime_error(const char* what_arg);
+
+        runtime_error(const runtime_error& err) noexcept;
+        runtime_error& operator=(const runtime_error& err) noexcept;
+
+        virtual ~runtime_error() noexcept;
+
+        virtual const char* what() const noexcept;
+    };
+
+
+    class range_error: public runtime_error{
+    public:
+        explicit range_error(const string& what_arg): runtime_error(what_arg){}
+        explicit range_error(const char* what_arg)  : runtime_error(what_arg){}
+
+        virtual ~range_error() noexcept;
+    };
+
+
+    class overflow_error: public runtime_error{
+    public:
+        explicit overflow_error(const string& what_arg): runtime_error(what_arg){}
+        explicit overflow_error(const char* what_arg)  : runtime_error(what_arg){}
+
+        virtual ~overflow_error() noexcept;
+    };
+
+
+    class underflow_error: public runtime_error{
+    public:
+        explicit underflow_error(const string& what_arg): runtime_error(what_arg){}
+        explicit underflow_error(const char* what_arg)  : runtime_error(what_arg){}
+
+        virtual ~underflow_error() noexcept;
+    };
+}
+
+#endif /* defined(__cpp_exceptions) */
+
+#endif /* __STDEXCEPT__ */

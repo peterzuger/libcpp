@@ -109,20 +109,12 @@ namespace std{
         }
         constexpr reference at(size_type n){
             if(n >= N)
-#if defined(__cpp_exceptions)
-                throw "array::at";
-#else
-            std::terminate();
-#endif /* defined(__cpp_exceptions) */
+                __throw_out_of_range("array::at");
             return _elem[n];
         }
         constexpr const_reference at(size_type n) const{
             if(n >= N)
-#if defined(__cpp_exceptions)
-                throw "array::at";
-#else
-            std::terminate();
-#endif /* defined(__cpp_exceptions) */
+                __throw_out_of_range("array::at");
             return _elem[n];
         }
 
@@ -238,18 +230,10 @@ namespace std{
                           "cannot call array<T, 0>::operator[] on a zero-sized array");
         }
         constexpr reference at(size_type n){
-#if defined(__cpp_exceptions)
-            throw "array<T, 0>::at";
-#else
-            std::terminate();
-#endif /* defined(__cpp_exceptions) */
+            __throw_out_of_range("array<T, 0>::at");
         }
         constexpr const_reference at(size_type n) const{
-#if defined(__cpp_exceptions)
-            throw "array<T, 0>::at";
-#else
-            std::terminate();
-#endif /* defined(__cpp_exceptions) */
+            __throw_out_of_range("array<T, 0>::at");
         }
 
         constexpr reference front(){

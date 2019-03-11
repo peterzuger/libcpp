@@ -7,9 +7,10 @@
 #ifndef __STDEXCEPT__
 #define __STDEXCEPT__
 
+#include <exception>
+
 #if defined(__cpp_exceptions)
 
-#include <exception>
 #include <string>
 
 namespace std{
@@ -106,5 +107,88 @@ namespace std{
 }
 
 #endif /* defined(__cpp_exceptions) */
+
+namespace std{
+    [[noreturn]] inline void __throw_logic_error(const char* s){
+        #if defined(__cpp_exceptions)
+        throw logic_error(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_domain_error(const char* s){
+        #if defined(__cpp_exceptions)
+        throw domain_error(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_invalid_argument(const char* s){
+        #if defined(__cpp_exceptions)
+        throw invalid_argument(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_length_error(const char* s){
+        #if defined(__cpp_exceptions)
+        throw length_error(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_out_of_range(const char* s){
+        #if defined(__cpp_exceptions)
+        throw out_of_range(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_runtime_error(const char* s){
+        #if defined(__cpp_exceptions)
+        throw runtime_error(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_range_error(const char* s){
+        #if defined(__cpp_exceptions)
+        throw range_error(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_overflow_error(const char* s){
+        #if defined(__cpp_exceptions)
+        throw overflow_error(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+
+    [[noreturn]] inline void __throw_underflow_error(const char* s){
+        #if defined(__cpp_exceptions)
+        throw underflow_error(s);
+        #else
+        (void)s;
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
+}
 
 #endif /* __STDEXCEPT__ */

@@ -6,7 +6,7 @@
  * @brief  std::exception
  */
 #ifndef __EXCEPTION__
-#define __EXCEPTION_
+#define __EXCEPTION__
 
 namespace std{
 

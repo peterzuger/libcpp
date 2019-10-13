@@ -28,7 +28,6 @@
 namespace std{
     using ptrdiff_t   = ::ptrdiff_t;
     using size_t      = ::size_t;
-    using rsize_t     = ::rsize_t;
     using max_align_t = ::max_align_t;
 
     using nullptr_t = decltype(nullptr);

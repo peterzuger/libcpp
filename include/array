@@ -56,7 +56,7 @@ namespace std{
                 _elem[i] = u;
         }
 
-        void swap(array& other) noexcept(is_nothrow_swappable_v<T>){
+        void swap(array& other) noexcept(std::is_nothrow_swappable_v<T>){
             for(size_t i=0;i<N;i++){
                 std::swap(other[i], _elem[i]);
             }

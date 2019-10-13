@@ -29,7 +29,6 @@
 #include <string>
 
 namespace std{
-
     class logic_error: public exception{
     public:
         explicit logic_error(const string& what_arg);

@@ -24,7 +24,7 @@
 
 #include <wctype.h>
 
-namespace std {
+namespace std{
     // types
     using ::wint_t;
     using ::wctrans_t;

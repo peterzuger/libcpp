@@ -30,7 +30,6 @@
 #include <tuple>
 
 namespace std{
-
     // 26.3.7, class template array
     template<class T, size_t N>
     struct array{

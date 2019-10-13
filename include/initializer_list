@@ -26,7 +26,6 @@
 #include <cstddef>
 
 namespace std{
-
     template<class E>
     class initializer_list{
         const E* _p;

@@ -24,7 +24,7 @@
 
 #include <wchar.h>
 
-namespace std {
+namespace std{
     using ::size_t;
     using ::mbstate_t;
     using ::wint_t;

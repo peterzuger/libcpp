@@ -8,4 +8,6 @@
         (set (make-local-variable 'current-directory)
              this-directory)
         (set (make-local-variable 'compile-command)
-             (format "make -C %1$s CPU=cortex-m4" current-directory)))))
+             (format "make -C %1$s clean install" current-directory))))
+ (fundamental-mode
+  (mode . c++)))

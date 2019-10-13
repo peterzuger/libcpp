@@ -1,6 +1,6 @@
 /**
  * @file   cfloat
- * @author Peter Zueger
+ * @author Peter Züger
  * @date   21.08.2018
  * @note   part of the freestanding headers
  * @brief  C Characteristics of floating types

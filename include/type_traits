@@ -1,6 +1,6 @@
 /**
  * @file   type_traits
- * @author Peter Zueger
+ * @author Peter Züger
  * @date   12.10.2018
  * @note   part of the freestanding headers
  * @brief  std::type_traits

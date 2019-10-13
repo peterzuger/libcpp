@@ -1,6 +1,6 @@
 /**
  * @file   csetjmp
- * @author Peter Zueger
+ * @author Peter Züger
  * @date   27.07.2018
  * @brief  C Nonlocal jumps
  */

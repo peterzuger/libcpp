@@ -1,6 +1,6 @@
 /**
  * @file   initializer_list
- * @author Peter Zueger
+ * @author Peter Züger
  * @date   31.07.2018
  * @note   part of the freestanding headers
  * @brief  std::initializer_list

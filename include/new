@@ -1,0 +1,97 @@
+/**
+ * @file   new
+ * @author Peter Züger
+ * @date   14.12.2018
+ * @note   part of the freestanding headers
+ * @brief  new/delete implementation
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __NEW__
+#define __NEW__
+
+#include <cstddef>
+#include <exception>
+
+namespace std{
+    class bad_alloc: public std::exception{
+    public:
+        bad_alloc()noexcept;
+        bad_alloc(const bad_alloc&)noexcept;
+        bad_alloc& operator=(const bad_alloc&)noexcept;
+
+        const char* what()const noexcept override;
+    };
+
+    class bad_array_new_length: public bad_alloc{
+    public:
+        bad_array_new_length()noexcept;
+
+        const char* what()const noexcept override;
+    };
+
+    enum class align_val_t: std::size_t{};
+
+    struct nothrow_t{
+        explicit nothrow_t() = default;
+    };
+    inline constexpr nothrow_t nothrow;
+
+    using new_handler = void (*)();
+    new_handler get_new_handler()noexcept;
+    new_handler set_new_handler(new_handler new_p)noexcept;
+
+    // 21.6.4, pointer optimization barrier
+    template<class T>
+    constexpr T* launder(T* p)noexcept;
+
+    // 21.6.5, hardware interference size
+    inline constexpr size_t hardware_destructive_interference_size = sizeof(int);
+    inline constexpr size_t hardware_constructive_interference_size = sizeof(int);
+}
+
+void* operator new(std::size_t size);
+void* operator new(std::size_t size, std::align_val_t alignment);
+void* operator new(std::size_t size, const std::nothrow_t&) noexcept;
+void* operator new(std::size_t size, std::align_val_t alignment, const std::nothrow_t&) noexcept;
+
+void operator delete(void* ptr) noexcept;
+void operator delete(void* ptr, std::size_t size) noexcept;
+void operator delete(void* ptr, std::align_val_t alignment) noexcept;
+void operator delete(void* ptr, std::size_t size, std::align_val_t alignment) noexcept;
+void operator delete(void* ptr, const std::nothrow_t&) noexcept;
+void operator delete(void* ptr, std::align_val_t alignment, const std::nothrow_t&) noexcept;
+
+void* operator new[](std::size_t size);
+void* operator new[](std::size_t size, std::align_val_t alignment);
+void* operator new[](std::size_t size, const std::nothrow_t&) noexcept;
+void* operator new[](std::size_t size, std::align_val_t alignment,
+                     const std::nothrow_t&) noexcept;
+
+void operator delete[](void* ptr) noexcept;
+void operator delete[](void* ptr, std::size_t size) noexcept;
+void operator delete[](void* ptr, std::align_val_t alignment) noexcept;
+void operator delete[](void* ptr, std::size_t size, std::align_val_t alignment) noexcept;
+void operator delete[](void* ptr, const std::nothrow_t&) noexcept;
+void operator delete[](void* ptr, std::align_val_t alignment, const std::nothrow_t&) noexcept;
+
+void* operator new (std::size_t size, void* ptr) noexcept;
+void* operator new[](std::size_t size, void* ptr) noexcept;
+
+void operator delete (void* ptr, void*) noexcept;
+void operator delete[](void* ptr, void*) noexcept;
+
+#endif /* __NEW__ */

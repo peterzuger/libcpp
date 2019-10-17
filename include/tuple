@@ -22,6 +22,8 @@
 #ifndef __TUPLE__
 #define __TUPLE__
 
+#include <cstddef>
+
 namespace std{
     // 23.5.3, class template tuple
     template<class... Types>
@@ -32,9 +34,9 @@ namespace std{
     template<class... TTypes>
     constexpr tuple<TTypes...> make_tuple(TTypes&&...);
     template<class... TTypes>
-    constexpr tuple<TTypes&&...> forward_as_tuple(TTypes&&...) noexcept;
+    constexpr tuple<TTypes&&...> forward_as_tuple(TTypes&&...)noexcept;
     template<class... TTypes>
-    constexpr tuple<TTypes&...> tie(TTypes&...) noexcept;
+    constexpr tuple<TTypes&...> tie(TTypes&...)noexcept;
     template<class... Tuples>
     constexpr tuple<Tuples...> tuple_cat(Tuples&&...);
 
@@ -64,22 +66,22 @@ namespace std{
 
     // 23.5.3.7, element access
     template<size_t I, class... Types>
-    constexpr tuple_element_t<I, tuple<Types...>>& get(tuple<Types...>&) noexcept;
+    constexpr tuple_element_t<I, tuple<Types...>>& get(tuple<Types...>&)noexcept;
     template<size_t I, class... Types>
-    constexpr tuple_element_t<I, tuple<Types...>>&& get(tuple<Types...>&&) noexcept;
+    constexpr tuple_element_t<I, tuple<Types...>>&& get(tuple<Types...>&&)noexcept;
     template<size_t I, class... Types>
-    constexpr const tuple_element_t<I, tuple<Types...>>& get(const tuple<Types...>&) noexcept;
+    constexpr const tuple_element_t<I, tuple<Types...>>& get(const tuple<Types...>&)noexcept;
 
     template<size_t I, class... Types>
-    constexpr const tuple_element_t<I, tuple<Types...>>&& get(const tuple<Types...>&&) noexcept;
+    constexpr const tuple_element_t<I, tuple<Types...>>&& get(const tuple<Types...>&&)noexcept;
     template<class T, class... Types>
-    constexpr T& get(tuple<Types...>& t) noexcept;
+    constexpr T& get(tuple<Types...>& t)noexcept;
     template<class T, class... Types>
-    constexpr T&& get(tuple<Types...>&& t) noexcept;
+    constexpr T&& get(tuple<Types...>&& t)noexcept;
     template<class T, class... Types>
-    constexpr const T& get(const tuple<Types...>& t) noexcept;
+    constexpr const T& get(const tuple<Types...>& t)noexcept;
     template<class T, class... Types>
-    constexpr const T&& get(const tuple<Types...>&& t) noexcept;
+    constexpr const T&& get(const tuple<Types...>&& t)noexcept;
 
     // 23.5.3.8, relational operators
     template<class... TTypes, class... UTypes>
@@ -101,7 +103,7 @@ namespace std{
 */
     // 23.5.3.10, specialized algorithms
     template<class... Types>
-    void swap(tuple<Types...>& x, tuple<Types...>& y) noexcept;
+    void swap(tuple<Types...>& x, tuple<Types...>& y)noexcept;
 
     // 23.5.3.6, tuple helper classes
     template<class T>

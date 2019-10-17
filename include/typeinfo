@@ -1,0 +1,76 @@
+/**
+ * @file   typeinfo
+ * @author Peter Züger
+ * @date   15.12.2018
+ * @note   part of the freestanding headers
+ * @brief  std::typeinfo
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __TYPEINFO__
+#define __TYPEINFO__
+
+#include <exception>
+
+namespace std{
+    class type_info{
+        const char* type_name;
+
+        explicit type_info(const char* n):
+            type_name(n){}
+
+    public:
+        type_info(const type_info& rhs) = delete; // cannot be copied
+        type_info& operator=(const type_info& rhs) = delete; // cannot be copied
+
+        virtual ~type_info(){}
+
+        bool before(const type_info& rhs)const noexcept{
+            return type_name < rhs.type_name;
+        }
+        std::size_t hash_code()const noexcept{
+            return reinterpret_cast<std::size_t>(type_name);
+        }
+        const char* name()const noexcept{
+            return type_name;
+        }
+
+        bool operator==(const type_info& rhs)const noexcept{
+            return type_name == rhs.type_name;
+        }
+        bool operator!=(const type_info& rhs)const noexcept{
+            return !operator==(rhs);
+        }
+    };
+
+    class bad_cast: public std::exception{
+    public:
+        bad_cast()noexcept = default;
+        bad_cast& operator=(const bad_cast&)noexcept = default;
+
+        const char* what()const noexcept override;
+    };
+
+    class bad_typeid: public std::exception{
+    public:
+        bad_typeid() noexcept = default;
+        bad_typeid& operator=(const bad_typeid&)noexcept = default;
+
+        const char* what()const noexcept override;
+    };
+}
+
+#endif /* __TYPEINFO__ */

@@ -1,0 +1,63 @@
+/**
+ * @file   __iterator_traits
+ * @author Peter Züger
+ * @date   20.10.2019
+ * @brief  std::iterator_traits
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____ITERATOR_TRAITS__
+#define ____ITERATOR_TRAITS__
+
+#include <cstddef>
+
+namespace std{
+    struct input_iterator_tag{};
+    struct output_iterator_tag{};
+    struct forward_iterator_tag: public input_iterator_tag{};
+    struct bidirectional_iterator_tag: public forward_iterator_tag{};
+    struct random_access_iterator_tag: public bidirectional_iterator_tag{};
+
+    // 27.4, primitives
+    template<class Iterator>
+    struct iterator_traits{
+        using difference_type   = typename Iterator::difference_type;
+        using value_type        = typename Iterator::value_type;
+        using pointer           = typename Iterator::pointer;
+        using reference         = typename Iterator::reference;
+        using iterator_category = typename Iterator::iterator_category;
+    };
+
+    template<class T>
+    struct iterator_traits<T*>{
+        using difference_type   = ptrdiff_t;
+        using value_type        = T;
+        using pointer           = T*;
+        using reference         = T&;
+        using iterator_category = random_access_iterator_tag;
+    };
+
+    template<class T>
+    struct iterator_traits<const T*>{
+        using difference_type   = ptrdiff_t;
+        using value_type        = T;
+        using pointer           = const T*;
+        using reference         = const T&;
+        using iterator_category = random_access_iterator_tag;
+    };
+}
+
+#endif /* ____ITERATOR_TRAITS__ */

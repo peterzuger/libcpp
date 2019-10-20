@@ -68,26 +68,26 @@ namespace std{
 
     template<class InputIterator, class Distance>
     constexpr void advance(InputIterator& i, Distance n){
-        impl::advance(i,n,typename iterator_traits<InputIterator>::iterator_category());
+        impl::advance(i, n, typename iterator_traits<InputIterator>::iterator_category());
     }
 
     template<class InputIterator>
     constexpr typename iterator_traits<InputIterator>::difference_type
     distance(InputIterator first, InputIterator last){
-        return impl::distance(first,last,typename iterator_traits<InputIterator>::iterator_category());
+        return impl::distance(first, last, typename iterator_traits<InputIterator>::iterator_category());
     }
 
     template<class InputIterator>
     constexpr InputIterator next(InputIterator x,
                                  typename iterator_traits<InputIterator>::difference_type n = 1){
-        advance(x,n);
+        advance(x, n);
         return x;
     }
 
     template<class BidirectionalIterator>
     constexpr BidirectionalIterator prev(BidirectionalIterator x,
                                          typename iterator_traits<BidirectionalIterator>::difference_type n = 1){
-        advance(x,-n);
+        advance(x, -n);
         return x;
     }
 

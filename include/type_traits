@@ -100,11 +100,11 @@ namespace std{
 
     template<class T> struct is_member_function_pointer;
 
-    template<class T> struct is_enum;
+    template<class T> struct is_enum: public bool_constant<__is_enum(T)>{};
 
-    template<class T> struct is_union;
+    template<class T> struct is_union: public bool_constant<__is_union(T)>{};
 
-    template<class T> struct is_class;
+    template<class T> struct is_class: public bool_constant<__is_class(T)>{};
 
     template<class T> struct is_function;
 
@@ -113,9 +113,12 @@ namespace std{
     template<class T> struct is_reference<T&>: public true_type{};
     template<class T> struct is_reference<T&&>: public true_type{};
 
-    template<class T> struct is_arithmetic;
-    template<class T> struct is_fundamental;
+    template<class T> struct is_arithmetic: public bool_constant<is_integral<T>::value ||
+                                                                 is_floating_point<T>::value>{};
 
+    template<class T> struct is_fundamental: public bool_constant<is_void<T>::value ||
+                                                                  is_null_pointer<T>::value ||
+                                                                  is_arithmetic<T>::value>{};
     template<class T> struct is_object;
 
     template<class T> struct is_scalar;
@@ -131,14 +134,19 @@ namespace std{
     template<class T> struct is_volatile: public false_type{};
     template<class T> struct is_volatile<volatile T>: public true_type{};
 
+    template<class T> struct is_trivial: public bool_constant<__is_trivial(T)>{};
 
-    template<class T> struct is_trivial;
     template<class T> struct is_trivially_copyable;
-    template<class T> struct is_standard_layout;
-    template<class T> struct is_pod;
-    template<class T> struct is_empty;
-    template<class T> struct is_polymorphic;
-    template<class T> struct is_abstract;
+
+    template<class T> struct is_standard_layout: public bool_constant<__is_standard_layout(T)>{};
+
+    template<class T> struct is_pod: public bool_constant<__is_pod(T)>{};
+
+    template<class T> struct is_empty: public bool_constant<__is_empty(T)>{};
+
+    template<class T> struct is_polymorphic: public bool_constant<__is_polymorphic(T)>{};
+
+    template<class T> struct is_abstract: public bool_constant<__is_abstract(T)>{};
 
     template<class T> struct is_final;
 

@@ -34,8 +34,8 @@ namespace std{
 
         static constexpr T value = v;
 
-        constexpr operator value_type() const noexcept { return value; }
-        constexpr value_type operator()() const noexcept { return value; }
+        constexpr operator value_type()const noexcept{ return value; }
+        constexpr value_type operator()()const noexcept{ return value; }
     };
 
 
@@ -46,55 +46,55 @@ namespace std{
     using false_type = bool_constant<false>;
 
     // 23.15.4.1, primary type categories
-    template<class T> struct is_void : public false_type{};
-    template<> struct is_void<void> : public true_type{};
+    template<class T> struct is_void: public false_type{};
+    template<> struct is_void<void>: public true_type{};
 
-    template<class T> struct is_null_pointer : public false_type{};
-    template<> struct is_null_pointer<std::nullptr_t> : public true_type{};
+    template<class T> struct is_null_pointer: public false_type{};
+    template<> struct is_null_pointer<std::nullptr_t>: public true_type{};
 
-    template<class T> struct is_integral : public false_type{};
-    template<> struct is_integral<bool> : public true_type{};
-    template<> struct is_integral<char> : public true_type{};
-    template<> struct is_integral<signed char> : public true_type{};
-    template<> struct is_integral<unsigned char> : public true_type{};
-    template<> struct is_integral<wchar_t> : public true_type{};
+    template<class T> struct is_integral: public false_type{};
+    template<> struct is_integral<bool>: public true_type{};
+    template<> struct is_integral<char>: public true_type{};
+    template<> struct is_integral<signed char>: public true_type{};
+    template<> struct is_integral<unsigned char>: public true_type{};
+    template<> struct is_integral<wchar_t>: public true_type{};
 #if defined(char8_t)
-    template<> struct is_integral<char8_t> : public true_type{};
+    template<> struct is_integral<char8_t>: public true_type{};
 #endif /* defined(char8_t) */
-    template<> struct is_integral<char16_t> : public true_type{};
-    template<> struct is_integral<char32_t> : public true_type{};
-    template<> struct is_integral<short> : public true_type{};
-    template<> struct is_integral<unsigned short> : public true_type{};
-    template<> struct is_integral<int> : public true_type{};
-    template<> struct is_integral<unsigned int> : public true_type{};
-    template<> struct is_integral<long> : public true_type{};
-    template<> struct is_integral<unsigned long> : public true_type{};
-    template<> struct is_integral<long long> : public true_type{};
-    template<> struct is_integral<unsigned long long> : public true_type{};
+    template<> struct is_integral<char16_t>: public true_type{};
+    template<> struct is_integral<char32_t>: public true_type{};
+    template<> struct is_integral<short>: public true_type{};
+    template<> struct is_integral<unsigned short>: public true_type{};
+    template<> struct is_integral<int>: public true_type{};
+    template<> struct is_integral<unsigned int>: public true_type{};
+    template<> struct is_integral<long>: public true_type{};
+    template<> struct is_integral<unsigned long>: public true_type{};
+    template<> struct is_integral<long long>: public true_type{};
+    template<> struct is_integral<unsigned long long>: public true_type{};
 #if defined(__int128_t)
-    template<> struct is_integral<__int128_t> : public true_type{};
+    template<> struct is_integral<__int128_t>: public true_type{};
 #endif /* defined(__int128_t) */
 #if defined(__uint128_t)
-    template<> struct is_integral<__uint128_t> : public true_type{};
+    template<> struct is_integral<__uint128_t>: public true_type{};
 #endif /* defined(__uint128_t) */
 
-    template<class T> struct is_floating_point : public false_type{};
-    template<> struct is_floating_point<float> : public true_type{};
-    template<> struct is_floating_point<double> : public true_type{};
-    template<> struct is_floating_point<long double> : public true_type{};
+    template<class T> struct is_floating_point: public false_type{};
+    template<> struct is_floating_point<float>: public true_type{};
+    template<> struct is_floating_point<double>: public true_type{};
+    template<> struct is_floating_point<long double>: public true_type{};
 
-    template<class T> struct is_array : public false_type{};
-    template<class T> struct is_array<T[]> : public true_type{};
-    template<class T, size_t N> struct is_array<T[N]> : public true_type{};
+    template<class T> struct is_array: public false_type{};
+    template<class T> struct is_array<T[]>: public true_type{};
+    template<class T, size_t N> struct is_array<T[N]>: public true_type{};
 
-    template<class T> struct is_pointer : public false_type{};
-    template<class T> struct is_pointer<T*> : public true_type{};
+    template<class T> struct is_pointer: public false_type{};
+    template<class T> struct is_pointer<T*>: public true_type{};
 
-    template<class T> struct is_lvalue_reference : public false_type{};
-    template<class T> struct is_lvalue_reference<T&> : public true_type{};
+    template<class T> struct is_lvalue_reference: public false_type{};
+    template<class T> struct is_lvalue_reference<T&>: public true_type{};
 
-    template<class T> struct is_rvalue_reference : public false_type{};
-    template<class T> struct is_rvalue_reference<T&&> : public true_type{};
+    template<class T> struct is_rvalue_reference: public false_type{};
+    template<class T> struct is_rvalue_reference<T&&>: public true_type{};
 
     template<class T> struct is_member_object_pointer;
 
@@ -109,23 +109,28 @@ namespace std{
     template<class T> struct is_function;
 
     // 23.15.4.2, composite type categories
-    template<class T> struct is_reference : public false_type{};
-    template<class T> struct is_reference<T&> : public true_type{};
-    template<class T> struct is_reference<T&&> : public true_type{};
+    template<class T> struct is_reference: public false_type{};
+    template<class T> struct is_reference<T&>: public true_type{};
+    template<class T> struct is_reference<T&&>: public true_type{};
 
     template<class T> struct is_arithmetic;
     template<class T> struct is_fundamental;
+
     template<class T> struct is_object;
+
     template<class T> struct is_scalar;
+
     template<class T> struct is_compound;
+
     template<class T> struct is_member_pointer;
 
     // 23.15.4.3, type properties
-    template<class T> struct is_const : public false_type{};
-    template<class T> struct is_const<const T> : public true_type{};
+    template<class T> struct is_const: public false_type{};
+    template<class T> struct is_const<const T>: public true_type{};
 
-    template<class T> struct is_volatile : public false_type{};
-    template<class T> struct is_volatile<volatile T> : public true_type{};
+    template<class T> struct is_volatile: public false_type{};
+    template<class T> struct is_volatile<volatile T>: public true_type{};
+
 
     template<class T> struct is_trivial;
     template<class T> struct is_trivially_copyable;
@@ -134,39 +139,73 @@ namespace std{
     template<class T> struct is_empty;
     template<class T> struct is_polymorphic;
     template<class T> struct is_abstract;
+
     template<class T> struct is_final;
+
     template<class T> struct is_aggregate;
+
     template<class T> struct is_signed;
+
     template<class T> struct is_unsigned;
+
     template<class T, class... Args> struct is_constructible;
+
     template<class T> struct is_default_constructible;
+
     template<class T> struct is_copy_constructible;
+
     template<class T> struct is_move_constructible;
+
     template<class T, class U> struct is_assignable;
+
     template<class T> struct is_copy_assignable;
+
     template<class T> struct is_move_assignable;
+
     template<class T, class U> struct is_swappable_with;
+
     template<class T> struct is_swappable;
+
     template<class T> struct is_destructible;
+
     template<class T, class... Args> struct is_trivially_constructible;
+
     template<class T> struct is_trivially_default_constructible;
+
     template<class T> struct is_trivially_copy_constructible;
+
     template<class T> struct is_trivially_move_constructible;
+
     template<class T, class U> struct is_trivially_assignable;
+
     template<class T> struct is_trivially_copy_assignable;
+
     template<class T> struct is_trivially_move_assignable;
+
     template<class T> struct is_trivially_destructible;
+
     template<class T, class... Args> struct is_nothrow_constructible;
+
     template<class T> struct is_nothrow_default_constructible;
+
     template<class T> struct is_nothrow_copy_constructible;
+
     template<class T> struct is_nothrow_move_constructible;
+
     template<class T, class U> struct is_nothrow_assignable;
+
     template<class T> struct is_nothrow_copy_assignable;
+
     template<class T> struct is_nothrow_move_assignable;
+
     template<class T, class U> struct is_nothrow_swappable_with;
+
     template<class T> struct is_nothrow_swappable;
+
     template<class T> struct is_nothrow_destructible;
+
     template<class T> struct has_virtual_destructor;
+
     template<class T> struct has_unique_object_representations;
 
     // 23.15.5, type property queries
@@ -181,10 +220,15 @@ namespace std{
     template<class T> struct is_same<T, T> : public true_type{};
 
     template<class Base, class Derived> struct is_base_of;
+
     template<class From, class To> struct is_convertible;
+
     template<class Fn, class... ArgTypes> struct is_invocable;
+
     template<class R, class Fn, class... ArgTypes> struct is_invocable_r;
+
     template<class Fn, class... ArgTypes> struct is_nothrow_invocable;
+
     template<class R, class Fn, class... ArgTypes> struct is_nothrow_invocable_r;
 
     // 23.15.7.1, const-volatile modifications

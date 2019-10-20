@@ -21,7 +21,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #ifndef __TYPE_TRAITS__
-#define __TYPE_TRAITS_
+#define __TYPE_TRAITS__
 
 #include <cstddef> // for nullptr_t
 

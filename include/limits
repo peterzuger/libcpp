@@ -194,6 +194,13 @@ namespace std{
     template<>class numeric_limits<unsigned int>:       public __numeric_limits<unsigned int, false>{};
     template<>class numeric_limits<unsigned long>:      public __numeric_limits<unsigned long, false>{};
     template<>class numeric_limits<unsigned long long>: public __numeric_limits<unsigned long long, false>{};
+#if defined(__int128_t)
+    template<>class numeric_limits<__int128_t>: public __numeric_limits<__int128_t, true>{};
+#endif /* defined(__int128_t) */
+#if defined(__uint128_t)
+    template<>class numeric_limits<__uint128_t>: public __numeric_limits<_uint128_t, false>{};
+#endif /* defined(__uint128_t) */
+
 
     template<>
     class numeric_limits<float>{

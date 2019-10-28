@@ -1,0 +1,34 @@
+/**
+ * @file   __declval
+ * @author Peter Züger
+ * @date   26.10.2019
+ * @brief  std::declval
+ * @note   defined in header <utility>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____DECLVAL__
+#define ____DECLVAL__
+
+#include <type_traits>
+
+namespace std{
+    // 23.2.7, declval
+    template<class T>
+    std::add_rvalue_reference_t<T> declval()noexcept; // as unevaluated operand
+}
+
+#endif /* ____DECLVAL__ */

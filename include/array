@@ -22,6 +22,8 @@
 #ifndef __ARRAY__
 #define __ARRAY__
 
+#include <__move>
+#include <__swap>
 #include <exception>
 #include <initializer_list>
 #include <iterator>
@@ -56,9 +58,8 @@ namespace std{
         }
 
         void swap(array& other)noexcept(std::is_nothrow_swappable_v<value_type>){
-            for(size_type i = 0; i < N; i++){
+            for(size_type i = 0; i < N; i++)
                 std::swap(other[i], _elem[i]);
-            }
         }
 
         // iterators:
@@ -320,7 +321,8 @@ namespace std{
     }
 
     template<class T, size_t N>
-    void swap(array<T, N>& x, array<T, N>& y)noexcept(noexcept(x.swap(y))){
+    std::enable_if_t<(N == 0) || std::is_swappable_v<T>, void>
+    swap(array<T, N>& x, array<T, N>& y)noexcept(noexcept(x.swap(y))){
         x.swap(y);
     }
 

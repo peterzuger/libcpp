@@ -301,13 +301,28 @@ namespace std{
     // 23.15.7.6, other transformations
     template<size_t Len, size_t Align = sizeof(int)> struct aligned_storage;
     template<size_t Len, class... Types>             struct aligned_union;
-    template<class T>                                struct decay;
 
     template<bool, class T = void>                   struct enable_if         {};
     template<class T>                                struct enable_if<true, T>{using type = T;};
 
     template<bool, class T, class F>                 struct conditional             {using type = T;};
     template<class T, class F>                       struct conditional<false, T, F>{using type = F;};
+
+    template<class T>
+    struct decay{
+    private:
+        using U = typename std::remove_reference<T>::type;
+
+    public:
+        using type = typename std::conditional<std::is_array<U>::value,
+                                               typename std::remove_extent<U>::type*,
+                                               typename std::conditional<
+                                                   std::is_function<U>::value,
+                                                   typename std::add_pointer<U>::type,
+                                                   typename std::remove_cv<U>::type
+                                                   >::type
+                                               >::type;
+    };
 
     template<class... T>                             struct common_type;
     template<class T>                                struct underlying_type;

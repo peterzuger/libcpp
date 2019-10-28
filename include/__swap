@@ -1,0 +1,46 @@
+/**
+ * @file   __move
+ * @author Peter Züger
+ * @date   26.10.2019
+ * @brief  std::move
+ * @note   defined in header <algorithm> and <utility>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____SWAP__
+#define ____SWAP__
+
+#include <__move>
+#include <type_traits>
+
+namespace std{
+    // 23.2.3, swap
+    template<class T>
+    void swap(T& a, T& b)noexcept(std::is_nothrow_move_constructible_v<T> &&
+                                  std::is_nothrow_move_assignable_v<T>){
+        T tmp = std::move(a);
+        a = std::move(b);
+        b = std::move(tmp);
+    }
+
+    template<class T, size_t N>
+    void swap(T (&a)[N], T (&b)[N])noexcept(std::is_nothrow_swappable_v<T>){
+        for(std::size_t _i = 0; _i < N; _i++)
+            swap(a[_i], b[_i]);
+    }
+}
+
+#endif /* ____SWAP__ */

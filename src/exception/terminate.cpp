@@ -1,5 +1,5 @@
 /**
- * @file   terminate.cpp
+ * @file   src/exception/terminate.cpp
  * @author Peter Züger
  * @date   02.05.2019
  * @brief  std::terminate implementation
@@ -20,22 +20,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include <exception>
-#include <cstddef>
 #include <cstdlib>
+#include <__exchange>
 
-static std::terminate_handler __handler;
+namespace std{
+    static terminate_handler __current_terminate_handler;
 
-std::terminate_handler get_terminate()noexcept{
-    return __handler;
-}
+    terminate_handler get_terminate()noexcept{
+        return __current_terminate_handler;
+    }
 
-std::terminate_handler set_terminate(std::terminate_handler f)noexcept{
-    std::terminate_handler tmp = __handler;
-    __handler = f;
-    return tmp;
-}
+    terminate_handler set_terminate(terminate_handler f)noexcept{
+        return std::exchange(__current_terminate_handler, f);
+    }
 
-[[noreturn]] void terminate()noexcept{
-    (*get_terminate())();
-    std::abort();
+    [[noreturn]] void terminate()noexcept{
+        (*get_terminate())();
+        std::abort();
+    }
 }

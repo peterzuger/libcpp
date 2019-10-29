@@ -29,15 +29,17 @@
 namespace std{
     // 23.2.3, swap
     template<class T>
-    void swap(T& a, T& b)noexcept(std::is_nothrow_move_constructible_v<T> &&
-                                  std::is_nothrow_move_assignable_v<T>){
+    std::enable_if_t<std::is_move_constructible_v<T> && std::is_move_assignable_v<T>>
+    swap(T& a, T& b)noexcept(std::is_nothrow_move_constructible_v<T> &&
+                             std::is_nothrow_move_assignable_v<T>){
         T tmp = std::move(a);
         a = std::move(b);
         b = std::move(tmp);
     }
 
     template<class T, size_t N>
-    void swap(T (&a)[N], T (&b)[N])noexcept(std::is_nothrow_swappable_v<T>){
+    std::enable_if_t<std::is_swappable_v<T>>
+    swap(T (&a)[N], T (&b)[N])noexcept(std::is_nothrow_swappable_v<T>){
         for(std::size_t _i = 0; _i < N; _i++)
             swap(a[_i], b[_i]);
     }

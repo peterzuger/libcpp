@@ -22,9 +22,11 @@
 #ifndef __ITERATOR__
 #define __ITERATOR__
 
+#include <__addressof>
 #include <__iterator_traits>
-#include <initializer_list>
+#include <__move>
 #include <cstddef>
+#include <initializer_list>
 
 namespace std{
     // 27.4.3, iterator operations
@@ -224,16 +226,133 @@ namespace std{
         return reverse_iterator<Iterator>(i);
     }
 
-    template<class Container> class back_insert_iterator;
     template<class Container>
-    back_insert_iterator<Container> back_inserter(Container& x);
-    template<class Container> class front_insert_iterator;
+    class back_insert_iterator{
+    protected:
+        Container* container;
+
+    public:
+        using iterator_category = output_iterator_tag;
+        using value_type        = void;
+        using difference_type   = void;
+        using pointer           = void;
+        using reference         = void;
+        using container_type    = Container;
+
+        explicit back_insert_iterator(Container& x):
+            container{std::addressof(x)}{}
+
+        back_insert_iterator& operator=(const typename Container::value_type& value){
+            container->push_back(value);
+            return *this;
+        }
+        back_insert_iterator& operator=(typename Container::value_type&& value){
+            container->push_back(std::move(value));
+            return *this;
+        }
+
+        back_insert_iterator& operator*(){
+            return *this;
+        }
+        back_insert_iterator& operator++(){
+            return *this;
+        }
+        back_insert_iterator  operator++(int){
+            return *this;
+        }
+    };
+
     template<class Container>
-    front_insert_iterator<Container> front_inserter(Container& x);
-    template<class Container> class insert_iterator;
+    back_insert_iterator<Container> back_inserter(Container& x){
+        return back_insert_iterator<Container>(x);
+    }
+
     template<class Container>
-    insert_iterator<Container> inserter(Container& x, typename Container::iterator i);
-    template<class Iterator> class move_iterator;
+    class front_insert_iterator{
+    protected:
+        Container* container;
+
+    public:
+        using iterator_category = output_iterator_tag;
+        using value_type        = void;
+        using difference_type   = void;
+        using pointer           = void;
+        using reference         = void;
+        using container_type    = Container;
+
+        explicit front_insert_iterator(Container& x):
+            container{std::addressof(x)}{}
+
+        front_insert_iterator& operator=(const typename Container::value_type& value){
+            container->push_front(value);
+            return *this;
+        }
+        front_insert_iterator& operator=(typename Container::value_type&& value){
+            container->push_front(std::move(value));
+            return *this;
+        }
+
+        front_insert_iterator& operator*(){
+            return *this;
+        }
+        front_insert_iterator& operator++(){
+            return *this;
+        }
+        front_insert_iterator  operator++(int){
+            return *this;
+        }
+    };
+
+    template<class Container>
+    front_insert_iterator<Container> front_inserter(Container& x){
+        return front_insert_iterator<Container>(x);
+    }
+
+    template<class Container>
+    class insert_iterator{
+    protected:
+        Container* container;
+        typename Container::iterator iter;
+
+    public:
+        using iterator_category = output_iterator_tag;
+        using value_type        = void;
+        using difference_type   = void;
+        using pointer           = void;
+        using reference         = void;
+        using container_type    = Container;
+
+        insert_iterator(Container& x, typename Container::iterator i):
+            container{std::addressof(x)},
+            iter{i}{}
+
+        insert_iterator& operator=(const typename Container::value_type& value){
+            iter = container->insert(iter, value);
+            ++iter;
+            return *this;
+        }
+        insert_iterator& operator=(typename Container::value_type&& value){
+            iter = container->insert(iter, std::move(value));
+            ++iter;
+            return *this;
+        }
+
+        insert_iterator& operator*(){
+            return *this;
+        }
+        insert_iterator& operator++(){
+            return *this;
+        }
+        insert_iterator& operator++(int){
+            return *this;
+        }
+    };
+
+    template<class Container>
+    insert_iterator<Container> inserter(Container& x, typename Container::iterator i){
+        return insert_iterator<Container>(x, i);
+    }
+
     template<class Iterator1, class Iterator2>
     constexpr bool operator==(
         const move_iterator<Iterator1>& x, const move_iterator<Iterator2>& y);

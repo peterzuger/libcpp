@@ -527,8 +527,8 @@ namespace std{
         }
 
     private:
-        std::basic_istream<charT, traits>* in_stream;// exposition only
-        T value;                               // exposition only
+        std::basic_istream<charT, traits>* in_stream;
+        T value;
     };
 
     template <class T, class charT, class traits, class Distance>
@@ -583,8 +583,8 @@ namespace std{
         }
 
     private:
-        std::basic_ostream<charT, traits>* out_stream;// exposition only
-        const charT* delim;// exposition only
+        std::basic_ostream<charT, traits>* out_stream;
+        const charT* delim;
     };
 
     template<class charT, class traits>
@@ -642,7 +642,7 @@ namespace std{
         }
 
     private:
-        streambuf_type* sbuf_;// exposition only
+        streambuf_type* sbuf_;
     };
 
     template <class charT, class traits>

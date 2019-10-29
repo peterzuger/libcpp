@@ -28,7 +28,7 @@ namespace std{
     using sig_atomic_t = int;
 
     // 21.10.4, signal handlers
-    extern "C" using signal_handler = void(int); // exposition only
+    extern "C" using signal_handler = void(int);
     signal_handler* signal(int sig, signal_handler* func);
 
     int raise(int sig);

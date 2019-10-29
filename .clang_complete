@@ -1,5 +1,10 @@
+--target=arm-none-eabi
 -Iinclude
 -I../libc/include
+-nostdlibinc
+-nostdlib
+-nostdinc
+-nostdinc++
 -Wall
 -Wextra
 -Wpedantic
@@ -25,4 +30,3 @@
 -fno-rtti
 -fno-exceptions
 -fno-threadsafe-statics
--target arm-none-eabi

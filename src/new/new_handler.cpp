@@ -1,5 +1,5 @@
 /**
- * @file   src/new/new_handler.cpp
+ * @file   libcpp/src/new/new_handler.cpp
  * @author Peter Züger
  * @date   17.10.2019
  * @brief  std::get/set_new_handler implementation

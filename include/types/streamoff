@@ -1,5 +1,5 @@
 /**
- * @file   include/types/streamoff
+ * @file   libcpp/include/types/streamoff
  * @author Peter Züger
  * @date   20.10.2019
  * @brief  offsets from stream positions

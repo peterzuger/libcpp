@@ -1,5 +1,5 @@
 /**
- * @file   type_traits
+ * @file   libcpp/include/type_traits
  * @author Peter Züger
  * @date   12.10.2018
  * @note   part of the freestanding headers

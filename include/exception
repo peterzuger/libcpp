@@ -1,5 +1,5 @@
 /**
- * @file   exception
+ * @file   libcpp/include/exception
  * @author Peter Züger
  * @date   12.10.2018
  * @note   part of the freestanding headers

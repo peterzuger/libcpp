@@ -1,5 +1,5 @@
 /**
- * @file   cstring
+ * @file   libcpp/include/cstring
  * @author Peter Züger
  * @date   27.07.2018
  * @brief  C String Handling

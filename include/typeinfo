@@ -1,5 +1,5 @@
 /**
- * @file   typeinfo
+ * @file   libcpp/include/typeinfo
  * @author Peter Züger
  * @date   15.12.2018
  * @note   part of the freestanding headers

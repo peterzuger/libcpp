@@ -1,5 +1,5 @@
 /**
- * @file   include/types/streamsize
+ * @file   libcpp/include/types/streamsize
  * @author Peter Züger
  * @date   20.10.2019
  * @brief  number of characters transferred in an I/O operation

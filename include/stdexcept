@@ -1,5 +1,5 @@
 /**
- * @file   stdexcept
+ * @file   libcpp/include/stdexcept
  * @author Peter Züger
  * @date   26.11.2018
  * @brief  exception classes

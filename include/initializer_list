@@ -1,5 +1,5 @@
 /**
- * @file   initializer_list
+ * @file   libcpp/include/initializer_list
  * @author Peter Züger
  * @date   31.07.2018
  * @note   part of the freestanding headers

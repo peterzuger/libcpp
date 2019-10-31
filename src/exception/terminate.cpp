@@ -1,5 +1,5 @@
 /**
- * @file   src/exception/terminate.cpp
+ * @file   libcpp/src/exception/terminate.cpp
  * @author Peter Züger
  * @date   02.05.2019
  * @brief  std::terminate implementation

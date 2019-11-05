@@ -1,0 +1,53 @@
+/**
+ * @file   libcpp/include/__uses_allocator
+ * @author Peter Züger
+ * @date   26.10.2019
+ * @brief  std::uses_allocator
+ * @note   defined in header <memory>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____USES_ALLOCATOR__
+#define ____USES_ALLOCATOR__
+
+#include <type_traits>
+
+namespace std{
+    namespace __uses_allocator{
+        template<typename T, typename = void>
+        struct __has_allocator_type: std::false_type{};
+
+        template<typename T>
+        struct __has_allocator_type<T, std::void_t<typename T::allocator_type>>: std::true_type{};
+
+        template<typename T, typename Alloc, bool = __has_allocator_type<T>::value>
+        struct __uses_allocator:
+            std::bool_constant<std::is_convertible_v<Alloc, T::allocator_type> != false>{};
+
+        template<typename T, typename Alloc>
+        struct __uses_allocator<T, Alloc, false>: std::false_type{};
+    }
+
+    // 23.10.7, uses_allocator
+    template<class T, class Alloc>
+    struct uses_allocator: public __uses_allocator::__uses_allocator<T, Alloc>{};
+
+    // 23.10.7.1, uses_allocator
+    template<class T, class Alloc>
+    inline constexpr bool uses_allocator_v = uses_allocator<T, Alloc>::value;
+}
+
+#endif /* ____USES_ALLOCATOR__ */

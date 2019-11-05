@@ -1,0 +1,105 @@
+/**
+ * @file   libcpp/include/__pointer_traits
+ * @author Peter Züger
+ * @date   20.10.2019
+ * @brief  std::pointer_traits
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____POINTER_TRAITS__
+#define ____POINTER_TRAITS__
+
+#include <type_traits>
+
+namespace std{
+    namespace __pointer_traits{
+        template<typename T, typename = void>
+        struct __has_element_type: std::false_type{};
+
+        template<typename T>
+        struct __has_element_type<T, std::void_t<typename T::element_type>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_difference_type: std::false_type{};
+
+        template<typename T>
+        struct __has_difference_type<T, std::void_t<typename T::difference_type>>: std::true_type{};
+
+        template<typename T, typename U, typename = void>
+        struct __has_rebind: std::false_type{};
+
+        template<typename T, typename U>
+        struct __has_rebind<T, U, std::void_t<typename T::template rebind<U>>>: std::true_type{};
+
+
+        template<typename T, bool = __has_element_type<T>::value>
+        struct __element_type{using type = typename T::element_type;};
+
+        template<typename T>
+        struct __element_type<T, false>{using type = T*;};
+
+        template<typename T, bool = __has_difference_type<T>::value>
+        struct __difference_type{using type = typename T::difference_type;};
+
+        template<typename T>
+        struct __difference_type<T, false>{using type = std::ptrdiff_t;};
+
+        template<typename T, typename U, bool = __has_rebind<T, U>::value>
+        struct __rebind{using type = typename T::template rebind<U>;};
+
+        template<template <typename , typename...> typename Ptr, typename T, typename ...Args, typename U>
+        struct __rebind<Ptr<T, Args...>, U, true>{
+            using type = typename Ptr<T, Args...>::template rebind<U>;
+        };
+
+        template<template <typename , typename...> typename Ptr, typename T, typename ...Args, typename U>
+        struct __rebind<Ptr<T, Args...>, U, false>{
+            using type = Ptr<T, Args...>;
+        };
+    }
+
+    // 23.10.3, pointer traits
+    template<class Ptr>
+    struct pointer_traits{
+        using pointer         = Ptr;
+        using element_type    = typename __pointer_traits::__element_type<pointer>::type;
+        using difference_type = typename __pointer_traits::__difference_type<pointer>::type;
+
+        template <class U>
+        using rebind = typename __pointer_traits::__rebind<pointer, U>::type;
+
+        static pointer pointer_to(element_type& r){
+            return pointer::pointer_to(r);
+        }
+    };
+
+    template<class T>
+    struct pointer_traits<T*>{
+        using pointer         = T*;
+        using element_type    = T;
+        using difference_type = std::ptrdiff_t;
+
+        template <class U>
+        using rebind = U*;
+
+        static pointer pointer_to(element_type& r)noexcept{
+            return reinterpret_cast<T*>(
+                const_cast<char*>(&reinterpret_cast<const volatile char&>(r)));
+        }
+    };
+}
+
+#endif /* ____POINTER_TRAITS__ */

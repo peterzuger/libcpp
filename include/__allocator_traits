@@ -1,0 +1,287 @@
+/**
+ * @file   libcpp/include/__allocator_traits
+ * @author Peter Züger
+ * @date   26.10.2019
+ * @brief  std::allocator_traits
+ * @note   defined in header <memory>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____USES_ALLOCATOR__
+#define ____USES_ALLOCATOR__
+
+#include <__declval>
+#include <__move>
+#include <__pointer_traits>
+#include <type_traits>
+
+namespace std{
+    namespace __allocator_traits{
+        template<typename T, typename = void>
+        struct __has_pointer: std::false_type{};
+
+        template<typename T>
+        struct __has_pointer<T, std::void_t<typename T::pointer>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_const_pointer: std::false_type{};
+
+        template<typename T>
+        struct __has_const_pointer<T, std::void_t<typename T::const_pointer>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_void_pointer: std::false_type{};
+
+        template<typename T>
+        struct __has_void_pointer<T, std::void_t<typename T::void_pointer>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_const_void_pointer: std::false_type{};
+
+        template<typename T>
+        struct __has_const_void_pointer<T, std::void_t<typename T::const_void_pointer>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_difference_type: std::false_type{};
+
+        template<typename T>
+        struct __has_difference_type<T, std::void_t<typename T::difference_type>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_size_type: std::false_type{};
+
+        template<typename T>
+        struct __has_size_type<T, std::void_t<typename T::size_type>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_propagate_on_container_copy_assignment: std::false_type{};
+
+        template<typename T>
+        struct __has_propagate_on_container_copy_assignment<T, std::void_t<typename T::propagate_on_container_copy_assignment>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_propagate_on_container_move_assignment: std::false_type{};
+
+        template<typename T>
+        struct __has_propagate_on_container_move_assignment<T, std::void_t<typename T::propagate_on_container_move_assignment>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_propagate_on_container_swap: std::false_type{};
+
+        template<typename T>
+        struct __has_propagate_on_container_swap<T, std::void_t<typename T::propagate_on_container_swap>>: std::true_type{};
+
+        template<typename T, typename = void>
+        struct __has_is_always_equal: std::false_type{};
+
+        template<typename T>
+        struct __has_is_always_equal<T, std::void_t<typename T::is_always_equal>>: std::true_type{};
+
+        template<typename T, typename D, typename = void>
+        struct __has_rebind: std::false_type{};
+
+        template<typename T, typename D>
+        struct __has_rebind<T, D, std::void_t<typename D::template rebind<T>::other>>: std::true_type{};
+
+        template<typename Alloc, typename Ptr, typename T, typename = void>
+        struct __has_construct: std::false_type{};
+
+        template<typename Alloc, typename Ptr, typename T>
+        struct __has_construct<Alloc, Ptr, T,
+                               std::void_t<decltype(
+            std::declval<Alloc>().construct(std::declval<Ptr>(),
+                                            std::declval<T>()))>>:
+            std::true_type{};
+
+
+        template<typename T, typename D, bool = __has_pointer<D>::value>
+        struct __pointer{using type = typename D::pointer;};
+
+        template<typename T, typename D>
+        struct __pointer<T, D, false>{using type = T*;};
+
+        template<typename T, typename D, bool = __has_const_pointer<T>::value>
+        struct __const_pointer{using type = typename D::const_pointer;};
+
+        template<typename T, typename D>
+        struct __const_pointer<T, D, false>{
+            using type = typename std::pointer_traits<typename __pointer<T, D>::type>::template rebind<const T>;
+        };
+
+        template<typename T, typename D, bool = __has_void_pointer<T>::value>
+        struct __void_pointer{using type = typename D::void_pointer;};
+
+        template<typename T, typename D>
+        struct __void_pointer<T, D, false>{
+            using type = typename std::pointer_traits<typename __pointer<T, D>::type>::template rebind<void>;
+        };
+
+        template<typename T, typename D, bool = __has_const_void_pointer<T>::value>
+        struct __const_void_pointer{using type = typename D::const_void_pointer;};
+
+        template<typename T, typename D>
+        struct __const_void_pointer<T, D, false>{
+            using type = typename std::pointer_traits<typename __pointer<T, D>::type>::template rebind<const void>;
+        };
+
+        template<typename T, typename D, bool = __has_difference_type<T>::value>
+        struct __difference_type{using type = typename D::difference_type;};
+
+        template<typename T, typename D>
+        struct __difference_type<T, D, false>{
+            using type = typename std::pointer_traits<typename __pointer<T, D>::type>::difference_type;
+        };
+
+        template<typename T, typename D, bool = __has_size_type<T>::value>
+        struct __size_type{using type = typename D::size_type;};
+
+        template<typename T, typename D>
+        struct __size_type<T, D, false>{
+            using type = typename std::make_unsigned_t<typename __difference_type<T, D>::type>::type;
+        };
+
+        template<typename T, typename D, bool = __has_propagate_on_container_copy_assignment<T>::value>
+        struct __propagate_on_container_copy_assignment{using type = typename D::propagate_on_container_copy_assignment;};
+
+        template<typename T, typename D>
+        struct __propagate_on_container_copy_assignment<T, D, false>{
+            using type = std::false_type;
+        };
+
+        template<typename T, typename D, bool = __has_propagate_on_container_move_assignment<T>::value>
+        struct __propagate_on_container_move_assignment{using type = typename D::propagate_on_container_move_assignment;};
+
+        template<typename T, typename D>
+        struct __propagate_on_container_move_assignment<T, D, false>{
+            using type = std::false_type;
+        };
+
+        template<typename T, typename D, bool = __has_propagate_on_container_swap<T>::value>
+        struct __propagate_on_container_swap{using type = typename D::propagate_on_container_swap;};
+
+        template<typename T, typename D>
+        struct __propagate_on_container_swap<T, D, false>{
+            using type = std::false_type;
+        };
+
+        template<typename T, typename D, bool = __has_is_always_equal<T>::value>
+        struct __is_always_equal{using type = typename D::is_always_equal;};
+
+        template<typename T, typename D>
+        struct __is_always_equal<T, D, false>{
+            using type = typename std::is_empty<D>::type;
+        };
+
+        template<typename T, typename D, bool = __has_rebind<T, D>::value>
+        struct __rebind_alloc{using type = typename D::template rebind<T>::other;};
+
+        template<typename T, typename D>
+        struct __rebind_alloc<T, D, false>{
+            using type = D;
+        };
+
+
+        template <class _Alloc>
+        auto __has_select_on_container_copy_construction_test(_Alloc&& __a)
+            -> decltype(__a.select_on_container_copy_construction(), true_type());
+
+        template <class _Alloc>
+        auto __has_select_on_container_copy_construction_test(const volatile _Alloc& __a)
+            -> false_type;
+
+        template <class _Alloc>
+        struct __has_select_on_container_copy_construction:
+            integral_constant<bool,
+                              std::is_same<
+                                  decltype(__has_select_on_container_copy_construction_test(declval<_Alloc&>())),
+                                  std::true_type>::value>{};
+    }
+
+    // 23.10.8, allocator traits
+    template<class Alloc>
+    struct allocator_traits{
+        using allocator_type                         = Alloc;
+        using value_type                             = typename Alloc::value_type;
+        using pointer                                = typename __allocator_traits::__pointer<value_type, Alloc>::type;
+        using const_pointer                          = typename __allocator_traits::__const_pointer<value_type, Alloc>::type;
+        using void_pointer                           = typename __allocator_traits::__void_pointer<value_type, Alloc>::type;
+        using const_void_pointer                     = typename __allocator_traits::__const_void_pointer<value_type, Alloc>::type;
+        using difference_type                        = typename __allocator_traits::__difference_type<value_type, Alloc>::type;
+        using size_type                              = typename __allocator_traits::__size_type<value_type, Alloc>::type;
+        using propagate_on_container_copy_assignment = typename __allocator_traits::__propagate_on_container_copy_assignment<value_type, Alloc>::type;
+        using propagate_on_container_move_assignment = typename __allocator_traits::__propagate_on_container_move_assignment<value_type, Alloc>::type;
+        using propagate_on_container_swap            = typename __allocator_traits::__propagate_on_container_swap<value_type, Alloc>::type;
+        using is_always_equal                        = typename __allocator_traits::__is_always_equal<value_type, Alloc>::type;
+
+        template<class T>
+        using rebind_alloc = typename __allocator_traits::__rebind_alloc<value_type, Alloc>::type;
+
+        template<class T>
+        using rebind_traits = allocator_traits<rebind_alloc<T>>;
+
+        static pointer allocate(Alloc& a, size_type n){
+            return a.allocate(n);
+        }
+        static pointer allocate(Alloc& a, size_type n, const_void_pointer hint){
+            return a.allocate(n, hint);
+        }
+        static void deallocate(Alloc& a, pointer p, size_type n){
+            a.deallocate(p, n);
+        }
+
+    private:
+        template<class T, class... Args>
+        static void __construct(std::true_type, Alloc& a, T* p, Args&&... args){
+            a.construct(p, std::forward<Args>(args)...);
+        }
+        template<class T, class... Args>
+        static void __construct(std::false_type, Alloc&, T* p, Args&&... args){
+            ::new (static_cast<void*>(p)) T(std::forward<Args>(args)...);
+        }
+
+    public:
+        template<class T, class... Args>
+        static void construct(Alloc& a, T* p, Args&&... args){
+            __construct(__allocator_traits::__has_construct<Alloc, T*, Args...>(),
+                        a, p, args...);
+        }
+
+        template<class T>
+        static void destroy(Alloc& a, T* p){
+            a.destroy(p);
+        }
+
+        static size_type max_size(const Alloc& a)noexcept{
+            return a.max_size();
+        }
+
+    private:
+        static Alloc __select_on_container_copy_construction(std::true_type, const Alloc& rhs){
+            return rhs.select_on_container_copy_construction();
+        }
+        static Alloc __select_on_container_copy_construction(std::false_type, const Alloc& rhs){
+            return rhs;
+        }
+
+    public:
+        static Alloc select_on_container_copy_construction(const Alloc& rhs){
+            return __select_on_container_copy_construction(
+                __allocator_traits::__has_select_on_container_copy_construction<const Alloc>(), rhs);
+        }
+    };
+}
+
+#endif /* ____USES_ALLOCATOR__ */

@@ -1,0 +1,42 @@
+/**
+ * @file   libcpp/include/__stringfwd
+ * @author Peter Züger
+ * @date   28.10.2019
+ * @brief  std::string forward declaration
+ * @note   defined in header <string>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____STRINGFWD__
+#define ____STRINGFWD__
+
+#include <__char_traits>
+
+namespace std{
+    template<class charT, class traits = char_traits<charT>, class Allocator = allocator<charT>>
+    class basic_string;
+
+    // basic_string typedef names
+    using string = basic_string<char>;
+#if defined(char8_t)
+    using u8string = basic_string<char8_t>;
+#endif /* defined(char8_t) */
+    using u16string = basic_string<char16_t>;
+    using u32string = basic_string<char32_t>;
+    using wstring = basic_string<wchar_t>;
+}
+
+#endif /* ____STRINGFWD___ */

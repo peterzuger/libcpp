@@ -296,7 +296,12 @@ namespace std{
     template<class T> struct remove_pointer<T* const>         {using type = T;};
     template<class T> struct remove_pointer<T* volatile>      {using type = T;};
     template<class T> struct remove_pointer<T* const volatile>{using type = T;};
-    template<class T> struct add_pointer;
+
+    template<class T> struct add_pointer{using type = T*;};
+    template<class T> struct add_pointer<T*>{using type = T*;};
+    template<class T> struct add_pointer<const T*>{using type = T*;};
+    template<class T> struct add_pointer<volatile T*>{using type = T*;};
+    template<class T> struct add_pointer<const volatile T*>{using type = T*;};
 
     template<class T> using remove_pointer_t = typename remove_pointer<T>::type;
     template<class T> using add_pointer_t    = typename add_pointer<T>::type;

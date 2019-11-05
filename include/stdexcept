@@ -23,10 +23,7 @@
 #define __STDEXCEPT__
 
 #include <exception>
-
-#if defined(__cpp_exceptions)
-
-#include <string>
+#include <__stringfwd>
 
 namespace std{
     class logic_error: public exception{
@@ -119,8 +116,6 @@ namespace std{
         virtual ~underflow_error()noexcept;
     };
 }
-
-#endif /* defined(__cpp_exceptions) */
 
 namespace std{
     [[noreturn]] inline void __throw_logic_error(const char* s){

@@ -282,7 +282,10 @@ namespace std{
     template<class T> using make_unsigned_t = typename make_unsigned<T>::type;
 
     // 23.15.7.4, array modifications
-    template<class T> struct remove_extent;
+    template<class T> struct remove_extent           {using type = T;      };
+    template<class T> struct remove_extent<T[]>      {using type = T;      };
+    template<class T> struct remove_extent<const T[]>{using type = const T;};
+
     template<class T> struct remove_all_extents;
     template<class T> using remove_extent_t      = typename remove_extent<T>::type;
     template<class T> using remove_all_extents_t = typename remove_all_extents<T>::type;

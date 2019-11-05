@@ -106,8 +106,6 @@ namespace std{
 
     template<class T> struct is_class: public bool_constant<__is_class(T)>{};
 
-    template<class T> struct is_function;
-
     // 23.15.4.2, composite type categories
     template<class T> struct is_reference: public false_type{};
     template<class T> struct is_reference<T&>: public true_type{};
@@ -305,6 +303,15 @@ namespace std{
 
     template<class T> using remove_pointer_t = typename remove_pointer<T>::type;
     template<class T> using add_pointer_t    = typename add_pointer<T>::type;
+
+
+    // 23.15.4.1, more primary type categories ...
+    template<class T> struct __is_function: public false_type{};
+    template<class T, class ...Args> struct __is_function<T(Args...)>: public true_type{};
+    template<class T, class ...Args> struct __is_function<T(Args..., ...)>: public true_type{};
+
+    template<class T> struct is_function: __is_function<remove_reference_t<remove_cv_t<T>>>{};
+
 
     // 23.15.7.6, other transformations
     template<size_t Len, size_t Align = sizeof(int)> struct aligned_storage;

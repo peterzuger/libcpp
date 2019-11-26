@@ -152,20 +152,20 @@ namespace std{
     template<class T> struct is_aggregate;
 
     template<class T, bool = is_arithmetic<T>::value>
-    struct __is_signed: bool_constant<T(-1) < T(0)>{};
+    struct __is_signed_impl: bool_constant<T(-1) < T(0)>{};
 
     template<class T>
-    struct __is_signed<T, false>: false_type{};
+    struct __is_signed_impl<T, false>: false_type{};
 
-    template<class T> struct is_signed: __is_signed<T>::type{};
+    template<class T> struct is_signed: __is_signed_impl<T>::type{};
 
     template<class T, bool = is_arithmetic<T>::value>
-    struct __is_unsigned: bool_constant<T(0) < T(-1)>{};
+    struct __is_unsigned_impl: bool_constant<T(0) < T(-1)>{};
 
     template<class T>
-    struct __is_unsigned<T, false>: false_type{};
+    struct __is_unsigned_impl<T, false>: false_type{};
 
-    template<class T> struct is_unsigned: __is_unsigned<T>::type{};
+    template<class T> struct is_unsigned: __is_unsigned_impl<T>::type{};
 
     template<class T, class... Args> struct is_constructible;
 
@@ -298,11 +298,11 @@ namespace std{
 
 
     // 23.15.4.1, more primary type categories ...
-    template<class T> struct __is_function: public false_type{};
-    template<class T, class ...Args> struct __is_function<T(Args...)>: public true_type{};
-    template<class T, class ...Args> struct __is_function<T(Args..., ...)>: public true_type{};
+    template<class T> struct __is_function_impl: public false_type{};
+    template<class T, class ...Args> struct __is_function_impl<T(Args...)>: public true_type{};
+    template<class T, class ...Args> struct __is_function_impl<T(Args..., ...)>: public true_type{};
 
-    template<class T> struct is_function: __is_function<remove_reference_t<remove_cv_t<T>>>{};
+    template<class T> struct is_function: __is_function_impl<remove_reference_t<remove_cv_t<T>>>{};
 
 
     // 23.15.7.6, other transformations

@@ -81,10 +81,12 @@ namespace std{
 
     template<class T> struct is_integral: public __is_integral_impl<remove_cv_t<T>>{};
 
-    template<class T> struct is_floating_point: public false_type{};
-    template<> struct is_floating_point<float>: public true_type{};
-    template<> struct is_floating_point<double>: public true_type{};
-    template<> struct is_floating_point<long double>: public true_type{};
+    template<class T> struct __is_floating_point_impl: public false_type{};
+    template<> struct __is_floating_point_impl<float>: public true_type{};
+    template<> struct __is_floating_point_impl<double>: public true_type{};
+    template<> struct __is_floating_point_impl<long double>: public true_type{};
+
+    template<class T> struct is_floating_point: public __is_floating_point_impl<remove_cv_t<T>>{};
 
     template<class T> struct is_array: public false_type{};
     template<class T> struct is_array<T[]>: public true_type{};

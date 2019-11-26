@@ -1,4 +1,4 @@
-/**
+/** -*- mode: c++ -*-
  * @file   libcpp/include/tuple
  * @author Peter Züger
  * @date   12.10.2018

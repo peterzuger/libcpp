@@ -1,4 +1,4 @@
-/**
+/** -*- mode: c++ -*-
  * @file   libcpp/include/initializer_list
  * @author Peter Züger
  * @date   31.07.2018

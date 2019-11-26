@@ -1,4 +1,4 @@
-/**
+/** -*- mode: c++ -*-
  * @file   libcpp/include/cstring
  * @author Peter Züger
  * @date   27.07.2018

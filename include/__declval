@@ -1,4 +1,4 @@
-/**
+/** -*- mode: c++ -*-
  * @file   libcpp/include/__declval
  * @author Peter Züger
  * @date   26.10.2019

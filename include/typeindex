@@ -1,4 +1,4 @@
-/**
+/** -*- mode: c++ -*-
  * @file   libcpp/include/typeindex
  * @author Peter Züger
  * @date   08.05.2019

@@ -1,4 +1,4 @@
-/**
+/** -*- mode: c++ -*-
  * @file   libcpp/include/types/streamsize
  * @author Peter Züger
  * @date   20.10.2019

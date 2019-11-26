@@ -306,7 +306,7 @@ namespace std{
         static constexpr bool is_exact = false;
         static constexpr int  radix = __FLT_RADIX__;
         static constexpr type epsilon()noexcept    { return __LDBL_EPSILON__; }
-        static constexpr type round_error()noexcept{ return 0.5F; }
+        static constexpr type round_error()noexcept{ return 0.5L; }
 
         static constexpr int  min_exponent = __LDBL_MIN_EXP__;
         static constexpr int  min_exponent10 = __LDBL_MIN_10_EXP__;

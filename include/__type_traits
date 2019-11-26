@@ -1,0 +1,52 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__type_traits
+ * @author Peter Züger
+ * @date   27.10.2019
+ * @brief  std::type_traits
+ * @note   defined in header <type_traits>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____TYPE_TRAITS__
+#define ____TYPE_TRAITS__
+
+namespace std{
+    // 23.15.7.1, const-volatile modifications
+    template<class T> struct remove_const{using type = T;};
+    template<class T> struct remove_const<const T>{using type = T;};
+
+    template<class T> struct remove_volatile{using type = T;};
+    template<class T> struct remove_volatile<volatile T>{using type = T;};
+
+    template<class T> struct remove_cv{
+        using type = typename remove_volatile<typename remove_const<T>::type>::type;
+    };
+
+    template<class T> struct add_const{using type = const T;};
+
+    template<class T> struct add_volatile{using type = volatile T;};
+
+    template<class T> struct add_cv{using type = const volatile T;};
+
+    template<class T> using remove_const_t    = typename remove_const<T>::type;
+    template<class T> using remove_volatile_t = typename remove_volatile<T>::type;
+    template<class T> using remove_cv_t       = typename remove_cv<T>::type;
+    template<class T> using add_const_t       = typename add_const<T>::type;
+    template<class T> using add_volatile_t    = typename add_volatile<T>::type;
+    template<class T> using add_cv_t          = typename add_cv<T>::type;
+}
+
+#endif /* ____TYPE_TRAITS__ */

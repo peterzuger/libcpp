@@ -53,31 +53,33 @@ namespace std{
     template<class T> struct is_null_pointer: public false_type{};
     template<> struct is_null_pointer<std::nullptr_t>: public true_type{};
 
-    template<class T> struct is_integral: public false_type{};
-    template<> struct is_integral<bool>: public true_type{};
-    template<> struct is_integral<char>: public true_type{};
-    template<> struct is_integral<signed char>: public true_type{};
-    template<> struct is_integral<unsigned char>: public true_type{};
-    template<> struct is_integral<wchar_t>: public true_type{};
+    template<class T> struct __is_integral_impl: public false_type{};
+    template<> struct __is_integral_impl<bool>: public true_type{};
+    template<> struct __is_integral_impl<char>: public true_type{};
+    template<> struct __is_integral_impl<signed char>: public true_type{};
+    template<> struct __is_integral_impl<unsigned char>: public true_type{};
+    template<> struct __is_integral_impl<wchar_t>: public true_type{};
 #if defined(char8_t)
-    template<> struct is_integral<char8_t>: public true_type{};
+    template<> struct __is_integral_impl<char8_t>: public true_type{};
 #endif /* defined(char8_t) */
-    template<> struct is_integral<char16_t>: public true_type{};
-    template<> struct is_integral<char32_t>: public true_type{};
-    template<> struct is_integral<short>: public true_type{};
-    template<> struct is_integral<unsigned short>: public true_type{};
-    template<> struct is_integral<int>: public true_type{};
-    template<> struct is_integral<unsigned int>: public true_type{};
-    template<> struct is_integral<long>: public true_type{};
-    template<> struct is_integral<unsigned long>: public true_type{};
-    template<> struct is_integral<long long>: public true_type{};
-    template<> struct is_integral<unsigned long long>: public true_type{};
+    template<> struct __is_integral_impl<char16_t>: public true_type{};
+    template<> struct __is_integral_impl<char32_t>: public true_type{};
+    template<> struct __is_integral_impl<short>: public true_type{};
+    template<> struct __is_integral_impl<unsigned short>: public true_type{};
+    template<> struct __is_integral_impl<int>: public true_type{};
+    template<> struct __is_integral_impl<unsigned int>: public true_type{};
+    template<> struct __is_integral_impl<long>: public true_type{};
+    template<> struct __is_integral_impl<unsigned long>: public true_type{};
+    template<> struct __is_integral_impl<long long>: public true_type{};
+    template<> struct __is_integral_impl<unsigned long long>: public true_type{};
 #if defined(__int128_t)
-    template<> struct is_integral<__int128_t>: public true_type{};
+    template<> struct __is_integral_impl<__int128_t>: public true_type{};
 #endif /* defined(__int128_t) */
 #if defined(__uint128_t)
-    template<> struct is_integral<__uint128_t>: public true_type{};
+    template<> struct __is_integral_impl<__uint128_t>: public true_type{};
 #endif /* defined(__uint128_t) */
+
+    template<class T> struct is_integral: public __is_integral_impl<remove_cv_t<T>>{};
 
     template<class T> struct is_floating_point: public false_type{};
     template<> struct is_floating_point<float>: public true_type{};

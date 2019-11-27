@@ -1,0 +1,147 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__minmax
+ * @author Peter Züger
+ * @date   26.10.2019
+ * @brief  std::min, std::max, etc...
+ * @note   defined in header <algorithm>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____MINMAX__
+#define ____MINMAX__
+
+#include <__pair>
+#include <initializer_list>
+
+namespace std{
+    // 28.7.8, minimum and maximum
+    template<class T>
+    constexpr const T& min(const T& a, const T& b){
+        return a < b ? a : b;
+    }
+
+    template<class T, class Compare>
+    constexpr const T& min(const T& a, const T& b, Compare comp){
+        return comp(b, a) ? a : b;
+    }
+
+    template<class T>
+    constexpr const T& max(const T& a, const T& b){
+        return a < b ? b : a;
+    }
+
+    template<class T, class Compare>
+    constexpr const T& max(const T& a, const T& b, Compare comp){
+        return comp(b, a) ? b : a;
+    }
+
+    template<class T>
+    constexpr std::pair<const T&, const T&> minmax(const T& a, const T& b){
+        return (b < a) ?
+            pair<const T&, const T&>(b, a):
+            pair<const T&, const T&>(a, b);
+    }
+
+    template<class T, class Compare>
+    constexpr std::pair<const T&, const T&> minmax(const T& a, const T& b, Compare comp){
+        return comp(b, a) ?
+            pair<const T&, const T&>(b, a):
+            pair<const T&, const T&>(a, b);
+    }
+
+    template<class ForwardIterator>
+    constexpr ForwardIterator min_element(ForwardIterator first, ForwardIterator last);
+
+    template<class ForwardIterator, class Compare>
+    constexpr ForwardIterator min_element(ForwardIterator first, ForwardIterator last,
+                                          Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator min_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    ForwardIterator min_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last,
+                                Compare comp);
+
+    template<class ForwardIterator>
+    constexpr ForwardIterator max_element(ForwardIterator first, ForwardIterator last);
+
+    template<class ForwardIterator, class Compare>
+    constexpr ForwardIterator max_element(ForwardIterator first, ForwardIterator last,
+                                          Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator max_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    ForwardIterator max_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last,Compare comp);
+
+    template<class ForwardIterator>
+    constexpr std::pair<ForwardIterator, ForwardIterator> minmax_element(ForwardIterator first,
+                                                                         ForwardIterator last);
+
+    template<class ForwardIterator, class Compare>
+    constexpr std::pair<ForwardIterator, ForwardIterator> minmax_element(ForwardIterator first,
+                                                                         ForwardIterator last,
+                                                                         Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator>
+    std::pair<ForwardIterator, ForwardIterator> minmax_element(ExecutionPolicy&& exec,// see 28.4.5
+                                                               ForwardIterator first,
+                                                               ForwardIterator last);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    std::pair<ForwardIterator, ForwardIterator> minmax_element(ExecutionPolicy&& exec,// see 28.4.5
+                                                               ForwardIterator first,
+                                                               ForwardIterator last,
+                                                               Compare comp);
+
+    template<class T>
+    constexpr T min(std::initializer_list<T> t){
+        return *min_element(t.begin(), t.end());
+    }
+
+    template<class T, class Compare>
+    constexpr T min(std::initializer_list<T> t, Compare comp){
+        return *min_element(t.begin(), t.end(), comp);
+    }
+
+    template<class T>
+    constexpr T max(std::initializer_list<T> t){
+        return *max_element(t.begin(), t.end());
+    }
+
+    template<class T, class Compare>
+    constexpr T max(std::initializer_list<T> t, Compare comp){
+        return *max_element(t.begin(), t.end(), comp);
+    }
+
+    template<class T>
+    constexpr std::pair<T, T> minmax(initializer_list<T> t){
+        return *std::minmax_element(t.begin(), t.end());
+    }
+
+    template<class T, class Compare>
+    constexpr std::pair<T, T> minmax(initializer_list<T> t, Compare comp){
+        return *std::minmax_element(t.begin(), t.end(), comp);
+    }
+}
+
+#endif /* ____MINMAX__ */

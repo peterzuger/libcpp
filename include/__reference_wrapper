@@ -1,0 +1,87 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__reference_wrapper
+ * @author Peter Züger
+ * @date   26.10.2019
+ * @brief  std::reference_weapper
+ * @note   defined in header <functional>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____REFERENCE_WRAPPER__
+#define ____REFERENCE_WRAPPER__
+
+#include <__addressof>
+#include <type_traits>
+
+namespace std{
+    // 23.14.5,reference_wrapper
+    template<class T>
+    class reference_wrapper{
+        T* ref;
+
+    public:
+        // types
+        using type = T;
+
+        // construct/copy/destroy
+        reference_wrapper(T& _ref)noexcept:ref{std::addressof(_ref)}{}
+        reference_wrapper(T&&) = delete; // do not bind to temporary objects
+        reference_wrapper(const reference_wrapper& x)noexcept;
+
+        // assignment
+        reference_wrapper& operator=(const reference_wrapper& x)noexcept = default;
+
+        // access
+        operator T& ()const noexcept{
+            return *ref;
+        }
+        T& get()const noexcept{
+            return *ref;
+        }
+
+        // invocation
+        template <class... ArgTypes>
+        invoke_result_t<T&, ArgTypes...> operator()(ArgTypes&&...)const;
+    };
+
+    template<class T>
+    reference_wrapper(reference_wrapper<T>) -> reference_wrapper<T>;
+
+    template<class T>
+    reference_wrapper<T> ref(T& t)noexcept{
+        return reference_wrapper<T>(t);
+    }
+
+    template<class T>
+    reference_wrapper<const T> cref(const T& t)noexcept{
+        return reference_wrapper<const T>(t);
+    }
+
+    template<class T>void ref(const T&&) = delete;
+    template<class T>void cref(const T&&) = delete;
+
+    template<class T>
+    reference_wrapper<T> ref(reference_wrapper<T> t)noexcept{
+        return ref(t.get());
+    }
+
+    template<class T>
+    reference_wrapper<const T> cref(reference_wrapper<T> t)noexcept{
+        return cref(t.get());
+    }
+}
+
+#endif /* __REFERENCE_WRAPPER__ */

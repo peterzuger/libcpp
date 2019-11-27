@@ -1,0 +1,293 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/string_view
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __STRING_VIEW__
+#define __STRING_VIEW__
+
+#include <__char_traits>
+#include <__minmax>
+#include <cstddef>
+#include <iterator>
+#include <limits>
+#include <stdexcept>
+
+namespace std{
+    // 24.4.2, class template basic_string_view
+    template<class charT, class traits = std::char_traits<charT>>
+    class basic_string_view{
+    public:
+        // types
+        using traits_type            = traits;
+        using value_type             = charT;
+        using pointer                = value_type*;
+        using const_pointer          = const value_type*;
+        using reference              = value_type&;
+        using const_reference        = const value_type&;
+        using const_iterator         = const_pointer; // see 24.4.2.2
+        using iterator               = const_iterator;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+        using reverse_iterator       = const_reverse_iterator;
+        using size_type              = std::size_t;
+        using difference_type        = std::ptrdiff_t;
+
+        static constexpr size_type npos = size_type(-1);
+
+        // 24.4.2.1, construction and assignment
+        constexpr basic_string_view()noexcept:
+            _data{nullptr},
+            _size{0}{}
+        constexpr basic_string_view(const basic_string_view&)noexcept = default;
+        constexpr basic_string_view& operator=(const basic_string_view&)noexcept = default;
+        constexpr basic_string_view(const charT* str):
+            _data{str},
+            _size{traits_type::length(str)}{}
+        constexpr basic_string_view(const charT* str, size_type len):
+            _data{str},
+            _size{len}{};
+
+        // 24.4.2.2, iterator support
+        constexpr const_iterator begin()const noexcept{
+            return _data;
+        }
+        constexpr const_iterator end()const noexcept{
+            return _data + _size;
+        }
+        constexpr const_iterator cbegin()const noexcept{
+            return cbegin();
+        }
+        constexpr const_iterator cend()const noexcept{
+            return cend();
+        }
+        constexpr const_reverse_iterator rbegin()const noexcept{
+            return const_reverse_iterator(end());
+        }
+        constexpr const_reverse_iterator rend()const noexcept{
+            return const_reverse_iterator(begin());
+        }
+        constexpr const_reverse_iterator crbegin()const noexcept{
+            return rbegin();
+        }
+        constexpr const_reverse_iterator crend()const noexcept{
+            return rend();
+        }
+
+        // 24.4.2.3, capacity
+        constexpr size_type size()const noexcept{
+            return _size;
+        }
+        constexpr size_type length()const noexcept{
+            return size();
+        }
+        constexpr size_type max_size()const noexcept{
+            return std::numeric_limits<size_type>::max();
+        }
+        constexpr bool empty()const noexcept{
+            return _size == 0;
+        }
+
+        // 24.4.2.4, element access
+        constexpr const_reference operator[](size_type pos)const{
+            return _data[pos];
+        }
+        constexpr const_reference at(size_type pos)const{
+            if(pos >= size())
+                __throw_out_of_range("string_view::at");
+            return _data[pos];
+        }
+        constexpr const_reference front()const{
+            return _data[0];
+        }
+        constexpr const_reference back()const{
+            return _data[_size - 1];
+        }
+        constexpr const_pointer data()const noexcept{
+            return _data;
+        }
+
+        // 24.4.2.5, modifiers
+        constexpr void remove_prefix(size_type n){
+            _data += n;
+            _size -= n;
+        }
+        constexpr void remove_suffix(size_type n){
+            _size -= n;
+        }
+        constexpr void swap(basic_string_view& s)noexcept{
+            const char* tmp_data = _data;
+            _data = s._data;
+            s._data = tmp_data;
+
+            size_type tmp_size = _size;
+            _size = s._size;
+            s._size = tmp_size;
+        }
+
+        // 24.4.2.6, string operations
+        size_type copy(charT* s, size_type n, size_type pos = 0)const{
+            if(pos > size())
+                __throw_out_of_range("string_view::copy");
+            size_type rlen = std::min(n, size() - pos);
+            traits_type::copy(s, data() + pos, rlen);
+            return rlen;
+        }
+
+        constexpr basic_string_view substr(size_type pos = 0, size_type n = npos)const{
+            if(pos > size())
+                __throw_range_error("string_view::substr");
+            size_type rlen = std::min(n, size() - pos);
+            return basic_string_view(data() + pos, rlen);
+        }
+
+        constexpr int compare(basic_string_view str)const noexcept{
+            size_type rlen = std::min(size(), str.size());
+            int ret = traits_type::compare(data(), str.size(), rlen);
+            if(!ret){
+                if(size() == str.size()){
+                    ret = 0;
+                }else{
+                    if(size() < str.size()){
+                        ret = -1;
+                    }else{
+                        ret = 0;
+                    }
+                }
+            }
+            return ret;
+        }
+        constexpr int compare(size_type pos1, size_type n1, basic_string_view str)const{
+            return substr(pos1, n1).compare(str);
+        }
+        constexpr int compare(size_type pos1, size_type n1, basic_string_view str, size_type pos2, size_type n2)const{
+            return substr(pos1, n1).compare(str.substr(pos2, n2));
+        }
+        constexpr int compare(const charT* s)const{
+            return compare(basic_string_view(s));
+        }
+        constexpr int compare(size_type pos1, size_type n1, const charT* str)const{
+            return substr(pos1, n1).compare(basic_string_view(str));
+        }
+        constexpr int compare(size_type pos1, size_type n1, const charT* str, size_type n2)const{
+            return substr(pos1, n1).compare(basic_string_view(str, n2));
+        }
+
+        constexpr size_type find(basic_string_view s, size_type pos = 0)const noexcept;
+        constexpr size_type find(charT c, size_type pos = 0)const noexcept;
+        constexpr size_type find(const charT* s, size_type pos, size_type n)const;
+        constexpr size_type find(const charT* s, size_type pos = 0)const;
+        constexpr size_type rfind(basic_string_view s, size_type pos = npos)const noexcept;
+        constexpr size_type rfind(charT c, size_type pos = npos)const noexcept;
+        constexpr size_type rfind(const charT* s, size_type pos, size_type n)const;
+        constexpr size_type rfind(const charT* s, size_type pos = npos)const;
+
+        constexpr size_type find_first_of(basic_string_view s, size_type pos = 0)const noexcept;
+        constexpr size_type find_first_of(charT c, size_type pos = 0)const noexcept;
+        constexpr size_type find_first_of(const charT* s, size_type pos, size_type n)const;
+        constexpr size_type find_first_of(const charT* s, size_type pos = 0)const;
+        constexpr size_type find_last_of(basic_string_view s, size_type pos = npos)const noexcept;
+        constexpr size_type find_last_of(charT c, size_type pos = npos)const noexcept;
+        constexpr size_type find_last_of(const charT* s, size_type pos, size_type n)const;
+        constexpr size_type find_last_of(const charT* s, size_type pos = npos)const;
+
+        constexpr size_type find_first_not_of(basic_string_view s, size_type pos = 0)const noexcept;
+        constexpr size_type find_first_not_of(charT c, size_type pos = 0)const noexcept;
+        constexpr size_type find_first_not_of(const charT* s, size_type pos, size_type n)const;
+        constexpr size_type find_first_not_of(const charT* s, size_type pos = 0)const;
+        constexpr size_type find_last_not_of(basic_string_view s, size_type pos = npos)const noexcept;
+        constexpr size_type find_last_not_of(charT c, size_type pos = npos)const noexcept;
+        constexpr size_type find_last_not_of(const charT* s, size_type pos, size_type n)const;
+        constexpr size_type find_last_not_of(const charT* s, size_type pos = npos)const;
+
+    private:
+        const_pointer _data;
+        size_type _size;
+    };
+
+    // 24.4.3, non-member comparison functions
+    template<class charT, class traits>
+    constexpr bool operator==(basic_string_view<charT, traits> lhs, basic_string_view<charT, traits> rhs)noexcept{
+        return lhs.compare(rhs) == 0;
+    }
+    template<class charT, class traits>
+    constexpr bool operator!=(basic_string_view<charT, traits> lhs, basic_string_view<charT, traits> rhs)noexcept{
+        return lhs.compare(rhs) != 0;
+    }
+    template<class charT, class traits>
+    constexpr bool operator< (basic_string_view<charT, traits> lhs, basic_string_view<charT, traits> rhs)noexcept{
+        return lhs.compare(rhs) < 0;
+    }
+    template<class charT, class traits>
+    constexpr bool operator> (basic_string_view<charT, traits> lhs, basic_string_view<charT, traits> rhs)noexcept{
+        return lhs.compare(rhs) > 0;
+    }
+    template<class charT, class traits>
+    constexpr bool operator<=(basic_string_view<charT, traits> lhs, basic_string_view<charT, traits> rhs)noexcept{
+        return lhs.compare(rhs) <= 0;
+    }
+    template<class charT, class traits>
+    constexpr bool operator>=(basic_string_view<charT, traits> lhs, basic_string_view<charT, traits> rhs)noexcept{
+        return lhs.compare(rhs) >= 0;
+    }
+    // see 24.4.3, sufficient additional overloads of comparison functions
+
+    // 24.4.4, inserters and extractors
+    template<class charT, class traits>
+    basic_ostream<charT, traits>&operator<<(basic_ostream<charT, traits>& os,
+                                            basic_string_view<charT, traits> str);
+
+    //basic_string_viewtypedef names
+    using string_view    = basic_string_view<char>;
+    using u16string_view = basic_string_view<char16_t>;
+    using u32string_view = basic_string_view<char32_t>;
+    using wstring_view   = basic_string_view<wchar_t>;
+
+    // 24.4.5, hash support
+    template<class T> struct hash;
+    template<> struct hash<string_view>;
+    template<> struct hash<u16string_view>;
+    template<> struct hash<u32string_view>;
+    template<> struct hash<wstring_view>;
+
+#ifndef __clang__
+#pragma GCC system_header
+#endif /* __clang__ */
+
+    inline
+    namespace literals{
+        inline
+        namespace string_view_literals{
+            // 24.4.6, suffix forbasic_string_viewliterals
+            constexpr string_view    operator ""sv(const char* str, size_t len)noexcept{
+                return string_view{str, len};
+            }
+            constexpr u16string_view operator ""sv(const char16_t* str, size_t len)noexcept{
+                return u16string_view{str, len};
+            }
+            constexpr u32string_view operator ""sv(const char32_t* str, size_t len)noexcept{
+                return u32string_view{str, len};
+            }
+            constexpr wstring_view   operator ""sv(const wchar_t* str, size_t len)noexcept{
+                return wstring_view{str, len};
+            }
+        }
+    }
+}
+
+#endif /* __STRING_VIEW__ */

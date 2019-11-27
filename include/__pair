@@ -1,0 +1,210 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__pair
+ * @author Peter Züger
+ * @date   26.10.2019
+ * @brief  std::pair
+ * @note   defined in header <utility>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____PAIR__
+#define ____PAIR__
+
+#include <__move>
+#include <__reference_wrapper>
+#include <cstddef>
+#include <tuple>
+#include <type_traits>
+
+namespace std{
+    // 23.4.5, pair piecewise construction
+    struct piecewise_construct_t{explicit piecewise_construct_t() = default;};
+    inline constexpr piecewise_construct_t piecewise_construct{};
+
+    template<class... Types>
+    class tuple;// defined in<tuple>(23.5.2)
+
+    // in-place construction
+    struct in_place_t{explicit in_place_t() = default;};
+    inline constexpr in_place_t in_place{};
+
+    template<class T>
+    struct in_place_type_t{explicit in_place_type_t() = default;};
+
+    template<class T>
+    inline constexpr in_place_type_t<T> in_place_type{};
+
+    template<size_t I>
+    struct in_place_index_t{explicit in_place_index_t() = default;};
+
+    template<size_t I>
+    inline constexpr in_place_index_t<I> in_place_index{};
+
+    // 23.4, class template pair
+    template<class T1, class T2>
+    struct pair{
+        using first_type  = T1;
+        using second_type = T2;
+
+        T1 first;
+        T2 second;
+
+        pair(const pair&) = default;
+        pair(pair&&) = default;
+        explicit constexpr pair();
+        explicit constexpr pair(const T1& x, const T2& y);
+
+        template<class U1, class U2>
+        explicit constexpr pair(U1&& x, U2&& y);
+
+        template<class U1, class U2>
+        explicit constexpr pair(const pair<U1, U2>& p);
+
+        template<class U1, class U2>
+        explicit constexpr pair(pair<U1, U2>&& p);
+
+        template<class... Args1, class... Args2>
+        pair(piecewise_construct_t, tuple<Args1...> first_args, tuple<Args2...> second_args);
+
+        pair& operator=(const pair& p);
+
+        template<class U1, class U2>
+        pair& operator=(const pair<U1, U2>& p);
+
+        pair& operator=(pair&& p)noexcept(std::is_nothrow_move_assignable_v<T1> &&
+                                          std::is_nothrow_move_assignable_v<T2>);
+
+        template<class U1, class U2>
+        pair& operator=(pair<U1, U2>&& p);
+
+        void swap(pair& p)noexcept(std::is_nothrow_swappable_v<first_type> &&
+                                   std::is_nothrow_swappable_v<second_type>);
+    };
+
+    template<class T1, class T2>
+    pair(T1, T2) -> pair<T1, T2>;
+
+    // 23.4.3, pair specialized algorithms
+    template<class T1, class T2>
+    constexpr bool operator==(const pair<T1, T2>& x, const pair<T1, T2>& y){
+        return x.first == y.first && x.second == y.second;
+    }
+
+    template<class T1, class T2>
+    constexpr bool operator< (const pair<T1, T2>& x, const pair<T1, T2>& y){
+        return x.first < y.first || (!(y.first < x.first) && x.second < y.second);
+    }
+
+    template<class T1, class T2>
+    constexpr bool operator!=(const pair<T1, T2>& x, const pair<T1, T2>& y){
+        return !(x == y);
+    }
+
+    template<class T1, class T2>
+    constexpr bool operator> (const pair<T1, T2>& x, const pair<T1, T2>& y){
+        return y < x;
+    }
+
+    template<class T1, class T2>
+    constexpr bool operator>=(const pair<T1, T2>& x, const pair<T1, T2>& y){
+        return !(x < y);
+    }
+
+    template<class T1, class T2>
+    constexpr bool operator<=(const pair<T1, T2>& x, const pair<T1, T2>& y){
+        return !(y < x);
+    }
+
+    template<class T1, class T2>
+    std::enable_if_t<std::is_swappable_v<T1> &&
+                     std::is_swappable_v<T2>>
+    swap(pair<T1, T2>& x, pair<T1, T2>& y)noexcept(noexcept(x.swap(y))){
+        x.swap(y);
+    }
+
+
+    template<class T>
+    struct __remove_reference_wrapper{
+        using type = T;
+    };
+
+    template<class T>
+    struct __remove_reference_wrapper<std::reference_wrapper<T>>{
+        using type = T;
+    };
+    template<class T> using __remove_reference_wrapper_t = typename __remove_reference_wrapper<T>::type;
+
+    template<class T1, class T2>
+    constexpr pair<__remove_reference_wrapper_t<T1>,
+                   __remove_reference_wrapper_t<T2>> make_pair(T1&& x, T2&& y){
+        return pair<__remove_reference_wrapper_t<T1>,
+                    __remove_reference_wrapper_t<T2>>(std::forward<T1>(x), std::forward<T2>(y));
+    }
+
+    // 23.4.4, tuple-like access to pair
+    template<class T>
+    class tuple_size;
+
+    template<size_t I, class T>
+    class tuple_element;
+
+    template<class T1, class T2>
+    class tuple_size<pair<T1, T2>>;
+
+    template<class T1, class T2>
+    class tuple_element<0, pair<T1, T2>>;
+
+    template<class T1, class T2>
+    class tuple_element<1, pair<T1, T2>>;
+
+    template<size_t I, class T1, class T2>
+    constexpr tuple_element_t<I, pair<T1, T2>>& get(pair<T1, T2>&) noexcept;
+
+    template<size_t I, class T1, class T2>
+    constexpr tuple_element_t<I, pair<T1, T2>>&& get(pair<T1, T2>&&) noexcept;
+
+    template<size_t I, class T1, class T2>
+    constexpr const tuple_element_t<I, pair<T1, T2>>& get(const pair<T1, T2>&) noexcept;
+
+    template<size_t I, class T1, class T2>
+    constexpr const tuple_element_t<I, pair<T1, T2>>&& get(const pair<T1, T2>&&) noexcept;
+
+    template<class T1, class T2>
+    constexpr T1& get(pair<T1, T2>& p) noexcept;
+
+    template<class T1, class T2>
+    constexpr const T1& get(const pair<T1, T2>& p) noexcept;
+
+    template<class T1, class T2>
+    constexpr T1&& get(pair<T1, T2>&& p) noexcept;
+
+    template<class T1, class T2>
+    constexpr const T1&& get(const pair<T1, T2>&& p) noexcept;
+
+    template<class T2, class T1>
+    constexpr T2& get(pair<T1, T2>& p) noexcept;
+
+    template<class T2, class T1>
+    constexpr const T2& get(const pair<T1, T2>& p) noexcept;
+
+    template<class T2, class T1>
+    constexpr T2&& get(pair<T1, T2>&& p) noexcept;
+
+    template<class T2, class T1>
+    constexpr const T2&& get(const pair<T1, T2>&& p) noexcept;
+}
+
+#endif /* ____PAIR__ */

@@ -1,0 +1,16 @@
+image: peterzuger/manjaro-devel
+
+build:
+  script:
+    - make clean && make TARGET_NAME=libcppm0  CPU=cortex-m0
+    - make clean && make TARGET_NAME=libcppm0p CPU=cortex-m0plus
+    - make clean && make TARGET_NAME=libcppm3  CPU=cortex-m3     FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    - make clean && make TARGET_NAME=libcppm4  CPU=cortex-m4     FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    - make clean && make TARGET_NAME=libcppm7  CPU=cortex-m7     FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+  artifacts:
+    paths:
+      - libcppm0.a
+      - libcppm0p.a
+      - libcppm3.a
+      - libcppm4.a
+      - libcppm7.a

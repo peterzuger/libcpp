@@ -309,11 +309,26 @@ namespace std{
     }
 
     // 23.6.9, specialized algorithms
-    template<class T>void swap(optional<T>& x, optional<T>& y)noexcept(noexcept(x.swap(y)));
-    template<class T>constexpr optional<std::decay_t<T>> make_optional(T&&);
-    template<class T, class... Args>constexpr optional<T> make_optional(Args&&... args);
+    template <class T>
+    std::enable_if_t<std::is_move_constructible_v<T> &&
+                     std::is_swappable_v<T>> swap(optional<T>& x, optional<T>& y)noexcept(noexcept(x.swap(y))){
+        x.swap(y);
+    }
+
+    template<class T>
+    constexpr optional<std::decay_t<T>> make_optional(T&& v){
+        return optional<decay_t<T>>(std::forward<T>(v));
+    }
+
+    template<class T, class... Args>
+    constexpr optional<T> make_optional(Args&&... args){
+        return optional<T>(in_place, std::forward<Args>(args)...);
+    }
+
     template<class T, class U, class... Args>
-    constexpr optional<T> make_optional(initializer_list<U> il, Args&&... args);
+    constexpr optional<T> make_optional(initializer_list<U> il, Args&&... args){
+        return optional<T>(in_place, il, std::forward<Args>(args)...);
+    }
 
     // 23.6.10, hash support
     template<class T>

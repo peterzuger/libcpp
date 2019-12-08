@@ -129,40 +129,181 @@ namespace std{
     };
 
     // 23.6.6, relational operators
-    template<class T, class U>constexpr bool operator==(const optional<T>&, const optional<U>&);
-    template<class T, class U>constexpr bool operator!=(const optional<T>&, const optional<U>&);
-    template<class T, class U>constexpr bool operator<(const optional<T>&, const optional<U>&);
-    template<class T, class U>constexpr bool operator>(const optional<T>&, const optional<U>&);
-    template<class T, class U>constexpr bool operator<=(const optional<T>&, const optional<U>&);
-    template<class T, class U>constexpr bool operator>=(const optional<T>&, const optional<U>&);
+    template<class T, class U>
+    constexpr bool operator==(const optional<T>& x, const optional<U>& y){
+        if(bool(x) != bool(y))
+            return false;
+        if(bool(x) == false)
+            return true;
+        return *x == *y;
+    }
+
+    template<class T, class U>
+    constexpr bool operator!=(const optional<T>& x, const optional<U>& y){
+        if(bool(x) != bool(y))
+            return true;
+        if(bool(x) == false)
+            return false;
+        return *x != *y;
+    }
+
+    template<class T, class U>
+    constexpr bool operator<(const optional<T>& x, const optional<U>& y){
+        if(!y)
+            return false;
+        if(!x)
+            return true;
+        return *x < *y;
+    }
+
+    template<class T, class U>
+    constexpr bool operator>(const optional<T>& x, const optional<U>& y){
+        if(!x)
+            return false;
+        if(!y)
+            return true;
+        return *x > *y;
+    }
+
+    template<class T, class U>
+    constexpr bool operator<=(const optional<T>& x, const optional<U>& y){
+        if(!x)
+            return true;
+        if(!y)
+            return false;
+        return *x <= *y;
+    }
+
+    template<class T, class U>
+    constexpr bool operator>=(const optional<T>& x, const optional<U>& y){
+        if(!y)
+            return true;
+        if(!x)
+            return false;
+        return *x >= *y;
+    }
 
     // 23.6.7, comparison with nullopt
-    template<class T> constexpr bool operator==(const optional<T>&, nullopt_t)noexcept;
-    template<class T> constexpr bool operator==(nullopt_t, const optional<T>&)noexcept;
-    template<class T> constexpr bool operator!=(const optional<T>&, nullopt_t)noexcept;
-    template<class T> constexpr bool operator!=(nullopt_t, const optional<T>&)noexcept;
-    template<class T> constexpr bool operator<(const optional<T>&, nullopt_t)noexcept;
-    template<class T> constexpr bool operator<(nullopt_t, const optional<T>&)noexcept;
-    template<class T> constexpr bool operator<=(const optional<T>&, nullopt_t)noexcept;
-    template<class T> constexpr bool operator<=(nullopt_t, const optional<T>&)noexcept;
-    template<class T> constexpr bool operator>(const optional<T>&, nullopt_t)noexcept;
-    template<class T> constexpr bool operator>(nullopt_t, const optional<T>&)noexcept;
-    template<class T> constexpr bool operator>=(const optional<T>&, nullopt_t)noexcept;
-    template<class T> constexpr bool operator>=(nullopt_t, const optional<T>&)noexcept;
+    template<class T>
+    constexpr bool operator==(const optional<T>& x, nullopt_t)noexcept{
+        return !x;
+    }
+
+    template<class T>
+    constexpr bool operator==(nullopt_t, const optional<T>& x)noexcept{
+        return !x;
+    }
+
+    template<class T>
+    constexpr bool operator!=(const optional<T>& x, nullopt_t)noexcept{
+        return bool(x);
+    }
+
+    template<class T>
+    constexpr bool operator!=(nullopt_t, const optional<T>& x)noexcept{
+        return bool(x);
+    }
+
+    template<class T>
+    constexpr bool operator<(const optional<T>&, nullopt_t)noexcept{
+        return false;
+    }
+
+    template<class T>
+    constexpr bool operator<(nullopt_t, const optional<T>& x)noexcept{
+        return bool(x);
+    }
+
+    template<class T>
+    constexpr bool operator<=(const optional<T>& x, nullopt_t)noexcept{
+        return !x;
+    }
+
+    template<class T>
+    constexpr bool operator<=(nullopt_t, const optional<T>&)noexcept{
+        return true;
+    }
+
+    template<class T>
+    constexpr bool operator>(const optional<T>& x, nullopt_t)noexcept{
+        return bool(x);
+    }
+
+    template<class T>
+    constexpr bool operator>(nullopt_t, const optional<T>&)noexcept{
+        return false;
+    }
+
+    template<class T>
+    constexpr bool operator>=(const optional<T>&, nullopt_t)noexcept{
+        return true;
+    }
+
+    template<class T>
+    constexpr bool operator>=(nullopt_t, const optional<T>& x)noexcept{
+        return !x;
+    }
 
     // 23.6.8, comparison with T
-    template<class T, class U> constexpr bool operator==(const optional<T>&, const U&);
-    template<class T, class U> constexpr bool operator==(const U&, const optional<T>&);
-    template<class T, class U> constexpr bool operator!=(const optional<T>&, const U&);
-    template<class T, class U> constexpr bool operator!=(const U&, const optional<T>&);
-    template<class T, class U> constexpr bool operator<(const optional<T>&, const U&);
-    template<class T, class U> constexpr bool operator<(const U&, const optional<T>&);
-    template<class T, class U> constexpr bool operator<=(const optional<T>&, const U&);
-    template<class T, class U> constexpr bool operator<=(const U&, const optional<T>&);
-    template<class T, class U> constexpr bool operator>(const optional<T>&, const U&);
-    template<class T, class U> constexpr bool operator>(const U&, const optional<T>&);
-    template<class T, class U> constexpr bool operator>=(const optional<T>&, const U&);
-    template<class T, class U> constexpr bool operator>=(const U&, const optional<T>&);
+    template<class T, class U>
+    constexpr bool operator==(const optional<T>& x, const U& v){
+        return bool(x) ? *x == v : false;
+    }
+
+    template<class T, class U>
+    constexpr bool operator==(const U& v, const optional<T>& x){
+        return bool(x) ? v == *x : false;
+    }
+
+    template<class T, class U>
+    constexpr bool operator!=(const optional<T>& x, const U& v){
+        return bool(x) ? *x != v : true;
+    }
+
+    template<class T, class U>
+    constexpr bool operator!=(const U& v, const optional<T>& x){
+        return bool(x) ? v != *x : true;
+    }
+
+    template<class T, class U>
+    constexpr bool operator<(const optional<T>& x, const U& v){
+        return bool(x) ? *x < v : true;
+    }
+
+    template<class T, class U>
+    constexpr bool operator<(const U& v, const optional<T>& x){
+        return bool(x) ? v < *x : false;
+    }
+
+    template<class T, class U>
+    constexpr bool operator<=(const optional<T>& x, const U& v){
+        return bool(x) ? *x <= v : true;
+    }
+
+    template<class T, class U>
+    constexpr bool operator<=(const U& v, const optional<T>& x){
+        return bool(x) ? v <= *x : false;
+    }
+
+    template<class T, class U>
+    constexpr bool operator>(const optional<T>& x, const U& v){
+        return bool(x) ? *x > v : false;
+    }
+
+    template<class T, class U>
+    constexpr bool operator>(const U& v, const optional<T>& x){
+        return bool(x) ? v > *x : true;
+    }
+
+    template<class T, class U>
+    constexpr bool operator>=(const optional<T>& x, const U& v){
+        return bool(x) ? *x >= v : false;
+    }
+
+    template<class T, class U>
+    constexpr bool operator>=(const U& v, const optional<T>& x){
+        return bool(x) ? v >= *x : true;
+    }
 
     // 23.6.9, specialized algorithms
     template<class T>void swap(optional<T>& x, optional<T>& y)noexcept(noexcept(x.swap(y)));

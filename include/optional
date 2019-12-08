@@ -316,8 +316,11 @@ namespace std{
     constexpr optional<T> make_optional(initializer_list<U> il, Args&&... args);
 
     // 23.6.10, hash support
-    template<class T> struct hash;
-    template<class T> struct hash<optional<T>>;
+    template<class T>
+    struct hash;
+
+    template<class T>
+    struct hash<optional<T>>;
 }
 
 #endif /* __OPTIONAL__ */

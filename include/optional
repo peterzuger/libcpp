@@ -29,8 +29,11 @@
 
 namespace std{
     // 23.6.4, no-value state indicator
-    struct nullopt_t{};
-    inline constexpr nullopt_t nullopt();
+    struct nullopt_t{
+        struct __hidden{explicit __hidden() = default;};
+        constexpr explicit nullopt_t(__hidden)noexcept{}
+    };
+    inline constexpr nullopt_t nullopt{nullopt_t::__hidden{}};
 
     // 23.6.5, class bad_optional_access
     class bad_optional_access: public exception{

@@ -24,6 +24,7 @@
 #define __TYPE_TRAITS__
 
 #include <__type_traits>
+#include <__declval>
 #include <cstddef> // for nullptr_t
 
 namespace std{
@@ -207,7 +208,17 @@ namespace std{
 
     template<class T> struct is_trivially_destructible;
 
-    template<class T, class... Args> struct is_nothrow_constructible;
+    template<typename T, typename... Args>
+    struct __is_nothrow_constructible_impl:
+        public bool_constant<noexcept(T(declval<Args>()...))>{};
+
+    template<typename T, typename Arg>
+    struct __is_nothrow_constructible_impl<T, Arg>:
+        public bool_constant<noexcept(static_cast<T>(declval<Arg>()))>{};
+
+    template<class T, class... Args>
+    struct is_nothrow_constructible:
+        public __is_nothrow_constructible_impl<T, Args...>{};
 
     template<class T> struct is_nothrow_default_constructible;
 

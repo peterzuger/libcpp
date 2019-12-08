@@ -23,7 +23,7 @@
 #ifndef ____DECLVAL__
 #define ____DECLVAL__
 
-#include <type_traits>
+#include <__type_traits>
 
 namespace std{
     // 23.2.7, declval

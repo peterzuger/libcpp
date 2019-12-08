@@ -50,22 +50,22 @@ namespace std{
     }
 
     // 23.6.3, class template optional
-    template<typename T>
+    template<class T>
     class optional{
     public:
         using value_type = T;
 
         // 23.6.3.1, constructors
-        constexpr optional()noexcept;
-        constexpr optional(nullopt_t)noexcept;
-        constexpr optional(const optional&);
-        constexpr optional(optional&&)noexcept(std::is_nothrow_move_constructible_v<T>);
+        constexpr optional()noexcept{}
+        constexpr optional(nullopt_t)noexcept{}
+        constexpr optional(const optional&) = default;
+        constexpr optional(optional&&)noexcept(std::is_nothrow_move_constructible_v<T>) = default;
 
         template<class... Args>
         constexpr explicit optional(std::in_place_t, Args&&...);
 
         template<class U, class... Args>
-        constexpr explicit optional(std::in_place_t, initializer_list<U>, Args&&...);
+        constexpr explicit optional(std::in_place_t, std::initializer_list<U>, Args&&...);
 
         template<class U = T>
         explicit constexpr optional(U&&);
@@ -101,35 +101,98 @@ namespace std{
         T& emplace(initializer_list<U>, Args&&...);
 
         // 23.6.3.4, swap
-        void swap(optional&)noexcept(std::is_nothrow_move_constructible_v<T> &&
-                                     std::is_nothrow_swappable_v<T>);
+        void swap(optional& other)noexcept(std::is_nothrow_move_constructible_v<T> &&
+                                           std::is_nothrow_swappable_v<T>){
+            if(has_value() == other.has_value()){
+                using std::swap;
+                if(has_value())
+                    swap(*val, *(other.val));
+            }else{
+                if(has_value()){
+                    *(other.val)(std::move(*val));
+                    reset();
+                }else{
+                    (*val)(std::move(*(other.val)));
+                    other.reset();
+                }
+            }
+        }
 
         // 23.6.3.5, observers
-        constexpr const T* operator->()const;
-        constexpr T* operator->();
-        constexpr const T& operator*()const&;
-        constexpr T& operator*()&;
-        constexpr T&& operator*()&&;
-        constexpr const T&& operator*()const&&;
-        constexpr explicit operator bool()const noexcept;
-        constexpr bool has_value()const noexcept;
-        constexpr const T& value()const&;
-        constexpr T& value()&;
-        constexpr T&& value()&&;
-        constexpr const T&& value()const&&;
+        constexpr const T* operator->()const{
+            return val;
+        }
+
+        constexpr T* operator->(){
+            return val;
+        }
+
+        constexpr const T& operator*()const&{
+            return *val;
+        }
+
+        constexpr T& operator*()&{
+            return *val;
+        }
+
+        constexpr T&& operator*()&&{
+            return std::move(*val);
+        }
+
+        constexpr const T&& operator*()const&&{
+            return std::move(*val);
+        }
+
+        constexpr explicit operator bool()const noexcept{
+            return has;
+        }
+
+        constexpr bool has_value()const noexcept{
+            return has;
+        }
+
+        constexpr const T& value()const&{
+            return bool(*this) ? *val : __throw_bad_optional_access();
+        }
+
+        constexpr T& value()&{
+            return bool(*this) ? *val : __throw_bad_optional_access();
+        }
+
+        constexpr T&& value()&&{
+            return bool(*this) ? std::move(*val) : __throw_bad_optional_access();
+        }
+
+        constexpr const T&& value()const&&{
+            return bool(*this) ? std::move(*val) : __throw_bad_optional_access();
+        }
 
         template<class U>
-        constexpr T value_or(U&&)const&;
+        constexpr T value_or(U&& v)const&{
+            return bool(*this) ? **this : static_cast<T>(std::forward<U>(v));
+        }
 
         template<class U>
-        constexpr T value_or(U&&)&&;
+        constexpr T value_or(U&& v)&&{
+            return bool(*this) ? std::move(**this) : static_cast<T>(std::forward<U>(v));
+        }
 
         // 23.6.3.6, modifiers
-        void reset()noexcept;
+        void reset()noexcept{
+            if(has)
+                val->T::~T();
+            has = false;
+        }
 
     private:
-        T *val;// exposition only
+        union{
+            char __nothing;
+            value_type val;
+        };
+        bool has;
     };
+
+    template<class T> optional(T) -> optional<T>;
 
     // 23.6.6, relational operators
     template<class T, class U>

@@ -33,10 +33,18 @@ namespace std{
     inline constexpr nullopt_t nullopt();
 
     // 23.6.5, class bad_optional_access
-    class bad_optional_access: public std::exception{
+    class bad_optional_access: public exception{
     public:
         bad_optional_access();
     };
+
+    [[noreturn]] inline void __throw_bad_optional_access(){
+        #if defined(__cpp_exceptions)
+        throw bad_optional_access();
+        #else
+        terminate();
+        #endif /* defined(__cpp_exceptions) */
+    }
 
     // 23.6.3, class template optional
     template<typename T>

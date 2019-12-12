@@ -1,6 +1,7 @@
 TARGET_NAME ?= libcpp
 VERBOSE     ?=
 DEBUG       ?=
+LIBCDIR   =../libc
 
 EXCEPTIONS ?=
 RTTI       ?=
@@ -41,12 +42,12 @@ endif
 
 DFLAGS   =
 OPTFLAGS = -O2 -ffunction-sections -fdata-sections $(DBGFLAGS)
-IFLAGS   = -Iinclude
+IFLAGS   = -Iinclude -I$(LIBCDIR)/include
 WFLAGS   = -Wall -Wextra -Wpedantic -Wduplicated-cond -Wduplicated-branches
 WFLAGS  += -Wlogical-op -Wnull-dereference -Wshadow
 WFLAGS  += -Wdouble-promotion -Winit-self -Wswitch-default -Wswitch-enum
 WFLAGS  += -Wunsafe-loop-optimizations -Wundef -Wconversion -Winline
-WFLAGS  += -Waddress -Wsuggest-attribute=pure -Wsuggest-attribute=noreturn
+WFLAGS  += -Waddress
 CWFLAGS  = -Wjump-misses-init
 COMFLAGS = $(WFLAGS) -static -mthumb -mcpu=$(CPU) $(FPU) -nostartfiles -nostdlib
 COMFLAGS += $(OPTFLAGS) $(IFLAGS) $(DFLAGS)

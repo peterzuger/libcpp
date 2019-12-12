@@ -21,11 +21,11 @@ fetch-libc:
 build:
   stage: build
   script:
-    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm0  CPU=cortex-m0
-    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm0p CPU=cortex-m0plus
-    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm3  CPU=cortex-m3 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
-    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm4  CPU=cortex-m4 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
-    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm7  CPU=cortex-m7 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH LIBCDIR=libc TARGET_NAME=libcppm0  CPU=cortex-m0
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH LIBCDIR=libc TARGET_NAME=libcppm0p CPU=cortex-m0plus
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH LIBCDIR=libc TARGET_NAME=libcppm3  CPU=cortex-m3 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH LIBCDIR=libc TARGET_NAME=libcppm4  CPU=cortex-m4 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH LIBCDIR=libc TARGET_NAME=libcppm7  CPU=cortex-m7 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
   artifacts:
     paths:
       - libcppm0.a

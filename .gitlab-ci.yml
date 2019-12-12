@@ -1,0 +1,37 @@
+image: peterzuger/arch-dev
+
+stages:
+  - prepare
+  - build
+  - test
+
+# global variables
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/libcpp
+
+fetch-libc:
+  stage: prepare
+  script:
+    - git clone https://gitlab.com/peterzuger/libc.git
+  artifacts:
+    expose_as: 'libc'
+    paths:
+      - libc/
+
+build:
+  stage: build
+  script:
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm0  CPU=cortex-m0
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm0p CPU=cortex-m0plus
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm3  CPU=cortex-m3 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm4  CPU=cortex-m4 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+    - make -C $GIT_CLONE_PATH clean && make -C $GIT_CLONE_PATH TARGET_NAME=libcppm7  CPU=cortex-m7 FPU="-mfpu=fpv4-sp-d16 -mfloat-abi=hard"
+  artifacts:
+    paths:
+      - libcppm0.a
+      - libcppm0p.a
+      - libcppm3.a
+      - libcppm4.a
+      - libcppm7.a
+  dependencies:
+    - fetch-libc

@@ -1,0 +1,54 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__tuple
+ * @author Peter Züger
+ * @date   20.10.2019
+ * @brief  std::tuple_size and std::tuple_element
+ * @note   defined in header <tuple>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____TUPLE__
+#define ____TUPLE__
+
+#include <cstddef>
+
+namespace std{
+    template<class... Types>
+    class tuple;
+
+    // 23.5.3.6, tuple helper classes
+    template<class T> class tuple_size;
+
+    // not defined
+    template<class T> class tuple_size<const T>; // not defined
+    template<class T> class tuple_size<volatile T>;
+    template<class T> class tuple_size<const volatile T>;
+    template<class... Types> class tuple_size<tuple<Types...>>;
+
+    template<size_t I, class T> class tuple_element;
+
+    template<size_t I, class T> class tuple_element<I, const T>;
+    template<size_t I, class T> class tuple_element<I, volatile T>;
+    template<size_t I, class T> class tuple_element<I, const volatile T>;
+
+    template<size_t I, class... Types>
+    class tuple_element<I, tuple<Types...>>;
+
+    template<size_t I, class T>
+    using tuple_element_t = typename tuple_element<I, T>::type;
+}
+
+#endif /* ____TUPLE__ */

@@ -22,6 +22,7 @@
 #ifndef __TUPLE__
 #define __TUPLE__
 
+#include <__tuple>
 #include <cstddef>
 
 namespace std{
@@ -45,24 +46,6 @@ namespace std{
     constexpr decltype(auto) apply(F&& f, Tuple&& t);
     template<class T, class Tuple>
     constexpr T make_from_tuple(Tuple&& t);
-
-    // 23.5.3.6, tuple helper classes
-    template<class T> class tuple_size;
-
-    // not defined
-    template<class T> class tuple_size<const T>; // not defined
-    template<class T> class tuple_size<volatile T>;
-    template<class T> class tuple_size<const volatile T>;
-    template<class... Types> class tuple_size<tuple<Types...>>;
-    template<size_t I, class T> class tuple_element;
-
-    template<size_t I, class T> class tuple_element<I, const T>;
-    template<size_t I, class T> class tuple_element<I, volatile T>;
-    template<size_t I, class T> class tuple_element<I, const volatile T>;
-    template<size_t I, class... Types>
-    class tuple_element<I, tuple<Types...>>;
-    template<size_t I, class T>
-    using tuple_element_t = typename tuple_element<I, T>::type;
 
     // 23.5.3.7, element access
     template<size_t I, class... Types>

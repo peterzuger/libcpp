@@ -1,0 +1,170 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/utility
+ * @author Peter Züger
+ * @date   26.10.2018
+ * @brief  Utility components
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __UTILITY__
+#define __UTILITY__
+
+#include <__declval>
+#include <__exchange>
+#include <__move>
+#include <__pair>
+#include <__swap>
+#include <initializer_list>
+#include <system_error>
+#include <type_traits>
+
+namespace std{
+    // 23.2.2, operators
+    namespace rel_ops{
+        template<class T>
+        bool operator!=(const T& x, const T& y){
+            return !(x == y);
+        }
+
+        template<class T>
+        bool operator> (const T& x, const T& y){
+            return y < x;
+        }
+
+        template<class T>
+        bool operator<=(const T& x, const T& y){
+            return !(y < x);
+        }
+
+        template<class T>
+        bool operator>=(const T& x, const T& y){
+            return !(x < y);
+        }
+    }
+
+    // 23.2.3 swap
+    // defined in __swap
+
+    // 23.2.4 exchange
+    // defined in __exchange
+
+    // 23.2.5 forward/move
+    // defined in __move
+
+    // 23.2.6, as_const
+    template<class T>
+    constexpr std::add_const_t<T>& as_const(T& t)noexcept{
+        return t;
+    }
+
+    template<class T>
+    void as_const(const T&&) = delete;
+
+    // 23.2.7 declval
+    // defined in __declval
+
+    // 23.3, Compile-time integer sequences
+    template<class T, T... I>
+    struct integer_sequence{
+        static_assert(std::is_integral_v<T>, "std::integer_sequence<T> must be integral");
+
+        using value_type = T;
+        static constexpr size_t size()noexcept{
+            return sizeof...(I);
+        }
+    };
+
+    template<size_t... I>
+    using index_sequence = integer_sequence<size_t, I...>;
+
+    template<class T, T N>
+    using make_integer_sequence = __make_integer_seq<integer_sequence, T, N>;
+
+    template<size_t N>
+    using make_index_sequence = make_integer_sequence<size_t, N>;
+
+    template<class... T>
+    using index_sequence_for = make_index_sequence<sizeof...(T)>;
+
+    // 23.4 class template pair
+    // defined in __pair
+
+    // in-place construction
+    struct in_place_t{explicit in_place_t() = default;};
+    inline constexpr in_place_t in_place{};
+
+    template<class T>
+    struct in_place_type_t{explicit in_place_type_t() = default;};
+
+    template<class T>
+    inline constexpr in_place_type_t<T> in_place_type{};
+
+    template<size_t I>
+    struct in_place_index_t{explicit in_place_index_t() = default;};
+
+    template<size_t I>
+    inline constexpr in_place_index_t<I> in_place_index{};
+
+    // floating-point format for primitive numerical conversion
+    enum class chars_format{
+        scientific = 0b001,
+        fixed      = 0b010,
+        hex        = 0b100,
+        general    = fixed | scientific
+    };
+
+    // 23.2.8, primitive numerical output conversion
+    struct to_chars_result{
+        char* ptr;
+        std::error_code ec;
+    };
+
+    template<typename T>
+    to_chars_result to_chars(char* first, char* last, T value, int base = 10);
+
+    to_chars_result to_chars(char* first, char* last, float value);
+    to_chars_result to_chars(char* first, char* last, double value);
+    to_chars_result to_chars(char* first, char* last, long double value);
+
+    to_chars_result to_chars(char* first, char* last, float value, chars_format fmt);
+    to_chars_result to_chars(char* first, char* last, double value, chars_format fmt);
+    to_chars_result to_chars(char* first, char* last, long double value, chars_format fmt);
+
+    to_chars_result to_chars(char* first, char* last, float value,
+                             chars_format fmt, int precision);
+    to_chars_result to_chars(char* first, char* last, double value,
+                             chars_format fmt, int precision);
+    to_chars_result to_chars(char* first, char* last, long double value,
+                             chars_format fmt, int precision);
+
+    // 23.2.9, primitive numerical input conversion
+    struct from_chars_result{
+        const char* ptr;
+        std::error_code ec;
+    };
+
+    template<typename T>
+    from_chars_result from_chars(const char* first, const char* last, T& value, int base = 10);
+
+    from_chars_result from_chars(const char* first, const char* last, float& value,
+                                 chars_format fmt = chars_format::general);
+    from_chars_result from_chars(const char* first, const char* last, double& value,
+                                 chars_format fmt = chars_format::general);
+    from_chars_result from_chars(const char* first, const char* last, long double& value,
+                                 chars_format fmt = chars_format::general);
+}
+
+#endif /* __UTILITY__ */

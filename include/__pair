@@ -268,43 +268,43 @@ namespace std{
 
 
     template<class T1, class T2>
-    constexpr T1& get(pair<T1, T2>& p)noexcept{
+    constexpr std::enable_if_t<!std::is_same_v<T1, T2> ,T1>& get(pair<T1, T2>& p)noexcept{
         return impl::__get_pair<0>(p);
     }
 
     template<class T1, class T2>
-    constexpr const T1& get(const pair<T1, T2>& p)noexcept{
+    constexpr const std::enable_if_t<!std::is_same_v<T1, T2> ,T1>& get(const pair<T1, T2>& p)noexcept{
         return impl::__get_pair<0>(p);
     }
 
     template<class T1, class T2>
-    constexpr T1&& get(pair<T1, T2>&& p)noexcept{
+    constexpr std::enable_if_t<!std::is_same_v<T1, T2> ,T1>&& get(pair<T1, T2>&& p)noexcept{
         return impl::__get_pair<0>(std::move(p));
     }
 
     template<class T1, class T2>
-    constexpr const T1&& get(const pair<T1, T2>&& p)noexcept{
+    constexpr const std::enable_if_t<!std::is_same_v<T1, T2> ,T1>&& get(const pair<T1, T2>&& p)noexcept{
         return impl::__get_pair<0>(std::move(p));
     }
 
 
     template<class T2, class T1>
-    constexpr T2& get(pair<T1, T2>& p)noexcept{
+    constexpr std::enable_if_t<!std::is_same_v<T1, T2> ,T2>& get(pair<T1, T2>& p)noexcept{
         return impl::__get_pair<1>(p);
     }
 
     template<class T2, class T1>
-    constexpr const T2& get(const pair<T1, T2>& p)noexcept{
+    constexpr const std::enable_if_t<!std::is_same_v<T1, T2> ,T2>& get(const pair<T1, T2>& p)noexcept{
         return impl::__get_pair<1>(p);
     }
 
     template<class T2, class T1>
-    constexpr T2&& get(pair<T1, T2>&& p)noexcept{
+    constexpr std::enable_if_t<!std::is_same_v<T1, T2> ,T2>&& get(pair<T1, T2>&& p)noexcept{
         return impl::__get_pair<1>(std::move(p));
     }
 
     template<class T2, class T1>
-    constexpr const T2&& get(const pair<T1, T2>&& p)noexcept{
+    constexpr const std::enable_if_t<!std::is_same_v<T1, T2> ,T2>&& get(const pair<T1, T2>&& p)noexcept{
         return impl::__get_pair<1>(std::move(p));
     }
 }

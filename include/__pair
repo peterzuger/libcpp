@@ -215,13 +215,13 @@ namespace std{
     class tuple_element;
 
     template<class T1, class T2>
-    class tuple_size<pair<T1, T2>>;
+    class tuple_size<pair<T1, T2>>: std::integral_constant<std::size_t, 2>{};
 
     template<class T1, class T2>
-    class tuple_element<0, pair<T1, T2>>;
+    class tuple_element<0, pair<T1, T2>>{using type = T1;};
 
     template<class T1, class T2>
-    class tuple_element<1, pair<T1, T2>>;
+    class tuple_element<1, pair<T1, T2>>{using type = T2;};
 
     template<size_t I, class T1, class T2>
     constexpr tuple_element_t<I, pair<T1, T2>>& get(pair<T1, T2>&)noexcept;

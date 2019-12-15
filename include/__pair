@@ -64,40 +64,51 @@ namespace std{
 
         pair(const pair&) = default;
         pair(pair&&) = default;
-        explicit constexpr pair():
+
+        explicit constexpr pair()noexcept(std::is_nothrow_default_constructible_v<first_type> &&
+                                          std::is_nothrow_default_constructible_v<second_type>):
             first{},
             second{}{}
 
-        explicit constexpr pair(const T1& x, const T2& y):
+        explicit constexpr pair(const T1& x, const T2& y)
+            noexcept(std::is_nothrow_copy_constructible_v<first_type> &&
+                     std::is_nothrow_copy_constructible_v<second_type>):
             first{x},
             second{y}{}
 
         template<class U1, class U2>
-        explicit constexpr pair(U1&& x, U2&& y):
+        explicit constexpr pair(U1&& x, U2&& y)noexcept(std::is_nothrow_constructible_v<first_type, U1> &&
+                                                        std::is_nothrow_constructible_v<second_type, U2>):
             first{std::forward<U1>(x)},
             second{std::forward<U2>(y)}{}
 
         template<class U1, class U2>
-        explicit constexpr pair(const pair<U1, U2>& p):
+        explicit constexpr pair(const pair<U1, U2>& p)
+            noexcept(std::is_nothrow_constructible_v<first_type, U1 const&> &&
+                     std::is_nothrow_constructible_v<second_type, U2 const&>):
             first{p.first},
             second{p.second}{}
 
         template<class U1, class U2>
-        explicit constexpr pair(pair<U1, U2>&& p):
+        explicit constexpr pair(pair<U1, U2>&& p)
+            noexcept(std::is_nothrow_constructible_v<first_type, U1&&> &&
+                     std::is_nothrow_constructible_v<second_type, U2&&>):
             first{std::forward<U1>(p.first)},
             second{std::forward<U1>(p.second)}{}
 
         template<class... Args1, class... Args2>
         pair(piecewise_construct_t, tuple<Args1...> first_args, tuple<Args2...> second_args);
 
-        pair& operator=(const pair& p){
+        pair& operator=(const pair& p)noexcept(std::is_nothrow_copy_assignable_v<first_type> &&
+                                               std::is_nothrow_copy_assignable_v<second_type>){
             first = p.first;
             second = p.second;
             return *this;
         }
 
         template<class U1, class U2>
-        pair& operator=(const pair<U1, U2>& p){
+        pair& operator=(const pair<U1, U2>& p)noexcept(std::is_nothrow_copy_assignable_v<first_type> &&
+                                                       std::is_nothrow_copy_assignable_v<second_type>){
             first = p.first;
             second = p.second;
             return *this;
@@ -111,7 +122,8 @@ namespace std{
         }
 
         template<class U1, class U2>
-        pair& operator=(pair<U1, U2>&& p){
+        pair& operator=(pair<U1, U2>&& p)noexcept(std::is_nothrow_move_assignable_v<first_type> &&
+                                                  std::is_nothrow_move_assignable_v<second_type>){
             first = std::forward<U1>(p.first);
             second = std::forward<U2>(p.second);
             return *this;

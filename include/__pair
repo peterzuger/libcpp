@@ -64,34 +64,65 @@ namespace std{
 
         pair(const pair&) = default;
         pair(pair&&) = default;
-        explicit constexpr pair();
-        explicit constexpr pair(const T1& x, const T2& y);
+        explicit constexpr pair():
+            first{},
+            second{}{}
+
+        explicit constexpr pair(const T1& x, const T2& y):
+            first{x},
+            second{y}{}
 
         template<class U1, class U2>
-        explicit constexpr pair(U1&& x, U2&& y);
+        explicit constexpr pair(U1&& x, U2&& y):
+            first{std::forward<U1>(x)},
+            second{std::forward<U2>(y)}{}
 
         template<class U1, class U2>
-        explicit constexpr pair(const pair<U1, U2>& p);
+        explicit constexpr pair(const pair<U1, U2>& p):
+            first{p.first},
+            second{p.second}{}
 
         template<class U1, class U2>
-        explicit constexpr pair(pair<U1, U2>&& p);
+        explicit constexpr pair(pair<U1, U2>&& p):
+            first{std::forward<U1>(p.first)},
+            second{std::forward<U1>(p.second)}{}
 
         template<class... Args1, class... Args2>
         pair(piecewise_construct_t, tuple<Args1...> first_args, tuple<Args2...> second_args);
 
-        pair& operator=(const pair& p);
+        pair& operator=(const pair& p){
+            first = p.first;
+            second = p.second;
+            return *this;
+        }
 
         template<class U1, class U2>
-        pair& operator=(const pair<U1, U2>& p);
+        pair& operator=(const pair<U1, U2>& p){
+            first = p.first;
+            second = p.second;
+            return *this;
+        }
 
         pair& operator=(pair&& p)noexcept(std::is_nothrow_move_assignable_v<T1> &&
-                                          std::is_nothrow_move_assignable_v<T2>);
+                                          std::is_nothrow_move_assignable_v<T2>){
+            first = std::forward<first_type>(p.first);
+            second = std::forward<second_type>(p.second);
+            return *this;
+        }
 
         template<class U1, class U2>
-        pair& operator=(pair<U1, U2>&& p);
+        pair& operator=(pair<U1, U2>&& p){
+            first = std::forward<U1>(p.first);
+            second = std::forward<U2>(p.second);
+            return *this;
+        }
 
         void swap(pair& p)noexcept(std::is_nothrow_swappable_v<first_type> &&
-                                   std::is_nothrow_swappable_v<second_type>);
+                                   std::is_nothrow_swappable_v<second_type>){
+            using std::swap;
+            swap(first, p.first);
+            swap(second, p.second);
+        }
     };
 
     template<class T1, class T2>

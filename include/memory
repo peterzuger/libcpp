@@ -1,0 +1,850 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/memory
+ * @author Peter Züger
+ * @date   14.12.2018
+ * @brief  Memory
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __MEMORY__
+#define __MEMORY__
+
+#include <__addressof>
+#include <__allocator_traits>
+#include <__comparisons>
+#include <__iterator_traits>
+#include <__pointer_traits>
+#include <__uses_allocator>
+#include <atomic>
+#include <cstddef>
+#include <iosfwd>
+#include <stdexcept>
+#include <type_traits>
+#include <utility>
+
+namespace std{
+    // 23.10.3, pointer traits
+    // defined in __pointer_traits
+
+    // 23.10.4, pointer safety
+    enum class pointer_safety{
+        relaxed,
+        preferred,
+        strict
+    };
+
+    void declare_reachable(void* p);
+
+    template<class T>
+    T* undeclare_reachable(T* p);
+
+    void declare_no_pointers(char* p, size_t n);
+    void undeclare_no_pointers(char* p, size_t n);
+
+    pointer_safety get_pointer_safety()noexcept{
+        return pointer_safety::relaxed;
+    }
+
+    // 23.10.5, pointer alignment function
+    void* align(size_t alignment, size_t size, void*& ptr, size_t& space);
+
+    // 23.10.6, allocator argument tag
+    struct allocator_arg_t{
+        explicit allocator_arg_t() = default;
+    };
+    inline constexpr allocator_arg_t allocator_arg{};
+
+    // 23.10.9, the default allocator
+    template<class T>
+    class allocator{
+    public:
+        using value_type                             = T;
+        using propagate_on_container_move_assignment = std::true_type;
+        using is_always_equal                        = std::true_type;
+
+        allocator()noexcept = default;
+        allocator(const allocator&)noexcept = default;
+
+        template<class U>
+        allocator(const allocator<U>&)noexcept{}
+
+        ~allocator() = default;
+
+        T* allocate(size_t n){
+            return new T[n];
+        }
+        void deallocate(T* p, size_t){
+            delete[] p;
+        }
+    };
+
+    template<class T, class U>
+    bool operator==(const allocator<T>&, const allocator<U>&)noexcept{
+        return true;
+    }
+
+    template<class T, class U>
+    bool operator!=(const allocator<T>&, const allocator<U>&)noexcept{
+        return false;
+    }
+
+    // 23.10.10, specialized algorithms
+    template<class ForwardIterator>
+    void uninitialized_default_construct(ForwardIterator first, ForwardIterator last){
+        for(; first != last; ++first)
+            ::new (static_cast<void*>(addressof(*first)))
+                  typename std::iterator_traits<ForwardIterator>::value_type;
+    }
+
+    template<class ForwardIterator, class Size>
+    ForwardIterator uninitialized_default_construct_n(ForwardIterator first, Size n){
+        for(; n>0; (void)++first, --n)
+            ::new (static_cast<void*>(addressof(*first)))
+                  typename iterator_traits<ForwardIterator>::value_type;
+        return first;
+    }
+
+    template<class ForwardIterator>
+    void uninitialized_value_construct(ForwardIterator first, ForwardIterator last){
+        for(; first != last; ++first)
+            ::new (static_cast<void*>(addressof(*first)))
+                  typename iterator_traits<ForwardIterator>::value_type();
+    }
+
+    template<class ForwardIterator, class Size>
+    ForwardIterator uninitialized_value_construct_n(ForwardIterator first, Size n){
+        for(; n>0; (void)++first, --n)
+            ::new (static_cast<void*>(addressof(*first)))
+                  typename iterator_traits<ForwardIterator>::value_type();
+        return first;
+    }
+
+    template<class InputIterator, class ForwardIterator>
+    ForwardIterator uninitialized_copy(InputIterator first, InputIterator last,ForwardIterator result){
+        for(; first != last; ++result, (void) ++first)
+            ::new (static_cast<void*>(addressof(*result)))
+                  typename iterator_traits<ForwardIterator>::value_type(*first);
+        return result;
+    }
+
+    template<class InputIterator, class Size, class ForwardIterator>
+    ForwardIterator uninitialized_copy_n(InputIterator first, Size n,ForwardIterator result){
+        for( ; n > 0; ++result, (void) ++first, --n) {
+            ::new (static_cast<void*>(addressof(*result)))
+                typename iterator_traits<ForwardIterator>::value_type(*first);
+        }
+        return result;
+    }
+
+    template<class InputIterator, class ForwardIterator>
+    ForwardIterator uninitialized_move(InputIterator first, InputIterator last,ForwardIterator result){
+        for(; first != last; (void)++result, ++first)
+            ::new (static_cast<void*>(addressof(*result)))
+                  typename iterator_traits<ForwardIterator>::value_type(std::move(*first));
+        return result;
+    }
+
+    template<class InputIterator, class Size, class ForwardIterator>
+    std::pair<InputIterator, ForwardIterator> uninitialized_move_n(InputIterator first, Size n,
+                                                                   ForwardIterator result){
+        for(; n > 0; ++result, (void) ++first, --n)
+            ::new (static_cast<void*>(addressof(*result)))
+                  typename iterator_traits<ForwardIterator>::value_type(std::move(*first));
+        return {first, result};
+    }
+
+    template<class ForwardIterator, class T>
+    void uninitialized_fill(ForwardIterator first, ForwardIterator last,const T& x){
+        for(; first != last; ++first)
+            ::new (static_cast<void*>(addressof(*first)))
+                  typename iterator_traits<ForwardIterator>::value_type(x);
+    }
+
+    template<class ForwardIterator, class Size, class T>
+    ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& x){
+        for(; n--; ++first)
+            ::new (static_cast<void*>(addressof(*first)))
+                  typename iterator_traits<ForwardIterator>::value_type(x);
+        return first;
+    }
+
+    template<class T>
+    void destroy_at(T* location){
+        location->~T();
+    }
+
+    template<class ForwardIterator>
+    void destroy(ForwardIterator first, ForwardIterator last){
+        for(; first!=last; ++first)
+            destroy_at(addressof(*first));
+    }
+
+    template<class ForwardIterator, class Size>
+    ForwardIterator destroy_n(ForwardIterator first, Size n){
+        for(; n > 0; (void)++first, --n)
+            destroy_at(addressof(*first));
+        return first;
+    }
+
+    namespace impl{
+        template<typename T, typename = void>
+        struct __has_pointer: std::false_type{};
+
+        template<typename T>
+        struct __has_pointer<T, std::void_t<typename std::remove_reference_t<T>::pointer>>: std::true_type{};
+
+        template<typename T, bool = __has_pointer<T>::value>
+        struct __pointer{using type = typename remove_reference_t<T>::pointer;};
+
+        template<typename T>
+        struct __pointer<T, false>{using type = T*;};
+    }
+
+    // 23.11.1, class template unique_ptr
+    template<class T>
+    struct default_delete{
+        constexpr default_delete()noexcept = default;
+        template<class U>
+        default_delete(const default_delete<U>&)noexcept;
+
+        void operator()(T* ptr)const{
+            delete ptr;
+        }
+    };
+
+    template<class T>
+    struct default_delete<T[]>{
+        constexpr default_delete()noexcept = default;
+
+        template<class U>
+        default_delete(const default_delete<U[]>&)noexcept;
+
+        template<class U>
+        void operator()(U* ptr)const{
+            delete[] ptr;
+        }
+    };
+
+    template<class T, class D = default_delete<T>>
+    class unique_ptr{
+    public:
+        using pointer      = typename impl::__pointer<T>::type;
+        using element_type = T;
+        using deleter_type = D;
+
+        // 23.11.1.2.1, constructors
+        constexpr unique_ptr()noexcept;
+        explicit unique_ptr(pointer p)noexcept;
+        unique_ptr(pointer p, const D& d1)noexcept;
+        unique_ptr(pointer p, D&& d2)noexcept;
+        unique_ptr(unique_ptr&& u)noexcept;
+        constexpr unique_ptr(nullptr_t)noexcept;
+
+        template<class U, class E>
+        unique_ptr(unique_ptr<U, E>&& u)noexcept;
+
+        // 23.11.1.2.2, destructor
+        ~unique_ptr(){
+            reset();
+        }
+
+        // 23.11.1.2.3, assignment
+        unique_ptr& operator=(unique_ptr&& u)noexcept;
+
+        template<class U, class E>
+        unique_ptr& operator=(unique_ptr<U, E>&& u)noexcept;
+
+        unique_ptr& operator=(nullptr_t)noexcept;
+
+        // 23.11.1.2.4, observers
+        add_lvalue_reference_t<T> operator*()const;
+        pointer operator->()const noexcept;
+        pointer get()const noexcept;
+        deleter_type& get_deleter()noexcept;
+        const deleter_type& get_deleter()const noexcept;
+        explicit operator bool()const noexcept;
+
+        // 23.11.1.2.5, modifiers
+        pointer release()noexcept;
+        void reset(pointer p = pointer())noexcept;
+        void swap(unique_ptr& u)noexcept;
+
+        // disable copy from lvalue
+        unique_ptr(const unique_ptr&) = delete;
+        unique_ptr& operator=(const unique_ptr&) = delete;
+    };
+
+    template<class T, class D>
+    class unique_ptr<T[], D>{
+    public:
+        using pointer      = T*;
+        using element_type = T;
+        using deleter_type = D;
+
+        // 23.11.1.3.1, constructors
+        constexpr unique_ptr()noexcept;
+
+        template<class U>
+        explicit unique_ptr(U p)noexcept;
+
+        template<class U>
+        unique_ptr(U p, const D& d)noexcept;
+
+        template<class U>
+        unique_ptr(U p, D&& d)noexcept;
+
+        unique_ptr(unique_ptr&& u)noexcept;
+
+        template<class U, class E>
+        unique_ptr(unique_ptr<U, E>&& u)noexcept;
+
+        constexpr unique_ptr(nullptr_t)noexcept;
+
+        // destructor
+        ~unique_ptr();
+
+        // assignment
+        unique_ptr& operator=(unique_ptr&& u)noexcept;
+        template <class U, class E>unique_ptr& operator=(unique_ptr<U, E>&& u)noexcept;
+        unique_ptr& operator=(nullptr_t)noexcept;
+
+        // 23.11.1.3.3, observers
+        T& operator[](size_t i)const;
+        pointer get()const noexcept;
+        deleter_type& get_deleter()noexcept;
+        const deleter_type& get_deleter()const noexcept;
+        explicit operator bool()const noexcept;
+
+        // 23.11.1.3.4, modifiers
+        pointer release()noexcept;
+        template<class U>
+        void reset(U p)noexcept;
+        void reset(nullptr_t = nullptr)noexcept;
+        void swap(unique_ptr& u)noexcept;
+
+        // disable copy from lvalue
+        unique_ptr(const unique_ptr&) = delete;
+        unique_ptr& operator=(const unique_ptr&) = delete;
+    };
+
+    template<class T, class... Args>
+    unique_ptr<T> make_unique(Args&&... args){
+        return unique_ptr<T>(new T(std::forward<Args>(args)...));
+    }
+
+    template<class T>
+    unique_ptr<T> make_unique(size_t n){
+        return unique_ptr<T>(new std::remove_extent_t<T>[n]());
+    }
+
+    template<class T, class... Args>
+    void make_unique(Args&&...) = delete;
+
+    template<class T, class D>
+    void swap(unique_ptr<T, D>& x, unique_ptr<T, D>& y)noexcept{
+        x.swap(y);
+    }
+
+    template<class T1, class D1, class T2, class D2>
+    bool operator==(const unique_ptr<T1, D1>& x, const unique_ptr<T2, D2>& y){
+        return x.get() == y.get();
+    }
+    template<class T1, class D1, class T2, class D2>
+    bool operator!=(const unique_ptr<T1, D1>& x, const unique_ptr<T2, D2>& y){
+        return x.get() != y.get();
+    }
+    template<class T1, class D1, class T2, class D2>
+    bool operator<(const unique_ptr<T1, D1>& x, const unique_ptr<T2, D2>& y){
+        using CT = std::common_type_t<typename unique_ptr<T1, D1>::pointer,
+                                      typename unique_ptr<T2, D2>::pointer>;
+        return std::less<CT>(x.get(), y.get());
+    }
+    template<class T1, class D1, class T2, class D2>
+    bool operator<=(const unique_ptr<T1, D1>& x, const unique_ptr<T2, D2>& y){
+        return !(y < x);
+    }
+    template<class T1, class D1, class T2, class D2>
+    bool operator>(const unique_ptr<T1, D1>& x, const unique_ptr<T2, D2>& y){
+        return y < x;
+    }
+    template<class T1, class D1, class T2, class D2>
+    bool operator>=(const unique_ptr<T1, D1>& x, const unique_ptr<T2, D2>& y){
+        return !(x < y);
+    }
+
+    template<class T, class D>
+    bool operator==(const unique_ptr<T, D>& x, nullptr_t)noexcept{
+        return !x;
+    }
+    template<class T, class D>
+    bool operator==(nullptr_t, const unique_ptr<T, D>& y)noexcept{
+        return !y;
+    }
+    template<class T, class D>
+    bool operator!=(const unique_ptr<T, D>& x, nullptr_t)noexcept{
+        return (bool)x;
+    }
+    template<class T, class D>
+    bool operator!=(nullptr_t, const unique_ptr<T, D>& y)noexcept{
+        return (bool)y;
+    }
+    template<class T, class D>
+    bool operator<(const unique_ptr<T, D>& x, nullptr_t){
+        return std::less<typename unique_ptr<T, D>::pointer>()(x.get(), nullptr);
+    }
+    template<class T, class D>
+    bool operator<(nullptr_t, const unique_ptr<T, D>& y){
+        return std::less<typename unique_ptr<T, D>::pointer>()(nullptr, y.get());
+    }
+    template<class T, class D>
+    bool operator<=(const unique_ptr<T, D>& x, nullptr_t){
+        return nullptr < x;
+    }
+    template<class T, class D>
+    bool operator<=(nullptr_t, const unique_ptr<T, D>& y){
+        return y <nullptr;
+    }
+    template<class T, class D>
+    bool operator>(const unique_ptr<T, D>& x, nullptr_t){
+        return !(nullptr < x);
+    }
+    template<class T, class D>
+    bool operator>(nullptr_t, const unique_ptr<T, D>& y){
+        return !(y < nullptr);
+    }
+    template<class T, class D>
+    bool operator>=(const unique_ptr<T, D>& x, nullptr_t){
+        return !(x < nullptr);
+    }
+    template<class T, class D>
+    bool operator>=(nullptr_t, const unique_ptr<T, D>& y){
+        return !(nullptr < y);
+    }
+
+    // 23.11.2.1, class bad_weak_ptr
+    class bad_weak_ptr: public std::exception{
+    public:
+        bad_weak_ptr()noexcept;
+
+        const char* what()const noexcept override;
+    };
+
+    // forward declare std::weak_ptr
+    template<class T>
+    class weak_ptr;
+
+    // 23.11.2.2, class template shared_ptr
+    template<class T>
+    class shared_ptr{
+    public:
+        using element_type = remove_extent_t<T>;
+        using weak_type    = weak_ptr<T>;
+
+        // 23.11.2.2.1, constructors
+        constexpr shared_ptr()noexcept;
+
+        template<class Y>
+        explicit shared_ptr(Y* p);
+
+        template<class Y, class D>
+        shared_ptr(Y* p, D d);
+
+        template<class Y, class D, class A>
+        shared_ptr(Y* p, D d, A a);
+
+        template<class D>
+        shared_ptr(nullptr_t p, D d);
+
+        template<class D, class A>
+        shared_ptr(nullptr_t p, D d, A a);
+
+        template<class Y>
+        shared_ptr(const shared_ptr<Y>& r, element_type* p)noexcept;
+
+        shared_ptr(const shared_ptr& r)noexcept;
+
+        template<class Y>
+        shared_ptr(const shared_ptr<Y>& r)noexcept;
+
+        shared_ptr(shared_ptr&& r)noexcept;
+
+        template<class Y>
+        shared_ptr(shared_ptr<Y>&& r)noexcept;
+
+        template<class Y>
+        explicit shared_ptr(const weak_ptr<Y>& r);
+
+        template<class Y, class D>
+        shared_ptr(unique_ptr<Y, D>&& r);
+
+        constexpr shared_ptr(nullptr_t)noexcept:
+            shared_ptr(){}
+
+        // 23.11.2.2.2, destructor
+        ~shared_ptr();
+
+        // 23.11.2.2.3, assignment
+        shared_ptr& operator=(const shared_ptr& r)noexcept;
+
+        template<class Y>
+        shared_ptr& operator=(const shared_ptr<Y>& r)noexcept;
+
+        shared_ptr& operator=(shared_ptr&& r)noexcept;
+
+        template<class Y>
+        shared_ptr& operator=(shared_ptr<Y>&& r)noexcept;
+
+        template<class Y, class D>
+        shared_ptr& operator=(unique_ptr<Y, D>&& r);
+
+        // 23.11.2.2.4, modifiers
+        void swap(shared_ptr& r)noexcept;
+        void reset()noexcept;
+
+        template<class Y>
+        void reset(Y* p);
+
+        template<class Y, class D>
+        void reset(Y* p, D d);
+
+        template<class Y, class D, class A>
+        void reset(Y* p, D d, A a);
+
+        // 23.11.2.2.5, observers
+        element_type* get()const noexcept;
+        T& operator*()const noexcept;
+        T* operator->()const noexcept;
+        element_type& operator[](ptrdiff_t i)const;
+        long use_count()const noexcept;
+        explicit operator bool()const noexcept;
+
+        template<class U>
+        bool owner_before(const shared_ptr<U>& b)const noexcept;
+
+        template<class U>
+        bool owner_before(const weak_ptr<U>& b)const noexcept;
+    };
+
+    template<class T>
+    shared_ptr(weak_ptr<T>) -> shared_ptr<T>;
+
+    template<class T, class D>
+    shared_ptr(unique_ptr<T, D>) -> shared_ptr<T>;
+
+    // 23.11.2.2.6, shared_ptr creation
+    template<class T, class... Args>
+    shared_ptr<T> make_shared(Args&&... args);
+
+    template<class T, class A, class... Args>
+    shared_ptr<T> allocate_shared(const A& a, Args&&... args);
+
+    // 23.11.2.2.7, shared_ptr comparisons
+    template<class T, class U>
+    bool operator==(const shared_ptr<T>& x, const shared_ptr<U>& y)noexcept{
+        return x.get() == y.get();
+    }
+    template<class T, class U>
+    bool operator!=(const shared_ptr<T>& x, const shared_ptr<U>& y)noexcept{
+        return x.get() != y.get();
+    }
+    template<class T, class U>
+    bool operator<(const shared_ptr<T>& x, const shared_ptr<U>& y)noexcept{
+        return std::less(x.get(), y.get());
+    }
+    template<class T, class U>
+    bool operator>(const shared_ptr<T>& x, const shared_ptr<U>& y)noexcept{
+        return y < x;
+    }
+    template<class T, class U>
+    bool operator<=(const shared_ptr<T>& x, const shared_ptr<U>& y)noexcept{
+        return !(y < x);
+    }
+    template<class T, class U>
+    bool operator>=(const shared_ptr<T>& x, const shared_ptr<U>& y)noexcept{
+        return !(x < y);
+    }
+
+    template<class T>
+    bool operator==(const shared_ptr<T>& x, nullptr_t)noexcept{
+        return !x;
+    }
+    template<class T>
+    bool operator==(nullptr_t, const shared_ptr<T>& y)noexcept{
+        return !y;
+    }
+    template<class T>
+    bool operator!=(const shared_ptr<T>& x, nullptr_t)noexcept{
+        return (bool)x;
+    }
+    template<class T>
+    bool operator!=(nullptr_t, const shared_ptr<T>& y)noexcept{
+        return (bool)y;
+    }
+    template<class T>
+    bool operator<(const shared_ptr<T>& x, nullptr_t)noexcept{
+        return std::less<typename shared_ptr<T>::element_type*>(x.get(), nullptr);
+    }
+    template<class T>
+    bool operator<(nullptr_t, const shared_ptr<T>& y)noexcept{
+        return std::less<typename shared_ptr<T>::element_type*>(nullptr, y.get());
+    }
+    template<class T>
+    bool operator<=(const shared_ptr<T>& x, nullptr_t)noexcept{
+        return !(nullptr < x);
+    }
+    template<class T>
+    bool operator<=(nullptr_t, const shared_ptr<T>& y)noexcept{
+        return !(y < nullptr);
+    }
+    template<class T>
+    bool operator>(const shared_ptr<T>& x, nullptr_t)noexcept{
+        return nullptr < x;
+    }
+    template<class T>
+    bool operator>(nullptr_t, const shared_ptr<T>& y)noexcept{
+        return y < nullptr;
+    }
+    template<class T>
+    bool operator>=(const shared_ptr<T>& x, nullptr_t)noexcept{
+        return !(x < nullptr);
+    }
+    template<class T>
+    bool operator>=(nullptr_t, const shared_ptr<T>& y)noexcept{
+        return !(nullptr < y);
+    }
+
+    // 23.11.2.2.8, shared_ptr specialized algorithms
+    template<class T>
+    void swap(shared_ptr<T>& x, shared_ptr<T>& y)noexcept{
+        x.swap(y);
+    }
+
+    // 23.11.2.2.9, shared_ptr casts
+    template<class T, class U>
+    shared_ptr<T> static_pointer_cast(const shared_ptr<U>& r)noexcept{
+        return shared_ptr<T>(r, static_cast<typename shared_ptr<T>::element_type*>(r.get()));
+    }
+
+    template<class T, class U>
+    shared_ptr<T> dynamic_pointer_cast(const shared_ptr<U>& r)noexcept{
+        auto p = dynamic_cast<typename shared_ptr<T>::element_type*>(r.get());
+        return p ? shared_ptr<T>(r, p) : shared_ptr<T>();
+    }
+
+    template<class T, class U>
+    shared_ptr<T> const_pointer_cast(const shared_ptr<U>& r)noexcept{
+        return shared_ptr<T>(r, const_cast<typename shared_ptr<T>::element_type*>(r.get()));
+    }
+
+    template<class T, class U>
+    shared_ptr<T> reinterpret_pointer_cast(const shared_ptr<U>& r)noexcept{
+        return shared_ptr<T>(r, reinterpret_cast<typename shared_ptr<T>::element_type*>(r.get()));
+    }
+
+    // 23.11.2.2.10, shared_ptr get_deleter
+    template<class D, class T>
+    D* get_deleter(const shared_ptr<T>& p)noexcept;
+
+    // 23.11.2.2.11, shared_ptr I/O
+    template<class E, class T, class Y>
+    std::basic_ostream<E, T>& operator<<(std::basic_ostream<E, T>& os, const shared_ptr<Y>& p){
+        os << p.get();
+        return os;
+    }
+
+    // 23.11.2.3, class template weak_ptr
+    template<class T>
+    class weak_ptr{
+    public:
+        using element_type = T;
+
+        // 23.11.2.3.1, constructors
+        constexpr weak_ptr()noexcept;
+
+        template<class Y>
+        weak_ptr(const shared_ptr<Y>& r)noexcept;
+
+        weak_ptr(const weak_ptr& r)noexcept;
+
+        template<class Y>
+        weak_ptr(const weak_ptr<Y>& r)noexcept;
+
+        weak_ptr(weak_ptr&& r)noexcept;
+
+        template<class Y>
+        weak_ptr(weak_ptr<Y>&& r)noexcept;
+
+        // 23.11.2.3.2, destructor
+        ~weak_ptr();
+
+        // 23.11.2.3.3, assignment
+        weak_ptr& operator=(const weak_ptr& r)noexcept;
+
+        template<class Y>
+        weak_ptr& operator=(const weak_ptr<Y>& r)noexcept;
+
+        template<class Y>
+        weak_ptr& operator=(const shared_ptr<Y>& r)noexcept;
+
+        weak_ptr& operator=(weak_ptr&& r)noexcept;
+
+        template<class Y>
+        weak_ptr& operator=(weak_ptr<Y>&& r)noexcept;
+
+        // 23.11.2.3.4, modifiers
+        void swap(weak_ptr& r)noexcept;
+        void reset()noexcept;
+
+        // 23.11.2.3.5, observers
+        long use_count()const noexcept;
+        bool expired()const noexcept;
+        shared_ptr<T> lock()const noexcept;
+
+        template<class U>
+        bool owner_before(const shared_ptr<U>& b)const;
+
+        template<class U>
+        bool owner_before(const weak_ptr<U>& b)const;
+    };
+
+    template<class T>
+    weak_ptr(shared_ptr<T>) -> weak_ptr<T>;
+
+    // 23.11.2.3.6, weak_ptr specialized algorithms
+    template<class T>
+    void swap(weak_ptr<T>& a, weak_ptr<T>& b)noexcept{
+        a.swap(b);
+    }
+
+    // 23.11.2.4, class template owner_less
+    template<class T = void>
+    struct owner_less;
+
+    template<class T>
+    struct owner_less<shared_ptr<T>>{
+        bool operator()(const shared_ptr<T>&, const shared_ptr<T>&)const noexcept;
+        bool operator()(const shared_ptr<T>&, const weak_ptr<T>&)const noexcept;
+        bool operator()(const weak_ptr<T>&, const shared_ptr<T>&)const noexcept;
+    };
+
+    template<class T>
+    struct owner_less<weak_ptr<T>>{
+        bool operator()(const weak_ptr<T>&, const weak_ptr<T>&)const noexcept;
+        bool operator()(const shared_ptr<T>&, const weak_ptr<T>&)const noexcept;
+        bool operator()(const weak_ptr<T>&, const shared_ptr<T>&)const noexcept;
+    };
+
+    template<>
+    struct owner_less<void>{
+        template<class T, class U>
+        bool operator()(const shared_ptr<T>&, const shared_ptr<U>&)const noexcept;
+
+        template<class T, class U>
+        bool operator()(const shared_ptr<T>&, const weak_ptr<U>&)const noexcept;
+
+        template<class T, class U>
+        bool operator()(const weak_ptr<T>&, const shared_ptr<U>&)const noexcept;
+
+        template<class T, class U>
+        bool operator()(const weak_ptr<T>&, const weak_ptr<U>&)const noexcept;
+
+        using is_transparent = void;
+    };
+
+    // 23.11.2.5, class template enable_shared_from_this
+    template<class T>
+    class enable_shared_from_this{
+    protected:
+        constexpr enable_shared_from_this()noexcept: weak_this{}{}
+        enable_shared_from_this(const enable_shared_from_this&)noexcept: weak_this{}{}
+        enable_shared_from_this& operator=(const enable_shared_from_this&)noexcept{
+            return *this;
+        }
+
+    public:
+        shared_ptr<T> shared_from_this(){
+            return shared_ptr<T>(weak_this);
+        }
+        shared_ptr<T const> shared_from_this()const{
+            return shared_ptr<T>(weak_this);
+        }
+        weak_ptr<T> weak_from_this()noexcept{
+            return weak_this;
+        }
+        weak_ptr<T const> weak_from_this()const noexcept{
+            return weak_this;
+        }
+
+    private:
+        mutable weak_ptr<T> weak_this;
+    };
+
+    // 23.11.2.6, shared_ptr atomic access
+    template<class T>
+    bool atomic_is_lock_free(const shared_ptr<T>* p);
+
+    template<class T>
+    shared_ptr<T> atomic_load(const shared_ptr<T>* p);
+    template<class T>
+    shared_ptr<T> atomic_load_explicit(const shared_ptr<T>* p, std::memory_order mo);
+
+    template<class T>
+    void atomic_store(shared_ptr<T>* p, shared_ptr<T> r);
+    template<class T>
+    void atomic_store_explicit(shared_ptr<T>* p, shared_ptr<T> r, std::memory_order mo);
+
+    template<class T>
+    shared_ptr<T> atomic_exchange(shared_ptr<T>* p, shared_ptr<T> r);
+    template<class T>
+    shared_ptr<T> atomic_exchange_explicit(shared_ptr<T>* p, shared_ptr<T> r, std::memory_order mo);
+
+    template<class T>
+    bool atomic_compare_exchange_weak(shared_ptr<T>* p, shared_ptr<T>* v, shared_ptr<T> w);
+    template<class T>
+    bool atomic_compare_exchange_strong(shared_ptr<T>* p, shared_ptr<T>* v, shared_ptr<T> w);
+    template<class T>
+    bool atomic_compare_exchange_weak_explicit(shared_ptr<T>* p, shared_ptr<T>* v, shared_ptr<T> w,
+                                               std::memory_order success, std::memory_order failure);
+    template<class T>
+    bool atomic_compare_exchange_strong_explicit(shared_ptr<T>* p, shared_ptr<T>* v, shared_ptr<T> w,
+                                                 std::memory_order success, std::memory_order failure);
+
+    // 23.11.2.7, hash support
+    template <class T>
+    struct hash;
+
+    template <class T, class D>
+    struct hash<unique_ptr<T, D>>{
+        using argument_type = unique_ptr<T, D>;
+        using result_type   = std::size_t;
+
+        result_type operator()(const argument_type& ptr)const{
+            return hash<typename argument_type::pointer>()(ptr.get());
+        }
+    };
+
+    template <class T>
+    struct hash<shared_ptr<T>>{
+        using argument_type = shared_ptr<T>;
+        using result_type   = std::size_t;
+
+        result_type operator()(const argument_type& ptr)const noexcept{
+            return hash<T*>()(ptr.get());
+        }
+    };
+}
+
+#endif /* __MEMORY__ */

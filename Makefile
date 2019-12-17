@@ -14,8 +14,9 @@ else
 endif
 
 CXXSRC  = $(wildcard src/*.cpp)
-CXXSRC += $(wildcard src/new/*.cpp)
 CXXSRC += $(wildcard src/exception/*.cpp)
+CXXSRC += $(wildcard src/new/*.cpp)
+CXXSRC += $(wildcard src/typeinfo/*.cpp)
 
 OBJECTS  = $(CSRC:.c=.o)
 OBJECTS += $(CXXSRC:.cpp=.o)

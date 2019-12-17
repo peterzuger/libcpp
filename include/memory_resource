@@ -1,0 +1,217 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/memory_resource
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  Memory resources
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __MEMORY_RESOURCE__
+#define __MEMORY_RESOURCE__
+
+#include <cstddef>
+#include <utility>
+
+namespace std::pmr{
+    // 23.12.2, class memory_resource
+    class memory_resource {
+        static constexpr size_t max_align = alignof(max_align_t);
+
+    public:
+        virtual ~memory_resource();
+        void* allocate(size_t bytes, size_t alignment = max_align){
+            return do_allocate(bytes, alignment);
+        }
+        void deallocate(void* p, size_t bytes, size_t alignment = max_align){
+            do_deallocate(p, bytes, alignment);
+        }
+        bool is_equal(const memory_resource& other)const noexcept{
+            return do_is_equal(other);
+        }
+
+    private:
+        virtual void* do_allocate(size_t bytes, size_t alignment) = 0;
+        virtual void do_deallocate(void* p, size_t bytes, size_t alignment) = 0;
+        virtual bool do_is_equal(const memory_resource& other)const noexcept = 0;
+    };
+
+    bool operator==(const memory_resource& a, const memory_resource& b)noexcept{
+        return &a == &b || a.is_equal(b);
+    }
+    bool operator!=(const memory_resource& a, const memory_resource& b)noexcept{
+        return !(a == b);
+    }
+
+    // 23.12.4, global memory resources
+    memory_resource* new_delete_resource()noexcept;
+    memory_resource* null_memory_resource()noexcept;
+    memory_resource* set_default_resource(memory_resource* r)noexcept;
+    memory_resource* get_default_resource()noexcept;
+
+    // 23.12.3, class template polymorphic_allocator
+    template<class Tp>
+    class polymorphic_allocator{
+        memory_resource* memory_rsrc;
+
+    public:
+        using value_type = Tp;
+
+        // 23.12.3.1, constructors
+        polymorphic_allocator()noexcept:
+        memory_rsrc{get_default_resource()}{}
+        polymorphic_allocator(memory_resource* r);
+        polymorphic_allocator(const polymorphic_allocator& other) = default;
+        template<class U>
+        polymorphic_allocator(const polymorphic_allocator<U>& other)noexcept;
+        polymorphic_allocator&
+        operator=(const polymorphic_allocator& rhs) = delete;
+
+        // 23.12.3.2, member functions
+        Tp* allocate(size_t n){
+            return static_cast<Tp*>(memory_rsrc->allocate(n * sizeof(Tp), alignof(Tp)));
+        }
+        void deallocate(Tp* p, size_t n){
+            memory_rsrc->deallocate(p, n * sizeof(Tp), alignof(Tp));
+        }
+
+        template<class T, class... Args>
+        void construct(T* p, Args&&... args);
+
+        template<class T1, class T2, class... Args1, class... Args2>
+        void construct(std::pair<T1,T2>* p, std::piecewise_construct_t,
+                       std::tuple<Args1...> x, std::tuple<Args2...> y);
+
+        template<class T1, class T2>
+        void construct(std::pair<T1,T2>* p);
+
+        template<class T1, class T2, class U, class V>
+        void construct(std::pair<T1,T2>* p, U&& x, V&& y);
+
+        template<class T1, class T2, class U, class V>
+        void construct(std::pair<T1,T2>* p, const std::pair<U, V>& pr);
+
+        template<class T1, class T2, class U, class V>
+        void construct(std::pair<T1,T2>* p, std::pair<U, V>&& pr);
+
+        template<class T>
+        void destroy(T* p);
+
+        polymorphic_allocator select_on_container_copy_construction()const;
+
+        memory_resource* resource()const;
+    };
+
+    template<class T1, class T2>
+    bool operator==(const polymorphic_allocator<T1>& a,
+                    const polymorphic_allocator<T2>& b)noexcept{
+        return *a.resource() == *b.resource();
+    }
+
+    template<class T1, class T2>
+    bool operator!=(const polymorphic_allocator<T1>& a,
+                    const polymorphic_allocator<T2>& b)noexcept{
+        return !(a == b);
+    }
+
+    // 23.12.5, pool resource classes
+    struct pool_options{
+        size_t max_blocks_per_chunk = 0;
+        size_t largest_required_pool_block = 0;
+    };
+
+    class synchronized_pool_resource: public memory_resource{
+    public:
+        synchronized_pool_resource(const pool_options& opts, memory_resource* upstream);
+        synchronized_pool_resource()
+            :synchronized_pool_resource(pool_options(), get_default_resource()){}
+        explicit synchronized_pool_resource(memory_resource* upstream)
+            :synchronized_pool_resource(pool_options(), upstream){}
+        explicit synchronized_pool_resource(const pool_options& opts)
+            :synchronized_pool_resource(opts, get_default_resource()){}
+
+        synchronized_pool_resource(const synchronized_pool_resource&) = delete;
+        virtual ~synchronized_pool_resource();
+
+        synchronized_pool_resource& operator=(const synchronized_pool_resource&) = delete;
+
+        void release();
+        memory_resource* upstream_resource()const;
+        pool_options options()const;
+
+    protected:
+        void *do_allocate(size_t bytes, size_t alignment)override;
+        void do_deallocate(void *p, size_t bytes, size_t alignment)override;
+
+        bool do_is_equal(const memory_resource& other)const noexcept override;
+    };
+
+    class unsynchronized_pool_resource: public memory_resource{
+    public:
+        unsynchronized_pool_resource(const pool_options& opts, memory_resource* upstream);
+        unsynchronized_pool_resource()
+            : unsynchronized_pool_resource(pool_options(), get_default_resource()) {}
+        explicit unsynchronized_pool_resource(memory_resource* upstream)
+            : unsynchronized_pool_resource(pool_options(), upstream) {}
+        explicit unsynchronized_pool_resource(const pool_options& opts)
+            : unsynchronized_pool_resource(opts, get_default_resource()) {}
+        unsynchronized_pool_resource(const unsynchronized_pool_resource&) = delete;
+        virtual ~unsynchronized_pool_resource();
+        unsynchronized_pool_resource& operator=(const unsynchronized_pool_resource&) = delete;
+        void release();
+        memory_resource *upstream_resource()const;
+        pool_options options()const;
+
+    protected:
+        void* do_allocate(size_t bytes, size_t alignment)override;
+        void do_deallocate(void* p, size_t bytes, size_t alignment)override;
+
+        bool do_is_equal(const memory_resource& other)const noexcept override;
+    };
+
+    class monotonic_buffer_resource: public memory_resource {
+        memory_resource *upstream_rsrc;
+        void *current_buffer;
+        size_t next_buffer_size;
+
+    public:
+        explicit monotonic_buffer_resource(memory_resource *upstream);
+        monotonic_buffer_resource(size_t initial_size, memory_resource *upstream);
+        monotonic_buffer_resource(void *buffer, size_t buffer_size, memory_resource *upstream);
+        monotonic_buffer_resource()
+            :monotonic_buffer_resource(get_default_resource()) {}
+        explicit monotonic_buffer_resource(size_t initial_size)
+            :monotonic_buffer_resource(initial_size, get_default_resource()) {}
+        monotonic_buffer_resource(void *buffer, size_t buffer_size)
+            :monotonic_buffer_resource(buffer, buffer_size, get_default_resource()) {}
+
+        monotonic_buffer_resource(const monotonic_buffer_resource&) = delete;
+
+        virtual ~monotonic_buffer_resource();
+
+        monotonic_buffer_resource operator=(const monotonic_buffer_resource&) = delete;
+
+        void release();
+        memory_resource* upstream_resource()const;
+
+    protected:
+        void* do_allocate(size_t bytes, size_t alignment)override;
+        void do_deallocate(void* p, size_t bytes, size_t alignment)override;
+
+        bool do_is_equal(const memory_resource& other)const noexcept override;
+    };
+}
+
+#endif /* __MEMORY_RESOURCE__ */

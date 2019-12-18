@@ -73,11 +73,26 @@ namespace std{
 
     // 28.5.5, find
     template<class InputIterator, class T>
-    InputIterator find(InputIterator first, InputIterator last, const T& value);
+    InputIterator find(InputIterator first, InputIterator last, const T& value){
+        for(; first != last; ++first)
+            if(*first == value)
+                break;
+        return first;
+    }
     template<class InputIterator, class Predicate>
-    InputIterator find_if(InputIterator first, InputIterator last, Predicate pred);
+    InputIterator find_if(InputIterator first, InputIterator last, Predicate pred){
+        for(; first != last; ++first)
+            if(pred(*first) != false)
+                break;
+        return first;
+    }
     template<class InputIterator, class Predicate>
-    InputIterator find_if_not(InputIterator first, InputIterator last, Predicate pred);
+    InputIterator find_if_not(InputIterator first, InputIterator last, Predicate pred){
+        for(; first != last; ++first)
+            if(pred(*first) == false)
+                break;
+        return first;
+    }
 
     // 28.5.6, find end
     template<class ForwardIterator1, class ForwardIterator2>
@@ -108,11 +123,23 @@ namespace std{
     // 28.5.9, count
     template<class InputIterator, class T>
     typename std::iterator_traits<InputIterator>::difference_type count(InputIterator first,
-                                                                        InputIterator last, const T& value);
+                                                                        InputIterator last, const T& value){
+        typename std::iterator_traits<InputIterator>::difference_type n;
+        for(; first != last; ++first)
+            if(*first == value)
+                ++n;
+        return n;
+    }
     template<class InputIterator, class Predicate>
     typename std::iterator_traits<InputIterator>::difference_type count_if(InputIterator first,
                                                                            InputIterator last,
-                                                                           Predicate pred);
+                                                                           Predicate pred){
+        typename std::iterator_traits<InputIterator>::difference_type n;
+        for(; first != last; ++first)
+            if(pred(*first))
+                ++n;
+        return n;
+    }
 
     // 28.5.10, mismatch
     template<class InputIterator1, class InputIterator2>

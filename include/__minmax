@@ -69,29 +69,12 @@ namespace std{
     constexpr ForwardIterator min_element(ForwardIterator first, ForwardIterator last,
                                           Compare comp);
 
-    template<class ExecutionPolicy, class ForwardIterator>
-    ForwardIterator min_element(ExecutionPolicy&& exec,// see 28.4.5
-                                ForwardIterator first, ForwardIterator last);
-
-    template<class ExecutionPolicy, class ForwardIterator, class Compare>
-    ForwardIterator min_element(ExecutionPolicy&& exec,// see 28.4.5
-                                ForwardIterator first, ForwardIterator last,
-                                Compare comp);
-
     template<class ForwardIterator>
     constexpr ForwardIterator max_element(ForwardIterator first, ForwardIterator last);
 
     template<class ForwardIterator, class Compare>
     constexpr ForwardIterator max_element(ForwardIterator first, ForwardIterator last,
                                           Compare comp);
-
-    template<class ExecutionPolicy, class ForwardIterator>
-    ForwardIterator max_element(ExecutionPolicy&& exec,// see 28.4.5
-                                ForwardIterator first, ForwardIterator last);
-
-    template<class ExecutionPolicy, class ForwardIterator, class Compare>
-    ForwardIterator max_element(ExecutionPolicy&& exec,// see 28.4.5
-                                ForwardIterator first, ForwardIterator last,Compare comp);
 
     template<class ForwardIterator>
     constexpr std::pair<ForwardIterator, ForwardIterator> minmax_element(ForwardIterator first,
@@ -101,17 +84,6 @@ namespace std{
     constexpr std::pair<ForwardIterator, ForwardIterator> minmax_element(ForwardIterator first,
                                                                          ForwardIterator last,
                                                                          Compare comp);
-
-    template<class ExecutionPolicy, class ForwardIterator>
-    std::pair<ForwardIterator, ForwardIterator> minmax_element(ExecutionPolicy&& exec,// see 28.4.5
-                                                               ForwardIterator first,
-                                                               ForwardIterator last);
-
-    template<class ExecutionPolicy, class ForwardIterator, class Compare>
-    std::pair<ForwardIterator, ForwardIterator> minmax_element(ExecutionPolicy&& exec,// see 28.4.5
-                                                               ForwardIterator first,
-                                                               ForwardIterator last,
-                                                               Compare comp);
 
     template<class T>
     constexpr T min(std::initializer_list<T> t){

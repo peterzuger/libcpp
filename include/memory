@@ -68,6 +68,12 @@ namespace std{
     };
     inline constexpr allocator_arg_t allocator_arg{};
 
+    // 23.10.7, uses_allocator
+    // defined in __uses_allocator
+
+    // 23.10.8, allocator traits
+    // defined in __allocator_traits
+
     // 23.10.9, the default allocator
     template<class T>
     class allocator{
@@ -103,6 +109,8 @@ namespace std{
     }
 
     // 23.10.10, specialized algorithms
+    // addressof defined in __addressof
+
     template<class ForwardIterator>
     void uninitialized_default_construct(ForwardIterator first, ForwardIterator last){
         for(; first != last; ++first)

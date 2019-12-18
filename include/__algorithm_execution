@@ -1,0 +1,494 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__algorithm_excecution
+ * @author Peter Züger
+ * @date   18.12.2019
+ * @brief  algorithms with excecution policy's
+ * @note   defined in header <algorithm>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____ALGORITHM_EXCECUTION__
+#define ____ALGORITHM_EXCECUTION__
+
+#include <__iterator_traits>
+#include <__pair>
+
+namespace std{
+    // 28.5.1, all of
+    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    bool all_of(ExecutionPolicy&& exec,// see 28.4.5
+                ForwardIterator first, ForwardIterator last, Predicate pred);
+
+    // 28.5.2, any of
+    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    bool any_of(ExecutionPolicy&& exec,// see 28.4.5
+                ForwardIterator first, ForwardIterator last, Predicate pred);
+
+    // 28.5.3, none of
+    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    bool none_of(ExecutionPolicy&& exec,// see 28.4.5
+                 ForwardIterator first, ForwardIterator last, Predicate pred);
+
+    // 28.5.4, for each
+    template<class ExecutionPolicy, class ForwardIterator, class Function>
+    void for_each(ExecutionPolicy&& exec,// see 28.4.5
+                  ForwardIterator first, ForwardIterator last, Function f);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Size, class Function>
+    ForwardIterator for_each_n(ExecutionPolicy&& exec,// see 28.4.5
+                               ForwardIterator first, Size n, Function f);
+
+    // 28.5.5, find
+    template<class ExecutionPolicy, class ForwardIterator, class T>
+    ForwardIterator find(ExecutionPolicy&& exec,// see 28.4.5
+                         ForwardIterator first, ForwardIterator last,const T& value);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
+    ForwardIterator find_if(ExecutionPolicy&& exec,// see 28.4.5
+                            ForwardIterator first, ForwardIterator last,Predicate pred);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
+    ForwardIterator find_if_not(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last,Predicate pred);
+
+    // 28.5.6, find end
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator1 find_end(ExecutionPolicy&& exec,// see 28.4.5
+                              ForwardIterator1 first1, ForwardIterator1 last1,
+                              ForwardIterator2 first2, ForwardIterator2 last2);
+
+    template<class ExecutionPolicy, class ForwardIterator1,class ForwardIterator2, class BinaryPredicate>
+    ForwardIterator1 find_end(ExecutionPolicy&& exec,// see 28.4.5
+                              ForwardIterator1 first1, ForwardIterator1 last1,
+                              ForwardIterator2 first2, ForwardIterator2 last2,BinaryPredicate pred);
+
+    // 28.5.7, find first
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator1 find_first_of(ExecutionPolicy&& exec,// see 28.4.5
+                                   ForwardIterator1 first1, ForwardIterator1 last1,
+                                   ForwardIterator2 first2, ForwardIterator2 last2);
+    template<class ExecutionPolicy, class ForwardIterator1,class ForwardIterator2, class BinaryPredicate>
+    ForwardIterator1 find_first_of(ExecutionPolicy&& exec,// see 28.4.5
+                                   ForwardIterator1 first1, ForwardIterator1 last1,
+                                   ForwardIterator2 first2, ForwardIterator2 last2,BinaryPredicate pred);
+
+    // 28.5.8, adjacent find
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator adjacent_find(ExecutionPolicy&& exec,// see 28.4.5
+                                  ForwardIterator first,ForwardIterator last);
+    template<class ExecutionPolicy, class ForwardIterator, class BinaryPredicate>
+    ForwardIterator adjacent_find(ExecutionPolicy&& exec,// see 28.4.5
+                                  ForwardIterator first,ForwardIterator last,BinaryPredicate pred);
+
+    // 28.5.9, count
+    template<class ExecutionPolicy, class ForwardIterator, class T>
+    typename std::iterator_traits<ForwardIterator>::difference_type count(ExecutionPolicy&& exec,// see 28.4.5
+                                                                          ForwardIterator first,
+                                                                          ForwardIterator last, const T& value);
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
+    typename std::iterator_traits<ForwardIterator>::difference_type count_if(ExecutionPolicy&& exec,// see 28.4.5
+                                                                             ForwardIterator first,
+                                                                             ForwardIterator last, Predicate pred);
+
+    // 28.5.10, mismatch
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    std::pair<ForwardIterator1, ForwardIterator2> mismatch(ExecutionPolicy&& exec,// see 28.4.5
+                                                           ForwardIterator1 first1,
+                                                           ForwardIterator1 last1,
+                                                           ForwardIterator2 first2);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class BinaryPredicate>
+    std::pair<ForwardIterator1, ForwardIterator2> mismatch(ExecutionPolicy&& exec,// see 28.4.5
+                                                           ForwardIterator1 first1,
+                                                           ForwardIterator1 last1,
+                                                           ForwardIterator2 first2,
+                                                           BinaryPredicate pred);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    std::pair<ForwardIterator1, ForwardIterator2> mismatch(ExecutionPolicy&& exec,// see 28.4.5
+                                                           ForwardIterator1 first1,
+                                                           ForwardIterator1 last1,
+                                                           ForwardIterator2 first2,
+                                                           ForwardIterator2 last2);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class BinaryPredicate>
+    std::pair<ForwardIterator1, ForwardIterator2> mismatch(ExecutionPolicy&& exec,// see 28.4.5
+                                                           ForwardIterator1 first1,
+                                                           ForwardIterator1 last1,
+                                                           ForwardIterator2 first2,
+                                                           ForwardIterator2 last2,
+                                                           BinaryPredicate pred);
+
+    // 28.5.11, equal
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    bool equal(ExecutionPolicy&& exec,// see 28.4.5
+               ForwardIterator1 first1, ForwardIterator1 last1,ForwardIterator2 first2);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class BinaryPredicate>
+    bool equal(ExecutionPolicy&& exec,// see 28.4.5
+               ForwardIterator1 first1, ForwardIterator1 last1,ForwardIterator2 first2,
+               BinaryPredicate pred);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    bool equal(ExecutionPolicy&& exec,// see 28.4.5
+               ForwardIterator1 first1, ForwardIterator1 last1,
+               ForwardIterator2 first2, ForwardIterator2 last2);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class BinaryPredicate>
+    bool equal(ExecutionPolicy&& exec,// see 28.4.5
+               ForwardIterator1 first1, ForwardIterator1 last1,
+               ForwardIterator2 first2, ForwardIterator2 last2,
+               BinaryPredicate pred);
+
+    // 28.5.13, search
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator1 search(ExecutionPolicy&& exec,// see 28.4.5
+                            ForwardIterator1 first1, ForwardIterator1 last1,
+                            ForwardIterator2 first2, ForwardIterator2 last2);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class BinaryPredicate>
+    ForwardIterator1 search(ExecutionPolicy&& exec,// see 28.4.5
+                            ForwardIterator1 first1, ForwardIterator1 last1,
+                            ForwardIterator2 first2, ForwardIterator2 last2,BinaryPredicate pred);
+    template<class ExecutionPolicy, class ForwardIterator, class Size, class T>
+    ForwardIterator search_n(ExecutionPolicy&& exec,// see 28.4.5
+                             ForwardIterator first, ForwardIterator last,
+                             Size count, const T& value);
+    template<class ExecutionPolicy, class ForwardIterator, class Size, class T,class BinaryPredicate>
+    ForwardIterator search_n(ExecutionPolicy&& exec,// see 28.4.5
+                             ForwardIterator first, ForwardIterator last,
+                             Size count, const T& value,BinaryPredicate pred);
+
+    // 28.6, modifying sequence operations
+    // 28.6.1, copy
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator2 copy(ExecutionPolicy&& exec,// see 28.4.5
+                          ForwardIterator1 first, ForwardIterator1 last,ForwardIterator2 result);
+    template<class ExecutionPolicy, class ForwardIterator1, class Size,class ForwardIterator2>
+    ForwardIterator2 copy_n(ExecutionPolicy&& exec,// see 28.4.5
+                            ForwardIterator1 first, Size n,ForwardIterator2 result);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class Predicate>
+    ForwardIterator2 copy_if(ExecutionPolicy&& exec,// see 28.4.5
+                             ForwardIterator1 first, ForwardIterator1 last,ForwardIterator2 result, Predicate pred);
+
+    // 28.6.2, move
+    template<class ExecutionPolicy, class ForwardIterator1,class ForwardIterator2>
+    ForwardIterator2 move(ExecutionPolicy&& exec,// see 28.4.5
+                          ForwardIterator1 first, ForwardIterator1 last,ForwardIterator2 result);
+
+    // 28.6.3, swap
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator2 swap_ranges(ExecutionPolicy&& exec,// see 28.4.5
+                                 ForwardIterator1 first1, ForwardIterator1 last1,ForwardIterator2 first2);
+
+    // 28.6.4, transform
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class UnaryOperation>
+    ForwardIterator2 transform(ExecutionPolicy&& exec,// see 28.4.5
+                               ForwardIterator1 first, ForwardIterator1 last,
+                               ForwardIterator2 result, UnaryOperation op);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,
+             class ForwardIterator, class BinaryOperation>
+    ForwardIterator transform(ExecutionPolicy&& exec,// see 28.4.5
+                              ForwardIterator1 first1, ForwardIterator1 last1,
+                              ForwardIterator2 first2, ForwardIterator result, BinaryOperation binary_op);
+
+    // 28.6.5, replace
+    template<class ExecutionPolicy, class ForwardIterator, class T>
+    void replace(ExecutionPolicy&& exec,// see 28.4.5
+                 ForwardIterator first, ForwardIterator last,const T& old_value, const T& new_value);
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate, class T>
+    void replace_if(ExecutionPolicy&& exec,// see 28.4.5
+                    ForwardIterator first, ForwardIterator last,Predicate pred, const T& new_value);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2, class T>
+    ForwardIterator2 replace_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                  ForwardIterator1 first, ForwardIterator1 last,
+                                  ForwardIterator2 result,const T& old_value, const T& new_value);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class Predicate, class T>
+    ForwardIterator2 replace_copy_if(ExecutionPolicy&& exec,// see 28.4.5
+                                     ForwardIterator1 first, ForwardIterator1 last,
+                                     ForwardIterator2 result,Predicate pred, const T& new_value);
+
+    // 28.6.6, fill
+    template<class ExecutionPolicy, class ForwardIterator,class T>
+    void fill(ExecutionPolicy&& exec,// see 28.4.5
+              ForwardIterator first, ForwardIterator last, const T& value);
+    template<class ExecutionPolicy, class ForwardIterator,class Size, class T>
+    ForwardIterator fill_n(ExecutionPolicy&& exec,// see 28.4.5
+                           ForwardIterator first, Size n, const T& value);
+
+    // 28.6.7, generate
+    template<class ExecutionPolicy, class ForwardIterator, class Generator>
+    void generate(ExecutionPolicy&& exec,// see 28.4.5
+                  ForwardIterator first, ForwardIterator last,Generator gen);
+    template<class ExecutionPolicy, class ForwardIterator, class Size, class Generator>
+    ForwardIterator generate_n(ExecutionPolicy&& exec,// see 28.4.5
+                               ForwardIterator first, Size n, Generator gen);
+
+    // 28.6.8, remove
+    template<class ExecutionPolicy, class ForwardIterator, class T>
+    ForwardIterator remove(ExecutionPolicy&& exec,// see 28.4.5
+                           ForwardIterator first, ForwardIterator last,const T& value);
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
+    ForwardIterator remove_if(ExecutionPolicy&& exec,// see 28.4.5
+                              ForwardIterator first, ForwardIterator last,Predicate pred);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class T>
+    ForwardIterator2 remove_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                 ForwardIterator1 first, ForwardIterator1 last,
+                                 ForwardIterator2 result, const T& value);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class Predicate>
+    ForwardIterator2 remove_copy_if(ExecutionPolicy&& exec,// see 28.4.5
+                                    ForwardIterator1 first, ForwardIterator1 last,
+                                    ForwardIterator2 result, Predicate pred);
+
+    // 28.6.9, unique
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator unique(ExecutionPolicy&& exec,// see 28.4.5
+                           ForwardIterator first, ForwardIterator last);
+    template<class ExecutionPolicy, class ForwardIterator, class BinaryPredicate>
+    ForwardIterator unique(ExecutionPolicy&& exec,// see 28.4.5
+                           ForwardIterator first, ForwardIterator last,BinaryPredicate pred);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator2 unique_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                 ForwardIterator1 first, ForwardIterator1 last,ForwardIterator2 result);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class BinaryPredicate>
+    ForwardIterator2 unique_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                 ForwardIterator1 first, ForwardIterator1 last,
+                                 ForwardIterator2 result, BinaryPredicate pred);
+
+    // 28.6.10, reverse
+    template<class ExecutionPolicy, class BidirectionalIterator>
+    void reverse(ExecutionPolicy&& exec,// see 28.4.5
+                 BidirectionalIterator first, BidirectionalIterator last);
+    template<class ExecutionPolicy, class BidirectionalIterator, class ForwardIterator>
+    ForwardIterator reverse_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                 BidirectionalIterator first,BidirectionalIterator last,ForwardIterator result);
+
+    // 28.6.11, rotate
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator rotate(ExecutionPolicy&& exec,// see 28.4.5
+                           ForwardIterator first,ForwardIterator middle,ForwardIterator last);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator2 rotate_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                 ForwardIterator1 first, ForwardIterator1 middle,
+                                 ForwardIterator1 last, ForwardIterator2 result);
+
+    // 28.7.4, partitions
+    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    bool is_partitioned(ExecutionPolicy&& exec,// see 28.4.5
+                        ForwardIterator first, ForwardIterator last, Predicate pred);
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
+    ForwardIterator partition(ExecutionPolicy&& exec,// see 28.4.5
+                              ForwardIterator first,ForwardIterator last,Predicate pred);
+    template<class ExecutionPolicy, class BidirectionalIterator, class Predicate>
+    BidirectionalIterator stable_partition(ExecutionPolicy&& exec,// see 28.4.5
+                                           BidirectionalIterator first,BidirectionalIterator last,Predicate pred);
+    template <class ExecutionPolicy, class ForwardIterator,
+              class ForwardIterator1,class ForwardIterator2, class Predicate>
+    std::pair<ForwardIterator1, ForwardIterator2>partition_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                                                ForwardIterator first,
+                                                                ForwardIterator last,
+                                                                ForwardIterator1 out_true,
+                                                                ForwardIterator2 out_false,
+                                                                Predicate pred);
+
+    // 28.7, sorting and related operations
+    // 28.7.1, sorting
+    template<class ExecutionPolicy, class RandomAccessIterator>
+    void sort(ExecutionPolicy&& exec,// see 28.4.5
+              RandomAccessIterator first, RandomAccessIterator last);
+    template<class ExecutionPolicy, class RandomAccessIterator, class Compare>
+    void sort(ExecutionPolicy&& exec,// see 28.4.5
+              RandomAccessIterator first, RandomAccessIterator last,Compare comp);
+
+    template<class ExecutionPolicy, class RandomAccessIterator>
+    void stable_sort(ExecutionPolicy&& exec,// see 28.4.5
+                     RandomAccessIterator first, RandomAccessIterator last);
+    template<class ExecutionPolicy, class RandomAccessIterator, class Compare>
+    void stable_sort(ExecutionPolicy&& exec,// see 28.4.5
+                     RandomAccessIterator first, RandomAccessIterator last,Compare comp);
+
+    template<class ExecutionPolicy, class RandomAccessIterator>
+    void partial_sort(ExecutionPolicy&& exec,// see 28.4.5
+                      RandomAccessIterator first,RandomAccessIterator middle,RandomAccessIterator last);
+    template<class ExecutionPolicy, class RandomAccessIterator, class Compare>
+    void partial_sort(ExecutionPolicy&& exec,// see 28.4.5
+                      RandomAccessIterator first,RandomAccessIterator middle,RandomAccessIterator last, Compare comp);
+    template<class ExecutionPolicy, class ForwardIterator, class RandomAccessIterator>
+    RandomAccessIterator partial_sort_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                           ForwardIterator first, ForwardIterator last,
+                                           RandomAccessIterator result_first,
+                                           RandomAccessIterator result_last);
+    template<class ExecutionPolicy, class ForwardIterator, class RandomAccessIterator,class Compare>
+    RandomAccessIterator partial_sort_copy(ExecutionPolicy&& exec,// see 28.4.5
+                                           ForwardIterator first, ForwardIterator last,
+                                           RandomAccessIterator result_first,
+                                           RandomAccessIterator result_last, Compare comp);
+    template<class ExecutionPolicy, class ForwardIterator>
+    bool is_sorted(ExecutionPolicy&& exec,// see 28.4.5
+                   ForwardIterator first, ForwardIterator last);
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    bool is_sorted(ExecutionPolicy&& exec,// see 28.4.5
+                   ForwardIterator first, ForwardIterator last,Compare comp);
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator is_sorted_until(ExecutionPolicy&& exec,// see 28.4.5
+                                    ForwardIterator first, ForwardIterator last);
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    ForwardIterator is_sorted_until(ExecutionPolicy&& exec,// see 28.4.5
+                                    ForwardIterator first, ForwardIterator last,
+                                    Compare comp);
+
+    // 28.7.2, Nth element
+    template<class ExecutionPolicy, class RandomAccessIterator>
+    void nth_element(ExecutionPolicy&& exec,// see 28.4.5
+                     RandomAccessIterator first, RandomAccessIterator nth,
+                     RandomAccessIterator last);
+    template<class ExecutionPolicy, class RandomAccessIterator, class Compare>
+    void nth_element(ExecutionPolicy&& exec,// see 28.4.5
+                     RandomAccessIterator first, RandomAccessIterator nth,
+                     RandomAccessIterator last, Compare comp);
+
+    // 28.7.5, merge
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class ForwardIterator>
+    ForwardIterator merge(ExecutionPolicy&& exec,// see 28.4.5
+                          ForwardIterator1 first1, ForwardIterator1 last1,
+                          ForwardIterator2 first2, ForwardIterator2 last2,
+                          ForwardIterator result);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,
+             class ForwardIterator, class Compare>
+    ForwardIterator merge(ExecutionPolicy&& exec,// see 28.4.5
+                          ForwardIterator1 first1, ForwardIterator1 last1,
+                          ForwardIterator2 first2, ForwardIterator2 last2,
+                          ForwardIterator result, Compare comp);
+
+    template<class ExecutionPolicy, class BidirectionalIterator>
+    void inplace_merge(ExecutionPolicy&& exec,// see 28.4.5
+                       BidirectionalIterator first,BidirectionalIterator middle,
+                       BidirectionalIterator last);
+    template<class ExecutionPolicy, class BidirectionalIterator, class Compare>
+    void inplace_merge(ExecutionPolicy&& exec,// see 28.4.5
+                       BidirectionalIterator first,
+                       BidirectionalIterator middle,
+                       BidirectionalIterator last, Compare comp);
+
+    // 28.7.6, set operations
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    bool includes(ExecutionPolicy&& exec,// see 28.4.5
+                  ForwardIterator1 first1, ForwardIterator1 last1,
+                  ForwardIterator2 first2, ForwardIterator2 last2);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class Compare>
+    bool includes(ExecutionPolicy&& exec,// see 28.4.5
+                  ForwardIterator1 first1, ForwardIterator1 last1,
+                  ForwardIterator2 first2, ForwardIterator2 last2, Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class ForwardIterator>
+    ForwardIterator set_union(ExecutionPolicy&& exec,// see 28.4.5
+                              ForwardIterator1 first1, ForwardIterator1 last1,
+                              ForwardIterator2 first2, ForwardIterator2 last2,
+                              ForwardIterator result);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,
+             class ForwardIterator, class Compare>
+    ForwardIterator set_union(ExecutionPolicy&& exec,// see 28.4.5
+                              ForwardIterator1 first1, ForwardIterator1 last1,
+                              ForwardIterator2 first2, ForwardIterator2 last2,
+                              ForwardIterator result, Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class ForwardIterator>
+    ForwardIterator set_intersection(ExecutionPolicy&& exec,// see 28.4.5
+                                     ForwardIterator1 first1, ForwardIterator1 last1,
+                                     ForwardIterator2 first2, ForwardIterator2 last2,
+                                     ForwardIterator result);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,
+             class ForwardIterator, class Compare>
+    ForwardIterator set_intersection(ExecutionPolicy&& exec,// see 28.4.5
+                                     ForwardIterator1 first1, ForwardIterator1 last1,
+                                     ForwardIterator2 first2, ForwardIterator2 last2,
+                                     ForwardIterator result, Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class ForwardIterator>
+    ForwardIterator set_difference(ExecutionPolicy&& exec,// see 28.4.5
+                                   ForwardIterator1 first1, ForwardIterator1 last1,
+                                   ForwardIterator2 first2, ForwardIterator2 last2,
+                                   ForwardIterator result);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,
+             class ForwardIterator, class Compare>
+    ForwardIterator set_difference(ExecutionPolicy&& exec,// see 28.4.5
+                                   ForwardIterator1 first1, ForwardIterator1 last1,
+                                   ForwardIterator2 first2, ForwardIterator2 last2,
+                                   ForwardIterator result, Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class ForwardIterator>
+    ForwardIterator set_symmetric_difference(ExecutionPolicy&& exec,// see 28.4.5
+                                             ForwardIterator1 first1, ForwardIterator1 last1,
+                                             ForwardIterator2 first2, ForwardIterator2 last2,
+                                             ForwardIterator result);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,
+             class ForwardIterator, class Compare>
+    ForwardIterator set_symmetric_difference(ExecutionPolicy&& exec,// see 28.4.5
+                                             ForwardIterator1 first1, ForwardIterator1 last1,
+                                             ForwardIterator2 first2, ForwardIterator2 last2,
+                                             ForwardIterator result, Compare comp);
+
+    // 28.7.7, heap operations
+    template<class ExecutionPolicy, class RandomAccessIterator>
+    bool is_heap(ExecutionPolicy&& exec,// see 28.4.5
+                 RandomAccessIterator first, RandomAccessIterator last);
+    template<class ExecutionPolicy, class RandomAccessIterator, class Compare>
+    bool is_heap(ExecutionPolicy&& exec,// see 28.4.5
+                 RandomAccessIterator first, RandomAccessIterator last, Compare comp);
+
+    template<class ExecutionPolicy, class RandomAccessIterator>
+    RandomAccessIterator is_heap_until(ExecutionPolicy&& exec,// see 28.4.5
+                                       RandomAccessIterator first, RandomAccessIterator last);
+    template<class ExecutionPolicy, class RandomAccessIterator, class Compare>
+    RandomAccessIterator is_heap_until(ExecutionPolicy&& exec,// see 28.4.5
+                                       RandomAccessIterator first, RandomAccessIterator last,
+                                       Compare comp);
+
+
+    // 28.7.8, minimum and maximum
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator min_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    ForwardIterator min_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last,
+                                Compare comp);
+    template<class ExecutionPolicy, class ForwardIterator>
+    ForwardIterator max_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    ForwardIterator max_element(ExecutionPolicy&& exec,// see 28.4.5
+                                ForwardIterator first, ForwardIterator last,Compare comp);
+
+    template<class ExecutionPolicy, class ForwardIterator>
+    std::pair<ForwardIterator, ForwardIterator> minmax_element(ExecutionPolicy&& exec,// see 28.4.5
+                                                               ForwardIterator first,
+                                                               ForwardIterator last);
+
+    template<class ExecutionPolicy, class ForwardIterator, class Compare>
+    std::pair<ForwardIterator, ForwardIterator> minmax_element(ExecutionPolicy&& exec,// see 28.4.5
+                                                               ForwardIterator first,
+                                                               ForwardIterator last,
+                                                               Compare comp);
+
+    // 28.7.10, lexicographical comparison
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    bool lexicographical_compare(ExecutionPolicy&& exec,// see 28.4.5
+                                 ForwardIterator1 first1, ForwardIterator1 last1,
+                                 ForwardIterator2 first2, ForwardIterator2 last2);
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2,class Compare>
+    bool lexicographical_compare(ExecutionPolicy&& exec,// see 28.4.5
+                                 ForwardIterator1 first1, ForwardIterator1 last1,
+                                 ForwardIterator2 first2, ForwardIterator2 last2,
+                                 Compare comp);
+}
+
+#endif /* ____ALGORITHM_EXCECUTION__ */

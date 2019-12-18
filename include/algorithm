@@ -31,22 +31,45 @@ namespace std{
     // 28.5, non-modifying sequence operations
     // 28.5.1, all of
     template<class InputIterator, class Predicate>
-    bool all_of(InputIterator first, InputIterator last, Predicate pred);
+    bool all_of(InputIterator first, InputIterator last, Predicate pred){
+        for(; first != last; ++first)
+            if(!pred(*first))
+                return false;
+        return true;
+    }
 
     // 28.5.2, any of
     template<class InputIterator, class Predicate>
-    bool any_of(InputIterator first, InputIterator last, Predicate pred);
+    bool any_of(InputIterator first, InputIterator last, Predicate pred){
+        for(; first != last; ++first)
+            if(pred(*first))
+                return true;
+        return false;
+    }
 
     // 28.5.3, none of
     template<class InputIterator, class Predicate>
-    bool none_of(InputIterator first, InputIterator last, Predicate pred);
+    bool none_of(InputIterator first, InputIterator last, Predicate pred){
+        for(; first != last; ++first)
+            if(pred(*first))
+                return false;
+        return true;
+    }
 
     // 28.5.4, for each
     template<class InputIterator, class Function>
-    Function for_each(InputIterator first, InputIterator last, Function f);
+    Function for_each(InputIterator first, InputIterator last, Function f){
+        for(; first != last; ++first)
+            f(*first);
+        return f;
+    }
 
     template<class InputIterator, class Size, class Function>
-    InputIterator for_each_n(InputIterator first, Size n, Function f);
+    InputIterator for_each_n(InputIterator first, Size n, Function f){
+        for(; n > 0; ++first, --n)
+            f(*first);
+        return first;
+    }
 
     // 28.5.5, find
     template<class InputIterator, class T>

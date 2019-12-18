@@ -22,7 +22,7 @@
 #ifndef __ALGORITHM__
 #define __ALGORITHM__
 
-#include <__algorithm_execution>
+#include <__execution/algorithm>
 #include <__iterator_traits>
 #include <__minmax>
 #include <__comparisons>

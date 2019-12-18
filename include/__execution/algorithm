@@ -1,5 +1,5 @@
 /** -*- mode: c++ -*-
- * @file   libcpp/include/__algorithm_excecution
+ * @file   libcpp/include/__execution/algorithm
  * @author Peter Züger
  * @date   18.12.2019
  * @brief  algorithms with excecution policy's
@@ -20,8 +20,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ____ALGORITHM_EXCECUTION__
-#define ____ALGORITHM_EXCECUTION__
+#ifndef ____EXCECUTION_ALGORITHM__
+#define ____EXCECUTION_ALGORITHM__
 
 #include <__iterator_traits>
 #include <__pair>
@@ -491,4 +491,4 @@ namespace std{
                                  Compare comp);
 }
 
-#endif /* ____ALGORITHM_EXCECUTION__ */
+#endif /* ____EXCECUTION_ALGORITHM__ */

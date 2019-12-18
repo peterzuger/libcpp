@@ -1,5 +1,5 @@
 /** -*- mode: c++ -*-
- * @file   libcpp/include/__memory_excecution
+ * @file   libcpp/include/__execution/memory
  * @author Peter Züger
  * @date   26.10.2019
  * @brief  algorithms with excecution policy's
@@ -20,8 +20,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ____MEMORY_EXCECUTION__
-#define ____MEMORY_EXCECUTION__
+#ifndef ____EXCECUTION_MEMORY__
+#define ____EXCECUTION_MEMORY__
 
 #include <utility>
 
@@ -76,4 +76,4 @@ namespace std{
                               ForwardIterator first, Size n);
 }
 
-#endif /* ____MEMORY_EXCECUTION__ */
+#endif /* ____EXCECUTION_MEMORY__ */

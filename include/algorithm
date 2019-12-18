@@ -215,13 +215,26 @@ namespace std{
     // 28.6.1, copy
     template<class InputIterator, class OutputIterator>
     OutputIterator copy(InputIterator first, InputIterator last,
-                        OutputIterator result);
+                        OutputIterator result){
+        for(; first != last; ++first, ++result)
+            *result = *first;
+        return result;
+    }
     template<class InputIterator, class Size, class OutputIterator>
     OutputIterator copy_n(InputIterator first, Size n,
-                          OutputIterator result);
+                          OutputIterator result){
+        for(; n > 0; ++first, ++result, --n)
+            *result = *first;
+        return result;
+    }
     template<class InputIterator, class OutputIterator, class Predicate>
     OutputIterator copy_if(InputIterator first, InputIterator last,
-                           OutputIterator result, Predicate pred);
+                           OutputIterator result, Predicate pred){
+        for(; first != last; ++first)
+            if(pred(*first))
+                *result++ = *first;
+        return result;
+    }
     template<class BidirectionalIterator1, class BidirectionalIterator2>
     BidirectionalIterator2 copy_backward(BidirectionalIterator1 first, BidirectionalIterator1 last,
                                          BidirectionalIterator2 result);

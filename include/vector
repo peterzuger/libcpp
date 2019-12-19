@@ -23,6 +23,7 @@
 #define __VECTOR__
 
 #include <__allocator_traits>
+#include <limits>
 #include <initializer_list>
 #include <iterator>
 #include <memory>
@@ -78,43 +79,100 @@ namespace std{
         allocator_type get_allocator()const noexcept;
 
         // iterators:
-        iterator begin()noexcept;
-        const_iterator begin()const noexcept;
-        iterator end()noexcept;
-        const_iterator end()const noexcept;
-        reverse_iterator rbegin()noexcept;
-        const_reverse_iterator rbegin()const noexcept;
-        reverse_iterator rend()noexcept;
-        const_reverse_iterator rend()const noexcept;
+        iterator begin()noexcept{
+            return iterator(_data);
+        }
+        const_iterator begin()const noexcept{
+            return const_iterator(_data);
+        }
+        iterator end()noexcept{
+            return iterator(_data + _size);
+        }
+        const_iterator end()const noexcept{
+            return const_iterator(_data + _size);
+        }
 
-        const_iterator cbegin()const noexcept;
-        const_iterator cend()const noexcept;
-        const_reverse_iterator crbegin()const noexcept;
-        const_reverse_iterator crend()const noexcept;
+        reverse_iterator rbegin()noexcept{
+            return reverse_iterator(_data + _size);
+        }
+        const_reverse_iterator rbegin()const noexcept{
+            return const_reverse_iterator(_data + _size);
+        }
+        reverse_iterator rend()noexcept{
+            return reverse_iterator(_data);
+        }
+        const_reverse_iterator rend()const noexcept{
+            return const_reverse_iterator(_data);
+        }
+
+        const_iterator cbegin()const noexcept{
+            return begin();
+        }
+        const_iterator cend()const noexcept{
+            return end();
+        }
+        const_reverse_iterator crbegin()const noexcept{
+            return rbegin();
+        }
+        const_reverse_iterator crend()const noexcept{
+            return rend();
+        }
 
         // 26.3.11.3, capacity
-        bool empty()const noexcept;
-        size_type size()const noexcept;
-        size_type max_size()const noexcept;
-        size_type capacity()const noexcept;
+        bool empty()const noexcept{
+            return size() == 0;
+        }
+        size_type size()const noexcept{
+            return _size;
+        }
+        size_type max_size()const noexcept{
+            return std::numeric_limits<size_type>::max();
+        }
+        size_type capacity()const noexcept{
+            return _cap;
+        }
         void resize(size_type sz);
         void resize(size_type sz, const T& c);
         void reserve(size_type n);
         void shrink_to_fit();
 
         // element access:
-        reference operator[](size_type n);
-        const_reference operator[](size_type n)const;
-        const_reference at(size_type n)const;
-        reference at(size_type n);
-        reference front();
-        const_reference front()const;
-        reference back();
-        const_reference back()const;
+        reference operator[](size_type n){
+            return _data[n];
+        }
+        const_reference operator[](size_type n)const{
+            return _data[n];
+        }
+        const_reference at(size_type n)const{
+            if(n >= size())
+                __throw_out_of_range("vector::at");
+            return _data[n];
+        }
+        reference at(size_type n){
+            if(n >= size())
+                __throw_out_of_range("vector::at");
+            return _data[n];
+        }
+        reference front(){
+            return _data[0];
+        }
+        const_reference front()const{
+            return _data[0];
+        }
+        reference back(){
+            return _data[size() - 1];
+        }
+        const_reference back()const{
+            return _data[size() - 1];
+        }
 
         // 26.3.11.4, data access
-        T* data()noexcept;
-        const T* data()const noexcept;
+        T* data()noexcept{
+            return _data;
+        }
+        const T* data()const noexcept{
+            return _data;
+        }
 
         // 26.3.11.5, modifiers
         template<class... Args>
@@ -140,6 +198,11 @@ namespace std{
                      allocator_traits<Allocator>::is_always_equal::value);
 
         void clear()noexcept;
+
+    private:
+        size_type _cap;
+        size_type _size;
+        pointer   _data;
     };
 
     template<class InputIterator,

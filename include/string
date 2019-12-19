@@ -1,0 +1,593 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/string
+ * @author Peter Züger
+ * @date   13.12.2018
+ * @brief  String classes
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __STRING__
+#define __STRING__
+
+#include <__allocator_traits>
+#include <__char_traits>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <cwchar>
+#include <initializer_list>
+#include <iosfwd>
+#include <memory_resource>
+#include <stdexcept>
+#include <string_view>
+
+namespace std{
+    // 24.2, character traits
+    // defined in __char_traits
+
+    // 24.3.2, basic_string
+    template<class charT, class traits, class Allocator>
+    class basic_string{
+    public:
+        // types:
+        using traits_type            = traits;
+        using value_type             = charT;
+        using allocator_type         = Allocator;
+        using size_type              = typename allocator_traits<Allocator>::size_type;
+        using difference_type        = typename allocator_traits<Allocator>::difference_type;
+        using pointer                = typename allocator_traits<Allocator>::pointer;
+        using const_pointer          = typename allocator_traits<Allocator>::const_pointer;
+        using reference              = value_type&;
+        using const_reference        = const value_type&;
+        using iterator               = pointer;
+        using const_iterator         = const_pointer;
+        using reverse_iterator       = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+        static const size_type npos  = -1;
+
+    private:
+        size_type _cap;
+        size_type _size;
+        pointer   _data;
+
+    public:
+        // 24.3.2.2, construct/copy/destroy
+        basic_string()noexcept(noexcept(Allocator())): basic_string(Allocator()){}
+        explicit basic_string(const Allocator& a)noexcept;
+        basic_string(const basic_string& str);
+        basic_string(basic_string&& str)noexcept;
+        basic_string(const basic_string& str, size_type pos, const Allocator& a = Allocator());
+        basic_string(const basic_string& str, size_type pos, size_type n,const Allocator& a = Allocator());
+
+        template<class T>basic_string(const T& t, size_type pos, size_type n, const Allocator& a = Allocator());
+        explicit basic_string(basic_string_view<charT, traits> sv, const Allocator& a = Allocator());
+
+        basic_string(const charT* s, size_type n, const Allocator& a = Allocator());
+        basic_string(const charT* s, const Allocator& a = Allocator());
+        basic_string(size_type n, charT c, const Allocator& a = Allocator());
+
+        template<class InputIterator>
+        basic_string(InputIterator begin, InputIterator end, const Allocator& a = Allocator());
+
+        basic_string(initializer_list<charT>, const Allocator& = Allocator());
+        basic_string(const basic_string&, const Allocator&);
+        basic_string(basic_string&&, const Allocator&);
+
+        ~basic_string();
+
+        basic_string& operator=(const basic_string& str);
+        basic_string& operator=(basic_string&& str)
+            noexcept(allocator_traits<Allocator>::propagate_on_container_move_assignment::value ||
+                     allocator_traits<Allocator>::is_always_equal::value);
+        basic_string& operator=(basic_string_view<charT, traits> sv);
+        basic_string& operator=(const charT* s);
+        basic_string& operator=(charT c);
+        basic_string& operator=(initializer_list<charT>);
+
+        // 24.3.2.3, iterators
+        iterator begin()noexcept{
+            return iterator(_data);
+        }
+        const_iterator begin()const noexcept{
+            return const_iterator(_data);
+        }
+        iterator end()noexcept{
+            return iterator(_data + _size);
+        }
+        const_iterator end()const noexcept{
+            return const_iterator(_data + _size);
+        }
+
+        reverse_iterator rbegin()noexcept{
+            return reverse_iterator(_data + _size);
+        }
+        const_reverse_iterator rbegin()const noexcept{
+            return const_reverse_iterator(_data + _size);
+        }
+        reverse_iterator rend()noexcept{
+            return reverse_iterator(_data);
+        }
+        const_reverse_iterator rend()const noexcept{
+            return const_reverse_iterator(_data);
+        }
+
+        const_iterator cbegin()const noexcept{
+            return begin();
+        }
+        const_iterator cend()const noexcept{
+            return end();
+        }
+        const_reverse_iterator crbegin()const noexcept{
+            return rbegin();
+        }
+        const_reverse_iterator crend()const noexcept{
+            return rend();
+        }
+
+        // 24.3.2.4, capacity
+        size_type size()const noexcept{
+            return _size;
+        }
+        size_type length()const noexcept{
+            return size();
+        }
+        size_type max_size()const noexcept{
+            return std::numeric_limits<size_type>::max();
+        }
+        void resize(size_type n, charT c);
+        void resize(size_type n);
+        size_type capacity()const noexcept{
+            return _cap;
+        }
+        void reserve(size_type res_arg = 0);
+        void shrink_to_fit();
+        void clear()noexcept{
+            erase(begin(), end());
+        }
+        bool empty()const noexcept{
+            return size() == 0;
+        }
+
+        // 24.3.2.5, element access
+        const_reference operator[](size_type pos)const{
+            return _data[pos];
+        }
+        reference operator[](size_type pos){
+            return _data[pos];
+        }
+        const_reference at(size_type n)const{
+            if(n >= size())
+                __throw_out_of_range("string::at");
+            return _data[n];
+        }
+        reference at(size_type n){
+            if(n >= size())
+                __throw_out_of_range("string::at");
+            return _data[n];
+        }
+
+        const charT& front()const{
+            return _data[0];
+        }
+        charT& front(){
+            return _data[0];
+        }
+        const charT& back()const{
+            return _data[size() - 1];
+        }
+        charT& back(){
+            return _data[size() - 1];
+        }
+
+        // 24.3.2.6, modifiers
+        basic_string& operator+=(const basic_string& str);
+        basic_string& operator+=(basic_string_view<charT, traits> sv);
+        basic_string& operator+=(const charT* s);
+        basic_string& operator+=(charT c);
+        basic_string& operator+=(initializer_list<charT>);
+        basic_string& append(const basic_string& str);
+        basic_string& append(const basic_string& str, size_type pos, size_type n = npos);
+        basic_string& append(basic_string_view<charT, traits> sv);
+        template<class T>
+        basic_string& append(const T& t, size_type pos, size_type n = npos);
+        basic_string& append(const charT* s, size_type n);
+        basic_string& append(const charT* s);
+        basic_string& append(size_type n, charT c);
+        template<class InputIterator>
+        basic_string& append(InputIterator first, InputIterator last);
+        basic_string& append(initializer_list<charT>);
+
+        void push_back(charT c);
+
+        basic_string& assign(const basic_string& str);
+        basic_string& assign(basic_string&& str)
+            noexcept(allocator_traits<Allocator>::propagate_on_container_move_assignment::value ||
+                     allocator_traits<Allocator>::is_always_equal::value);
+        basic_string& assign(const basic_string& str, size_type pos, size_type n = npos);
+        basic_string& assign(basic_string_view<charT, traits> sv);
+        template<class T>
+        basic_string& assign(const T& t, size_type pos, size_type n = npos);
+        basic_string& assign(const charT* s, size_type n);
+        basic_string& assign(const charT* s);
+        basic_string& assign(size_type n, charT c);
+        template<class InputIterator>
+        basic_string& assign(InputIterator first, InputIterator last);
+        basic_string& assign(initializer_list<charT>);
+
+        basic_string& insert(size_type pos, const basic_string& str);
+        basic_string& insert(size_type pos1, const basic_string& str,
+                             size_type pos2, size_type n = npos);
+        basic_string& insert(size_type pos, basic_string_view<charT, traits> sv);
+        template<class T>
+        basic_string& insert(size_type pos1, const T& t, size_type pos2, size_type n = npos);
+        basic_string& insert(size_type pos, const charT* s, size_type n);
+        basic_string& insert(size_type pos, const charT* s);
+        basic_string& insert(size_type pos, size_type n, charT c);
+        iterator insert(const_iterator p, charT c);
+        iterator insert(const_iterator p, size_type n, charT c);
+        template<class InputIterator>
+        iterator insert(const_iterator p, InputIterator first, InputIterator last);
+        iterator insert(const_iterator p, initializer_list<charT>);
+
+        basic_string& erase(size_type pos = 0, size_type n = npos);
+        iterator erase(const_iterator p);
+        iterator erase(const_iterator first, const_iterator last);
+
+        void pop_back();
+
+        basic_string& replace(size_type pos1, size_type n1,
+                              const basic_string& str);
+        basic_string& replace(size_type pos1, size_type n1,
+                              const basic_string& str,
+                              size_type pos2, size_type n2 = npos);
+        basic_string& replace(size_type pos1, size_type n1,
+                              basic_string_view<charT, traits> sv);
+        template<class T>
+        basic_string& replace(size_type pos1, size_type n1, const T& t,
+                              size_type pos2, size_type n2 = npos);
+        basic_string& replace(size_type pos, size_type n1, const charT* s, size_type n2);
+        basic_string& replace(size_type pos, size_type n1, const charT* s);
+        basic_string& replace(size_type pos, size_type n1, size_type n2, charT c);
+
+        basic_string& replace(const_iterator i1, const_iterator i2,
+                              const basic_string& str);
+        basic_string& replace(const_iterator i1, const_iterator i2,
+                              basic_string_view<charT, traits> sv);
+        basic_string& replace(const_iterator i1, const_iterator i2, const charT* s, size_type n);
+        basic_string& replace(const_iterator i1, const_iterator i2, const charT* s);
+        basic_string& replace(const_iterator i1, const_iterator i2, size_type n, charT c);
+        template<class InputIterator>
+        basic_string& replace(const_iterator i1, const_iterator i2,
+                              InputIterator j1, InputIterator j2);
+        basic_string& replace(const_iterator, const_iterator, initializer_list<charT>);
+
+        size_type copy(charT* s, size_type n, size_type pos = 0)const;
+        void swap(basic_string& str)
+            noexcept(allocator_traits<Allocator>::propagate_on_container_swap::value ||
+                     allocator_traits<Allocator>::is_always_equal::value);
+
+        // 24.3.2.7, string operations
+        const charT* c_str()const noexcept;
+        const charT* data()const noexcept{
+            return _data;
+        }
+        charT* data()noexcept{
+            return _data;
+        }
+        operator basic_string_view<charT, traits>()const noexcept;
+        allocator_type get_allocator()const noexcept;
+
+        size_type find (basic_string_view<charT, traits> sv, size_type pos = 0)const noexcept;
+        size_type find (const basic_string& str, size_type pos = 0)const noexcept;
+        size_type find (const charT* s, size_type pos, size_type n)const;
+        size_type find (const charT* s, size_type pos = 0)const;
+        size_type find (charT c, size_type pos = 0)const;
+        size_type rfind(basic_string_view<charT, traits> sv, size_type pos = npos)const noexcept;
+        size_type rfind(const basic_string& str, size_type pos = npos)const noexcept;
+        size_type rfind(const charT* s, size_type pos, size_type n)const;
+        size_type rfind(const charT* s, size_type pos = npos)const;
+        size_type rfind(charT c, size_type pos = npos)const;
+
+        size_type find_first_of(basic_string_view<charT, traits> sv,
+                                size_type pos = 0)const noexcept;
+        size_type find_first_of(const basic_string& str, size_type pos = 0)const noexcept;
+        size_type find_first_of(const charT* s, size_type pos, size_type n)const;
+        size_type find_first_of(const charT* s, size_type pos = 0)const;
+        size_type find_first_of(charT c, size_type pos = 0)const;
+        size_type find_last_of (basic_string_view<charT, traits> sv,
+                                size_type pos = npos)const noexcept;
+        size_type find_last_of (const basic_string& str, size_type pos = npos)const noexcept;
+        size_type find_last_of (const charT* s, size_type pos, size_type n) const;
+        size_type find_last_of (const charT* s, size_type pos = npos)const;
+        size_type find_last_of (charT c, size_type pos = npos)const;
+
+        size_type find_first_not_of(basic_string_view<charT, traits> sv,
+                                    size_type pos = 0)const noexcept;
+        size_type find_first_not_of(const basic_string& str, size_type pos = 0)const noexcept;
+        size_type find_first_not_of(const charT* s, size_type pos, size_type n)const;
+        size_type find_first_not_of(const charT* s, size_type pos = 0)const;
+        size_type find_first_not_of(charT c, size_type pos = 0)const;
+        size_type find_last_not_of (basic_string_view<charT, traits> sv,
+                                    size_type pos = npos)const noexcept;
+        size_type find_last_not_of (const basic_string& str, size_type pos = npos)const noexcept;
+        size_type find_last_not_of (const charT* s, size_type pos, size_type n)const;
+        size_type find_last_not_of (const charT* s, size_type pos = npos)const;
+        size_type find_last_not_of (charT c, size_type pos = npos)const;
+
+        basic_string substr(size_type pos = 0, size_type n = npos)const;
+        int compare(basic_string_view<charT, traits> sv)const noexcept;
+        int compare(size_type pos1, size_type n1, basic_string_view<charT, traits> sv)const;
+        template<class T>
+        int compare(size_type pos1, size_type n1, const T& t,
+                    size_type pos2, size_type n2 = npos)const;
+        int compare(const basic_string& str)const noexcept;
+        int compare(size_type pos1, size_type n1, const basic_string& str)const;
+        int compare(size_type pos1, size_type n1, const basic_string& str,
+                    size_type pos2, size_type n2 = npos)const;
+        int compare(const charT* s)const;
+        int compare(size_type pos1, size_type n1, const charT* s)const;
+        int compare(size_type pos1, size_type n1, const charT* s, size_type n2)const;
+    };
+
+    template<class InputIterator,
+             class Allocator = allocator<typename std::iterator_traits<InputIterator>::value_type>>
+    basic_string(InputIterator, InputIterator, Allocator = Allocator())
+        -> basic_string<typename std::iterator_traits<InputIterator>::value_type,
+                        char_traits<typename std::iterator_traits<InputIterator>::value_type>,
+                        Allocator>;
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(const basic_string<charT, traits, Allocator>& lhs,
+                                                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(basic_string<charT, traits, Allocator>&& lhs,
+                                                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(const basic_string<charT, traits, Allocator>& lhs,
+                                                    basic_string<charT, traits, Allocator>&& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(basic_string<charT, traits, Allocator>&& lhs,
+                                                    basic_string<charT, traits, Allocator>&& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(const charT* lhs,
+                                                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(const charT* lhs,
+                                                    basic_string<charT, traits, Allocator>&& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(charT lhs,
+                                                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(charT lhs,
+                                                    basic_string<charT, traits, Allocator>&& rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(const basic_string<charT, traits, Allocator>& lhs,
+                                                    const charT* rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(basic_string<charT, traits, Allocator>&& lhs,
+                                                    const charT* rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(const basic_string<charT, traits, Allocator>& lhs,
+                                                    charT rhs);
+
+    template<class charT, class traits, class Allocator>
+    basic_string<charT, traits, Allocator>operator+(basic_string<charT, traits, Allocator>&& lhs,
+                                                    charT rhs);
+
+
+    template<class charT, class traits, class Allocator>
+    bool operator==(const basic_string<charT, traits, Allocator>& lhs,
+                    const basic_string<charT, traits, Allocator>& rhs)noexcept;
+
+    template<class charT, class traits, class Allocator>
+    bool operator==(const charT* lhs,
+                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator==(const basic_string<charT, traits, Allocator>& lhs,
+                    const charT* rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator!=(const basic_string<charT, traits, Allocator>& lhs,
+                    const basic_string<charT, traits, Allocator>& rhs)noexcept;
+
+    template<class charT, class traits, class Allocator>
+    bool operator!=(const charT* lhs,
+                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator!=(const basic_string<charT, traits, Allocator>& lhs,
+                    const charT* rhs);
+
+
+    template<class charT, class traits, class Allocator>
+    bool operator< (const basic_string<charT, traits, Allocator>& lhs,
+                    const basic_string<charT, traits, Allocator>& rhs)noexcept;
+
+    template<class charT, class traits, class Allocator>
+    bool operator< (const basic_string<charT, traits, Allocator>& lhs,
+                    const charT* rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator< (const charT* lhs,
+                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator> (const basic_string<charT, traits, Allocator>& lhs,
+                    const basic_string<charT, traits, Allocator>& rhs)noexcept;
+
+    template<class charT, class traits, class Allocator>
+    bool operator> (const basic_string<charT, traits, Allocator>& lhs,
+                    const charT* rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator> (const charT* lhs,
+                    const basic_string<charT, traits, Allocator>& rhs);
+
+
+    template<class charT, class traits, class Allocator>
+    bool operator<=(const basic_string<charT, traits, Allocator>& lhs,
+                    const basic_string<charT, traits, Allocator>& rhs)noexcept;
+
+    template<class charT, class traits, class Allocator>
+    bool operator<=(const basic_string<charT, traits, Allocator>& lhs,
+                    const charT* rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator<=(const charT* lhs,
+                    const basic_string<charT, traits, Allocator>& rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator>=(const basic_string<charT, traits, Allocator>& lhs,
+                    const basic_string<charT, traits, Allocator>& rhs)noexcept;
+
+    template<class charT, class traits, class Allocator>
+    bool operator>=(const basic_string<charT, traits, Allocator>& lhs,
+                    const charT* rhs);
+
+    template<class charT, class traits, class Allocator>
+    bool operator>=(const charT* lhs,
+                    const basic_string<charT, traits, Allocator>& rhs);
+
+    // 24.3.3.8, swap
+    template<class charT, class traits, class Allocator>
+    void swap(basic_string<charT, traits, Allocator>& lhs,
+              basic_string<charT, traits, Allocator>& rhs)noexcept(noexcept(lhs.swap(rhs)));
+
+    // 24.3.3.9, inserters and extractors
+    template<class charT, class traits, class Allocator>
+    basic_istream<charT, traits>&operator>>(basic_istream<charT, traits>& is,
+                                            basic_string<charT, traits, Allocator>& str);
+
+    template<class charT, class traits, class Allocator>
+    basic_ostream<charT, traits>&operator<<(basic_ostream<charT, traits>& os,
+                                            const basic_string<charT, traits, Allocator>& str);
+
+    template<class charT, class traits, class Allocator>
+    basic_istream<charT, traits>&getline(basic_istream<charT, traits>& is,
+                                         basic_string<charT, traits, Allocator>& str,
+                                         charT delim);
+
+    template<class charT, class traits, class Allocator>
+    basic_istream<charT, traits>&getline(basic_istream<charT, traits>&& is,
+                                         basic_string<charT, traits, Allocator>& str,
+                                         charT delim);
+
+    template<class charT, class traits, class Allocator>
+    basic_istream<charT, traits>&getline(basic_istream<charT, traits>& is,
+                                         basic_string<charT, traits, Allocator>& str);
+
+    template<class charT, class traits, class Allocator>
+    basic_istream<charT, traits>&getline(basic_istream<charT, traits>&& is,
+                                         basic_string<charT, traits, Allocator>& str);
+
+    // basic_string typedef names
+    using string    = basic_string<char>;
+#if defined(char8_t)
+    using u8string = basic_string<char8_t>;
+#endif /* defined(char8_t) */
+    using u16string = basic_string<char16_t>;
+    using u32string = basic_string<char32_t>;
+    using wstring   = basic_string<wchar_t>;
+
+    // 24.3.4, numeric conversions
+    int stoi(const string& str, size_t* idx = nullptr, int base = 10);
+    long stol(const string& str, size_t* idx = nullptr, int base = 10);
+    unsigned long stoul(const string& str, size_t* idx = nullptr, int base = 10);
+    long long stoll(const string& str, size_t* idx = nullptr, int base = 10);
+    unsigned long long stoull(const string& str, size_t* idx = nullptr, int base = 10);
+    float stof(const string& str, size_t* idx = nullptr);
+    double stod(const string& str, size_t* idx = nullptr);
+    long double stold(const string& str, size_t* idx = nullptr);
+    string to_string(int val);
+    string to_string(unsigned val);
+    string to_string(long val);
+    string to_string(unsigned long val);
+    string to_string(long long val);
+    string to_string(unsigned long long val);
+    string to_string(float val);
+    string to_string(double val);
+    string to_string(long double val);
+
+    int stoi(const wstring& str, size_t* idx = nullptr, int base = 10);
+    long stol(const wstring& str, size_t* idx = nullptr, int base = 10);
+    unsigned long stoul(const wstring& str, size_t* idx = nullptr, int base = 10);
+    long long stoll(const wstring& str, size_t* idx = nullptr, int base = 10);
+    unsigned long long stoull(const wstring& str, size_t* idx = nullptr, int base = 10);
+    float stof(const wstring& str, size_t* idx = nullptr);
+    double stod(const wstring& str, size_t* idx = nullptr);
+    long double stold(const wstring& str, size_t* idx = nullptr);
+    wstring to_wstring(int val);
+    wstring to_wstring(unsigned val);
+    wstring to_wstring(long val);
+    wstring to_wstring(unsigned long val);
+    wstring to_wstring(long long val);
+    wstring to_wstring(unsigned long long val);
+    wstring to_wstring(float val);
+    wstring to_wstring(double val);
+    wstring to_wstring(long double val);
+
+    // 24.3.5, hash support
+    template<class T> struct hash;
+    template<> struct hash<string>;
+#if defined(char8_t)
+    template<> struct hash<u8string>;
+#endif /* defined(char8_t) */
+    template<> struct hash<u16string>;
+    template<> struct hash<u32string>;
+    template<> struct hash<wstring>;
+
+    namespace pmr{
+        template<class charT, class traits = char_traits<charT>>
+        using basic_string = std::basic_string<charT, traits, polymorphic_allocator<charT>>;
+
+        using string    = basic_string<char>;
+#if defined(char8_t)
+        using u8string  = basic_string<char8_t>;
+#endif /* defined(char8_t) */
+        using u16string = basic_string<char16_t>;
+        using u32string = basic_string<char32_t>;
+        using wstring   = basic_string<wchar_t>;
+    }
+
+    inline
+    namespace literals{
+        inline
+        namespace string_literals{
+            // 24.3.6, suffix for basic_string literals
+            string    operator""s(const char* str, size_t len);
+#if defined(char8_t)
+            u8string  operator""s(const char8_t* str, size_t len);
+#endif /* defined(char8_t) */
+            u16string operator""s(const char16_t* str, size_t len);
+            u32string operator""s(const char32_t* str, size_t len);
+            wstring   operator""s(const wchar_t* str, size_t len);
+        }
+    }
+}
+
+#endif /* __STRING__ */

@@ -28,6 +28,7 @@
 namespace std{
     struct __iomanip_t1{
         ios_base::fmtflags mask;
+        explicit __iomanip_t1(ios_base::fmtflags m): mask{m}{}
     };
 
     template<class CharT, class Traits>
@@ -45,6 +46,7 @@ namespace std{
 
     struct __iomanip_t2{
         ios_base::fmtflags mask;
+        explicit __iomanip_t2(ios_base::fmtflags m): mask{m}{}
     };
 
     template<class CharT, class Traits>
@@ -62,6 +64,7 @@ namespace std{
 
     struct __iomanip_t3{
         int base;
+        explicit __iomanip_t3(int b): base{b}{}
     };
 
     template<class CharT, class Traits>
@@ -86,6 +89,7 @@ namespace std{
     template<class CharT>
     struct __iomanip_t4{
         CharT c;
+        explicit __iomanip_t4(CharT _c): c{_c}{}
     };
 
     template<class CharT, class Traits>
@@ -103,6 +107,7 @@ namespace std{
 
     struct __iomanip_t5{
         int n;
+        explicit __iomanip_t5(int _n): n{_n}{}
     };
 
     template<class CharT, class Traits>
@@ -120,6 +125,7 @@ namespace std{
 
     struct __iomanip_t6{
         int n;
+        explicit __iomanip_t6(int _n): n{_n}{}
     };
 
     template<class CharT, class Traits>

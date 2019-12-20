@@ -1,0 +1,82 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/iomanip
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  Formatting and manipulators
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __IOMANIP__
+#define __IOMANIP__
+
+#include <ios>
+#include <string_view>
+
+namespace std{
+    using __iomanip_t1 = void;
+    using __iomanip_t2 = void;
+    using __iomanip_t3 = void;
+    using __iomanip_t4 = void;
+    using __iomanip_t5 = void;
+    using __iomanip_t6 = void;
+    using __iomanip_t7 = void;
+    using __iomanip_t8 = void;
+    using __iomanip_t9 = void;
+    using __iomanip_t10 = void;
+    using __iomanip_t11 = void;
+    using __iomanip_t12 = void;
+    using __iomanip_t13 = void;
+    using __iomanip_t14 = void;
+
+    // types T1,T2, ... are unspecified implementation types
+    __iomanip_t1 resetiosflags(ios_base::fmtflags mask);
+    __iomanip_t2 setiosflags  (ios_base::fmtflags mask);
+    __iomanip_t3 setbase(int base);
+
+    template<class charT>
+    __iomanip_t4 setfill(charT c);
+    __iomanip_t5 setprecision(int n);
+    __iomanip_t6 setw(int n);
+
+    template<class moneyT>
+    __iomanip_t7 get_money(moneyT& mon, bool intl = false);
+
+    template<class moneyT>
+    __iomanip_t8 put_money(const moneyT& mon, bool intl = false);
+
+    template<class charT>
+    __iomanip_t9 get_time(struct tm* tmb, const charT* fmt);
+
+    template<class charT>
+    __iomanip_t10 put_time(const struct tm* tmb, const charT* fmt);
+
+    template<class charT>
+    __iomanip_t11 quoted(const charT* s, charT delim = charT('"'), charT escape = charT('\\'));
+
+    template<class charT, class traits, class Allocator>
+    __iomanip_t12 quoted(const basic_string<charT, traits, Allocator>& s,
+                         charT delim = charT('"'), charT escape = charT('\\'));
+
+    template<class charT, class traits, class Allocator>
+    __iomanip_t13 quoted(basic_string<charT, traits, Allocator>& s,
+                         charT delim = charT('"'), charT escape = charT('\\'));
+
+    template<class charT, class traits>
+    __iomanip_t14 quoted(basic_string_view<charT, traits> s,
+                         charT delim = charT('"'), charT escape = charT('\\'));
+}
+
+#endif /* __IOMANIP__ */

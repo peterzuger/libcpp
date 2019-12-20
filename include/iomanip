@@ -150,14 +150,26 @@ namespace std{
     struct __iomanip_t14{};
 
     // types T1,T2, ... are unspecified implementation types
-    __iomanip_t1 resetiosflags(ios_base::fmtflags mask);
-    __iomanip_t2 setiosflags  (ios_base::fmtflags mask);
-    __iomanip_t3 setbase(int base);
+    __iomanip_t1 resetiosflags(ios_base::fmtflags mask){
+        return __iomanip_t1(mask);
+    }
+    __iomanip_t2 setiosflags  (ios_base::fmtflags mask){
+        return __iomanip_t2(mask);
+    }
+    __iomanip_t3 setbase(int base){
+        return __iomanip_t3(base);
+    }
 
     template<class charT>
-    __iomanip_t4<charT> setfill(charT c);
-    __iomanip_t5 setprecision(int n);
-    __iomanip_t6 setw(int n);
+    __iomanip_t4<charT> setfill(charT c){
+        return __iomanip_t4<charT>(c);
+    }
+    __iomanip_t5 setprecision(int n){
+        return __iomanip_t5(n);
+    }
+    __iomanip_t6 setw(int n){
+        return __iomanip_t6(n);
+    }
 
     template<class moneyT>
     __iomanip_t7 get_money(moneyT& mon, bool intl = false);

@@ -26,20 +26,122 @@
 #include <string_view>
 
 namespace std{
-    using __iomanip_t1 = void;
-    using __iomanip_t2 = void;
-    using __iomanip_t3 = void;
-    using __iomanip_t4 = void;
-    using __iomanip_t5 = void;
-    using __iomanip_t6 = void;
-    using __iomanip_t7 = void;
-    using __iomanip_t8 = void;
-    using __iomanip_t9 = void;
-    using __iomanip_t10 = void;
-    using __iomanip_t11 = void;
-    using __iomanip_t12 = void;
-    using __iomanip_t13 = void;
-    using __iomanip_t14 = void;
+    struct __iomanip_t1{
+        ios_base::fmtflags mask;
+    };
+
+    template<class CharT, class Traits>
+    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t1& x){
+        is.setf(ios_base::fmtflags(0), x.mask);
+        return is;
+    }
+
+    template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t1& x){
+        os.setf(ios_base::fmtflags(0), x.mask);
+        return os;
+    }
+
+
+    struct __iomanip_t2{
+        ios_base::fmtflags mask;
+    };
+
+    template<class CharT, class Traits>
+    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t2& x){
+        is.setf(x.mask);
+        return is;
+    }
+
+    template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t2& x){
+        os.setf(x.mask);
+        return os;
+    }
+
+
+    struct __iomanip_t3{
+        int base;
+    };
+
+    template<class CharT, class Traits>
+    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t3& x){
+        is.setf(x.base ==  8 ? ios_base::oct :
+                x.base == 10 ? ios_base::dec :
+                x.base == 16 ? ios_base::hex :
+                ios_base::fmtflags(0), ios_base::basefield);
+        return is;
+    }
+
+    template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t3& x){
+        os.setf(x.base ==  8 ? ios_base::oct :
+                x.base == 10 ? ios_base::dec :
+                x.base == 16 ? ios_base::hex :
+                ios_base::fmtflags(0), ios_base::basefield);
+        return os;
+    }
+
+
+    template<class CharT>
+    struct __iomanip_t4{
+        CharT c;
+    };
+
+    template<class CharT, class Traits>
+    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t4<CharT>& x){
+        is.fill(x.c);
+        return is;
+    }
+
+    template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t4<CharT>& x){
+        os.fill(x.c);
+        return os;
+    }
+
+
+    struct __iomanip_t5{
+        int n;
+    };
+
+    template<class CharT, class Traits>
+    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t5& x){
+        is.precision(x.n);
+        return is;
+    }
+
+    template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t5& x){
+        os.precision(x.n);
+        return os;
+    }
+
+
+    struct __iomanip_t6{
+        int n;
+    };
+
+    template<class CharT, class Traits>
+    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t6& x){
+        is.width(x.n);
+        return is;
+    }
+
+    template<class CharT, class Traits>
+    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t6& x){
+        os.width(x.n);
+        return os;
+    }
+
+    struct __iomanip_t7{};
+    struct __iomanip_t8{};
+    struct __iomanip_t9{};
+    struct __iomanip_t10{};
+    struct __iomanip_t11{};
+    struct __iomanip_t12{};
+    struct __iomanip_t13{};
+    struct __iomanip_t14{};
 
     // types T1,T2, ... are unspecified implementation types
     __iomanip_t1 resetiosflags(ios_base::fmtflags mask);
@@ -47,7 +149,7 @@ namespace std{
     __iomanip_t3 setbase(int base);
 
     template<class charT>
-    __iomanip_t4 setfill(charT c);
+    __iomanip_t4<charT> setfill(charT c);
     __iomanip_t5 setprecision(int n);
     __iomanip_t6 setw(int n);
 

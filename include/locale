@@ -1,0 +1,133 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/locale
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  Localization library
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __LOCALE__
+#define __LOCALE__
+
+#include <iterator>
+
+namespace std{
+    // 25.3.1, locale
+    class locale;
+
+    template<class Facet>
+    const Facet& use_facet(const locale&);
+
+    template<class Facet>
+    bool has_facet(const locale&)noexcept;
+
+    // 25.3.3, convenience interfaces
+    template<class charT> bool isspace (charT c, const locale& loc);
+    template<class charT> bool isprint (charT c, const locale& loc);
+    template<class charT> bool iscntrl (charT c, const locale& loc);
+    template<class charT> bool isupper (charT c, const locale& loc);
+    template<class charT> bool islower (charT c, const locale& loc);
+    template<class charT> bool isalpha (charT c, const locale& loc);
+    template<class charT> bool isdigit (charT c, const locale& loc);
+    template<class charT> bool ispunct (charT c, const locale& loc);
+    template<class charT> bool isxdigit(charT c, const locale& loc);
+    template<class charT> bool isalnum (charT c, const locale& loc);
+    template<class charT> bool isgraph (charT c, const locale& loc);
+    template<class charT> bool isblank (charT c, const locale& loc);
+    template<class charT> charT toupper(charT c, const locale& loc);
+    template<class charT> charT tolower(charT c, const locale& loc);
+
+    // 25.4.1, ctype
+    class ctype_base;
+
+    template<class charT>
+    class ctype;
+
+    template<>
+    class ctype<char>;
+
+    template<class charT>
+    class ctype_byname;
+
+    class codecvt_base;
+
+    template<class internT, class externT, class stateT>
+    class codecvt;
+
+    template<class internT, class externT, class stateT>
+    class codecvt_byname;
+
+    // 25.4.2, numeric
+    template<class charT, class InputIterator = std::istreambuf_iterator<charT>>
+    class num_get;
+
+    template<class charT, class OutputIterator = std::ostreambuf_iterator<charT>>
+    class num_put;
+
+    template<class charT>
+    class numpunct;
+
+    template<class charT>
+    class numpunct_byname;
+
+    // 25.4.4, collation
+    template<class charT>
+    class collate;
+
+    template<class charT>
+    class collate_byname;
+
+    // 25.4.5, date and time
+    class time_base;
+
+    template<class charT, class InputIterator = std::istreambuf_iterator<charT>>
+    class time_get;
+
+    template<class charT, class InputIterator = std::istreambuf_iterator<charT>>
+    class time_get_byname;
+
+    template<class charT, class OutputIterator = std::ostreambuf_iterator<charT>>
+    class time_put;
+
+    template<class charT, class OutputIterator = std::ostreambuf_iterator<charT>>
+    class time_put_byname;
+
+    // 25.4.6, money
+    class money_base;
+
+    template<class charT, class InputIterator = std::istreambuf_iterator<charT>>
+    class money_get;
+
+    template<class charT, class OutputIterator = std::ostreambuf_iterator<charT>>
+    class money_put;
+
+    template<class charT, bool Intl = false>
+    class moneypunct;
+
+    template<class charT, bool Intl = false>
+    class moneypunct_byname;
+
+    // 25.4.7, message retrieval
+    class messages_base;
+
+    template<class charT>
+    class messages;
+
+    template<class charT>
+    class messages_byname;
+}
+
+#endif /* __LOCALE__ */

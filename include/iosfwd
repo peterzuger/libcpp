@@ -29,10 +29,10 @@ namespace std{
     template<class charT>
     struct char_traits;
 
-    template<>class char_traits<char>;
-    template<>class char_traits<char16_t>;
-    template<>class char_traits<char32_t>;
-    template<>class char_traits<wchar_t>;
+    template<>struct char_traits<char>;
+    template<>struct char_traits<char16_t>;
+    template<>struct char_traits<char32_t>;
+    template<>struct char_traits<wchar_t>;
 
     template<class T>
     class allocator;

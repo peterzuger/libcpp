@@ -1,0 +1,169 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/istream
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  Formatting and manipulators
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __ISTREAM__
+#define __ISTREAM__
+
+#include <ios>
+
+namespace std{
+    template<class charT, class traits>
+    class basic_istream: virtual public basic_ios<charT, traits>{
+    public:
+        // types (inherited frombasic_ios(30.5.5)):
+        using char_type   = charT;
+        using int_type    = typename traits::int_type;
+        using pos_type    = typename traits::pos_type;
+        using off_type    = typename traits::off_type;
+        using traits_type = traits;
+
+        // 30.7.4.1.1, constructor/destructor
+        explicit basic_istream(basic_streambuf<charT, traits>* sb);
+        virtual ~basic_istream();
+
+        // 30.7.4.1.3, prefix/suffix
+        template<class scharT, class straits = char_traits<charT>>
+        class sentry{
+            using traits_type = straits;
+            bool ok_;// exposition only
+        public:
+            explicit sentry(basic_istream<scharT, straits>& is, bool noskipws = false);
+            ~sentry();
+            sentry(const sentry&) = delete;
+            sentry& operator=(const sentry&) = delete;
+            explicit operator bool()const{ return ok_; }
+        };
+
+        // 30.7.4.2, formatted input
+        basic_istream<charT, traits>&operator>>(basic_istream<charT, traits>& (*pf)(basic_istream<charT, traits>&));
+        basic_istream<charT, traits>&operator>>(basic_ios<charT, traits>& (*pf)(basic_ios<charT, traits>&));
+        basic_istream<charT, traits>&operator>>(ios_base& (*pf)(ios_base&));
+
+        basic_istream<charT, traits>& operator>>(bool& n);
+        basic_istream<charT, traits>& operator>>(short& n);
+        basic_istream<charT, traits>& operator>>(unsigned short& n);
+        basic_istream<charT, traits>& operator>>(int& n);
+        basic_istream<charT, traits>& operator>>(unsigned int& n);
+        basic_istream<charT, traits>& operator>>(long& n);
+        basic_istream<charT, traits>& operator>>(unsigned long& n);
+        basic_istream<charT, traits>& operator>>(long long& n);
+        basic_istream<charT, traits>& operator>>(unsigned long long& n);
+        basic_istream<charT, traits>& operator>>(float& f);
+        basic_istream<charT, traits>& operator>>(double& f);
+        basic_istream<charT, traits>& operator>>(long double& f);
+
+        basic_istream<charT, traits>& operator>>(void*& p);
+        basic_istream<charT, traits>& operator>>(basic_streambuf<char_type, traits>* sb);
+
+        // 30.7.4.3, unformatted input
+        streamsize gcount() const;int_type get();
+        basic_istream<charT, traits>& get(char_type& c);
+        basic_istream<charT, traits>& get(char_type* s, streamsize n);
+        basic_istream<charT, traits>& get(char_type* s, streamsize n, char_type delim);
+        basic_istream<charT, traits>& get(basic_streambuf<char_type, traits>& sb);
+        basic_istream<charT, traits>& get(basic_streambuf<char_type, traits>& sb, char_type delim);
+        basic_istream<charT, traits>& getline(char_type* s, streamsize n);
+        basic_istream<charT, traits>& getline(char_type* s, streamsize n, char_type delim);
+        basic_istream<charT, traits>& ignore(streamsize n = 1, int_type delim = traits::eof());
+        int_type                      peek();
+        basic_istream<charT, traits>& read    (char_type* s, streamsize n);
+        streamsize                    readsome(char_type* s, streamsize n);
+        basic_istream<charT, traits>& putback(char_type c);
+        basic_istream<charT, traits>& unget();
+        int sync();pos_type tellg();
+        basic_istream<charT, traits>& seekg(pos_type);
+        basic_istream<charT, traits>& seekg(off_type, ios_base::seekdir);
+
+    protected:
+        // 30.7.4.1.1, copy/move constructor
+        basic_istream(const basic_istream& rhs) = delete;
+        basic_istream(basic_istream&& rhs);
+
+        // 30.7.4.1.2, assign and swap
+        basic_istream& operator=(const basic_istream& rhs) = delete;
+        basic_istream& operator=(basic_istream&& rhs);
+
+        void swap(basic_istream& rhs);
+    };
+
+    using istream  = basic_istream<char>;
+    using wistream = basic_istream<wchar_t>;
+
+    // 30.7.4.2.3, character extraction templates
+    template<class charT, class traits>
+    basic_istream<charT, traits>& operator>>(basic_istream<charT, traits>&, charT&);
+
+    template<class traits>
+    basic_istream<char, traits>& operator>>(basic_istream<char, traits>&, unsigned char&);
+
+    template<class traits>
+    basic_istream<char, traits>& operator>>(basic_istream<char, traits>&, signed char&);
+
+
+    template<class charT, class traits>
+    basic_istream<charT, traits>& operator>>(basic_istream<charT, traits>&, charT*);
+
+    template<class traits>
+    basic_istream<char, traits>& operator>>(basic_istream<char, traits>&, unsigned char*);
+
+    template<class traits>
+    basic_istream<char, traits>& operator>>(basic_istream<char, traits>&, signed char*);
+
+
+    template<class charT, class traits>
+    class basic_iostream:
+        public basic_istream<charT, traits>,
+        public basic_ostream<charT, traits>{
+    public:
+        using char_type   = charT;
+        using int_type    = typename traits::int_type;
+        using pos_type    = typename traits::pos_type;
+        using off_type    = typename traits::off_type;
+        using traits_type = traits;
+
+        // 30.7.4.6.1, constructor
+        explicit basic_iostream(basic_streambuf<charT, traits>* sb);
+
+        // 30.7.4.6.2, destructor
+        virtual ~basic_iostream();
+
+    protected:
+        // 30.7.4.6.1, constructor
+        basic_iostream(const basic_iostream& rhs) = delete;
+        basic_iostream(basic_iostream&& rhs);
+
+        // 30.7.4.6.3, assign and swap
+        basic_iostream& operator=(const basic_iostream& rhs) = delete;
+        basic_iostream& operator=(basic_iostream&& rhs);
+        void swap(basic_iostream& rhs);
+    };
+
+    using iostream  = basic_iostream<char>;
+    using wiostream = basic_iostream<wchar_t>;
+
+    template<class charT, class traits>
+    basic_istream<charT, traits>& ws(basic_istream<charT, traits>& is);
+
+    template<class charT, class traits, class T>
+    basic_istream<charT, traits>& operator>>(basic_istream<charT, traits>&& is, T&& x);
+}
+
+#endif /* __ISTREAM__ */

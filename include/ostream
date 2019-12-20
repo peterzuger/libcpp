@@ -1,0 +1,164 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/ostream
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  Formatting and manipulators
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __OSTREAM__
+#define __OSTREAM__
+
+#include <ios>
+
+namespace std{
+    template<class charT, class traits>
+    class basic_ostream: virtual public basic_ios<charT, traits>{
+    public:
+        // types (inherited frombasic_ios(30.5.5)):
+        using char_type   = charT;
+        using int_type    = typename traits::int_type;
+        using pos_type    = typename traits::pos_type;
+        using off_type    = typename traits::off_type;
+        using traits_type = traits;
+
+        // 30.7.5.1.1, constructor/destructor
+        explicit basic_ostream(basic_streambuf<char_type, traits>* sb);
+
+        virtual ~basic_ostream();
+
+        // 30.7.5.1.3, prefix/suffix
+        template<class scharT, class straits = char_traits<charT>>
+        class sentry{
+            bool ok_;
+
+        public:
+            explicit sentry(basic_ostream<scharT, straits>& os);
+            ~sentry();
+            explicit operator bool()const{ return ok_; }
+            sentry(const sentry&) = delete;
+            sentry& operator=(const sentry&) = delete;
+        };
+
+        // 30.7.5.2, formatted output
+        basic_ostream<charT, traits>&operator<<(basic_ostream<charT, traits>& (*pf)(basic_ostream<charT, traits>&));
+        basic_ostream<charT, traits>&operator<<(basic_ios<charT, traits>& (*pf)(basic_ios<charT, traits>&));
+        basic_ostream<charT, traits>&operator<<(ios_base& (*pf)(ios_base&));
+
+        basic_ostream<charT, traits>& operator<<(bool n);
+        basic_ostream<charT, traits>& operator<<(short n);
+        basic_ostream<charT, traits>& operator<<(unsigned short n);
+        basic_ostream<charT, traits>& operator<<(int n);
+        basic_ostream<charT, traits>& operator<<(unsigned int n);
+        basic_ostream<charT, traits>& operator<<(long n);
+        basic_ostream<charT, traits>& operator<<(unsigned long n);
+        basic_ostream<charT, traits>& operator<<(long long n);
+        basic_ostream<charT, traits>& operator<<(unsigned long long n);
+        basic_ostream<charT, traits>& operator<<(float f);
+        basic_ostream<charT, traits>& operator<<(double f);
+        basic_ostream<charT, traits>& operator<<(long double f);
+
+        basic_ostream<charT, traits>& operator<<(const void* p);
+        basic_ostream<charT, traits>& operator<<(nullptr_t);
+        basic_ostream<charT, traits>& operator<<(basic_streambuf<char_type, traits>* sb);
+
+        // 30.7.5.3, unformatted output
+        basic_ostream<charT, traits>& put(char_type c);
+        basic_ostream<charT, traits>& write(const char_type* s, streamsize n);
+
+        basic_ostream<charT, traits>& flush();
+
+        // 30.7.5.1.4, seeks
+        pos_type tellp();
+        basic_ostream<charT, traits>& seekp(pos_type);
+        basic_ostream<charT, traits>& seekp(off_type, ios_base::seekdir);
+
+    protected:
+        // 30.7.5.1.1, copy/move constructor
+        basic_ostream(const basic_ostream& rhs) = delete;
+        basic_ostream(basic_ostream&& rhs);
+
+        // 30.7.5.1.2, assign and swap
+        basic_ostream& operator=(const basic_ostream& rhs) = delete;
+        basic_ostream& operator=(basic_ostream&& rhs);
+        void swap(basic_ostream& rhs);
+    };
+
+    using ostream  = basic_ostream<char>;
+    using wostream = basic_ostream<wchar_t>;
+
+    // 30.7.5.2.4, character inserters
+    template<class charT, class traits>
+    basic_ostream<charT, traits>& operator<<(basic_ostream<charT, traits>&, charT);
+
+    template<class charT, class traits>
+    basic_ostream<charT, traits>& operator<<(basic_ostream<charT, traits>&, char);
+
+    template<class traits>
+    basic_ostream<char, traits>& operator<<(basic_ostream<char, traits>&, char);
+
+
+    template<class traits>
+    basic_ostream<char, traits>& operator<<(basic_ostream<char, traits>&, signed char);
+
+    template<class traits>
+    basic_ostream<char, traits>& operator<<(basic_ostream<char, traits>&, unsigned char);
+
+
+    template<class charT, class traits>
+    basic_ostream<charT, traits>& operator<<(basic_ostream<charT, traits>&, const charT*);
+
+    template<class charT, class traits>
+    basic_ostream<charT, traits>& operator<<(basic_ostream<charT, traits>&, const char*);
+
+    template<class traits>
+    basic_ostream<char, traits>& operator<<(basic_ostream<char, traits>&, const char*);
+
+
+    template<class traits>
+    basic_ostream<char, traits>& operator<<(basic_ostream<char, traits>&, const signed char*);
+
+    template<class traits>
+    basic_ostream<char, traits>& operator<<(basic_ostream<char, traits>&, const unsigned char*);
+
+
+    template<class charT, class traits>
+    basic_ostream<charT, traits>& endl(basic_ostream<charT, traits>& os){
+        os.put(os.widen('\n'));
+        os.flush();
+        return os;
+    }
+
+    template<class charT, class traits>
+    basic_ostream<charT, traits>& ends(basic_ostream<charT, traits>& os){
+        os.put(charT());
+        return os;
+    }
+
+    template<class charT, class traits>
+    basic_ostream<charT, traits>& flush(basic_ostream<charT, traits>& os){
+        os.flush();
+        return os;
+    }
+
+    template<class charT, class traits, class T>
+    basic_ostream<charT, traits>& operator<<(basic_ostream<charT, traits>&& os, const T& x){
+        os << x;
+        return os;
+    }
+}
+
+#endif /* __OSTREAM__ */

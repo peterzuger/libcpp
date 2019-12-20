@@ -1,0 +1,261 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/ios
+ * @author Peter Züger
+ * @date   14.12.2018
+ * @brief  input output stream
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __IOS__
+#define __IOS__
+
+#include <__char_traits>
+#include <iosfwd>
+#include <locale>
+#include <system_error>
+#include <system_error>
+#include <types/streamoff>
+#include <types/streamsize>
+
+namespace std{
+    //defined in types/streamoff
+    //defined in types/streamsize
+
+    // 30.5.6.5, error reporting
+    enum class io_errc{
+        stream = 1
+    };
+
+    template<>
+    struct is_error_code_enum<io_errc>: public std::true_type{};
+
+    error_code make_error_code(io_errc e)noexcept;
+    error_condition make_error_condition(io_errc e)noexcept;
+    const error_category& iostream_category()noexcept;
+
+    template<class stateT>
+    class fpos{
+    public:// 30.5.4.1, members
+        stateT state()const{return _st;}
+        void state(stateT state){_st = state;}
+
+    private:
+        stateT _st;
+    };
+
+    class ios_base{
+    public:
+        class failure: public system_error{
+        public:
+            explicit failure(const string& msg, const error_code& ec = io_errc::stream);
+            explicit failure(const char* msg, const error_code& ec = io_errc::stream);
+        };
+
+        // 30.5.3.1.2, fmtflags
+        using fmtflags = unsigned long;
+        static constexpr fmtflags boolalpha   = 0b000000000000001;
+        static constexpr fmtflags dec         = 0b000000000000010;
+        static constexpr fmtflags fixed       = 0b000000000000100;
+        static constexpr fmtflags hex         = 0b000000000001000;
+        static constexpr fmtflags internal    = 0b000000000010000;
+        static constexpr fmtflags left        = 0b000000000100000;
+        static constexpr fmtflags oct         = 0b000000001000000;
+        static constexpr fmtflags right       = 0b000000010000000;
+        static constexpr fmtflags scientific  = 0b000000100000000;
+        static constexpr fmtflags showbase    = 0b000001000000000;
+        static constexpr fmtflags showpoint   = 0b000010000000000;
+        static constexpr fmtflags showpos     = 0b000100000000000;
+        static constexpr fmtflags skipws      = 0b001000000000000;
+        static constexpr fmtflags unitbuf     = 0b010000000000000;
+        static constexpr fmtflags uppercase   = 0b100000000000000;
+        static constexpr fmtflags adjustfield = left | right | internal;
+        static constexpr fmtflags basefield   = dec | oct | hex;
+        static constexpr fmtflags floatfield  = scientific | fixed;
+
+        // 30.5.3.1.3, iostate
+        using iostate = unsigned;
+        static constexpr iostate badbit  = 0b0001;
+        static constexpr iostate eofbit  = 0b0010;
+        static constexpr iostate failbit = 0b0100;
+        static constexpr iostate goodbit = 0b1000;
+
+        // 30.5.3.1.4, openmode
+        using openmode = unsigned;
+        static constexpr openmode app    = 0b000001;
+        static constexpr openmode ate    = 0b000010;
+        static constexpr openmode binary = 0b000100;
+        static constexpr openmode in     = 0b001000;
+        static constexpr openmode out    = 0b010000;
+        static constexpr openmode trunc  = 0b100000;
+
+        // 30.5.3.1.5, seekdir
+        enum seekdir{
+            beg,
+            cur,
+            end
+        };
+
+        class Init{
+        public:
+            Init(){++init_cnt;}
+            ~Init(){--init_cnt;}
+
+        private:
+            static int init_cnt;
+        };
+
+        // 30.5.3.2, fmt flagsstate
+        fmtflags flags()const;
+        fmtflags flags(fmtflags fmtfl);
+        fmtflags setf(fmtflags fmtfl);
+        fmtflags setf(fmtflags fmtfl, fmtflags mask);
+        void unsetf(fmtflags mask);
+
+        streamsize precision()const;
+        streamsize precision(streamsize prec);
+        streamsize width()const;
+        streamsize width(streamsize wide);
+
+        // 30.5.3.3, locales
+        locale imbue(const locale& loc);
+        locale getloc()const;
+
+        // 30.5.3.5, storage
+        static int xalloc();
+        long&  iword(int index);
+        void*& pword(int index);
+
+        // destructor:
+        virtual ~ios_base();
+
+        // 30.5.3.6, callbacks;
+        enum event{
+            erase_event,
+            imbue_event,
+            copyfmt_event
+        };
+        using event_callback = void (*)(event, ios_base&, int index);
+
+        void register_callback(event_callback fn, int index);
+
+        ios_base(const ios_base&) = delete;
+        ios_base& operator=(const ios_base&) = delete;
+
+        static bool sync_with_stdio(bool sync = true);
+
+    protected:
+        ios_base();
+
+    private:
+        static int index;// exposition only
+        long*  iarray;// exposition only
+        void** parray;// exposition only
+    };
+
+
+    template<class charT, class traits>
+    class basic_ios: public ios_base{
+    public:
+        using char_type   = charT;
+        using int_type    = typename traits::int_type;
+        using pos_type    = typename traits::pos_type;
+        using off_type    = typename traits::off_type;
+        using traits_type = traits;
+
+        // 30.5.5.4, flags functions
+        explicit operator bool()const;
+        bool operator!()const;
+        iostate rdstate()const;
+        void clear(iostate state = goodbit);
+        void setstate(iostate state);
+        bool good()const;
+        bool eof()const;
+        bool fail()const;
+        bool bad()const;
+
+        iostate exceptions()const;
+        void exceptions(iostate except);
+
+        // 30.5.5.2, constructor/destructor
+        explicit basic_ios(basic_streambuf<charT, traits>* sb);
+        virtual~basic_ios();
+
+        // 30.5.5.3, members
+        basic_ostream<charT, traits>* tie()const;
+        basic_ostream<charT, traits>* tie(basic_ostream<charT, traits>* tiestr);
+
+        basic_streambuf<charT, traits>* rdbuf()const;
+        basic_streambuf<charT, traits>* rdbuf(basic_streambuf<charT, traits>* sb);
+
+        basic_ios& copyfmt(const basic_ios& rhs);
+
+        char_type fill()const;
+        char_type fill(char_type ch);
+
+        locale imbue(const locale& loc);
+
+        char      narrow(char_type c, char dfault)const;
+        char_type widen(char c)const;
+
+        basic_ios(const basic_ios&) = delete;
+        basic_ios& operator=(const basic_ios&) = delete;
+
+    protected:
+        basic_ios();
+        void init(basic_streambuf<charT, traits>* sb);
+        void move(basic_ios& rhs);
+        void move(basic_ios&& rhs);
+        void swap(basic_ios& rhs)noexcept;
+        void set_rdbuf(basic_streambuf<charT, traits>* sb);
+    };
+
+    // 30.5.6, manipulators
+    ios_base& boolalpha  (ios_base& str){str.setf(ios_base::boolalpha); return str;}
+    ios_base& noboolalpha(ios_base& str){str.unsetf(ios_base::boolalpha); return str;}
+    ios_base& showbase   (ios_base& str){str.setf(ios_base::showbase); return str;}
+    ios_base& noshowbase (ios_base& str){str.unsetf(ios_base::showbase); return str;}
+    ios_base& showpoint  (ios_base& str){str.setf(ios_base::showpoint); return str;}
+    ios_base& noshowpoint(ios_base& str){str.unsetf(ios_base::showpoint); return str;}
+    ios_base& showpos    (ios_base& str){str.setf(ios_base::showpos); return str;}
+    ios_base& noshowpos  (ios_base& str){str.unsetf(ios_base::showpos); return str;}
+    ios_base& skipws     (ios_base& str){str.setf(ios_base::skipws); return str;}
+    ios_base& noskipws   (ios_base& str){str.unsetf(ios_base::skipws); return str;}
+    ios_base& uppercase  (ios_base& str){str.setf(ios_base::uppercase); return str;}
+    ios_base& nouppercase(ios_base& str){str.unsetf(ios_base::uppercase); return str;}
+    ios_base& unitbuf    (ios_base& str){str.setf(ios_base::unitbuf); return str;}
+    ios_base& nounitbuf  (ios_base& str){str.unsetf(ios_base::unitbuf); return str;}
+
+    // 30.5.6.2, adjust field
+    ios_base& internal   (ios_base& str){str.setf(ios_base::internal, ios_base::adjustfield); return str;}
+    ios_base& left       (ios_base& str){str.setf(ios_base::left, ios_base::adjustfield); return str;}
+    ios_base& right      (ios_base& str){str.setf(ios_base::right, ios_base::adjustfield); return str;}
+
+    // 30.5.6.3, base field
+    ios_base& dec        (ios_base& str){str.setf(ios_base::dec, ios_base::basefield); return str;}
+    ios_base& hex        (ios_base& str){str.setf(ios_base::hex, ios_base::basefield); return str;}
+    ios_base& oct        (ios_base& str){str.setf(ios_base::oct, ios_base::basefield); return str;}
+
+    // 30.5.6.4, float field
+    ios_base& fixed      (ios_base& str){str.setf(ios_base::fixed, ios_base::floatfield); return str;}
+    ios_base& scientific (ios_base& str){str.setf(ios_base::scientific, ios_base::floatfield); return str;}
+    ios_base& hexfloat   (ios_base& str){
+        str.setf(ios_base::fixed | ios_base::scientific, ios_base::floatfield);
+        return str;
+    }
+    ios_base& defaultfloat(ios_base& str){str.unsetf(ios_base::floatfield); return str;}
+}
+
+#endif /* __IOS__ */

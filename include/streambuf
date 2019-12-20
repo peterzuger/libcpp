@@ -1,0 +1,118 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/streambuf
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  Stream buffers
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __STREAMBUF__
+#define __STREAMBUF__
+
+#include <iosfwd>
+#include <locale>
+#include <ios>
+
+namespace std{
+    template<class charT, class traits>
+    class basic_streambuf{
+    public:
+        using char_type   = charT;
+        using int_type    = typename traits::int_type;
+        using pos_type    = typename traits::pos_type;
+        using off_type    = typename traits::off_type;
+        using traits_type = traits;
+
+        virtual ~basic_streambuf();
+
+        // 30.6.3.2.1, locales
+        locale   pubimbue(const locale& loc);locale   getloc() const;
+
+        // 30.6.3.2.2, buffer and positioning
+        basic_streambuf* pubsetbuf(char_type* s, streamsize n);
+        pos_type pubseekoff(off_type off, ios_base::seekdir way,
+                            ios_base::openmode which= ios_base::in | ios_base::out);
+        pos_type pubseekpos(pos_type sp, ios_base::openmode which = ios_base::in | ios_base::out);
+        int pubsync();
+
+        // Get and put areas
+        // 30.6.3.2.3, get area
+        streamsize in_avail();
+        int_type snextc();
+        int_type sbumpc();
+        int_type sgetc();
+        streamsize sgetn(char_type* s, streamsize n);
+
+        // 30.6.3.2.4, putback
+        int_type sputbackc(char_type c);
+        int_type sungetc();
+
+        // 30.6.3.2.5, put area
+        int_type sputc(char_type c);
+        streamsize sputn(const char_type* s, streamsize n);
+
+    protected:
+        basic_streambuf();
+        basic_streambuf(const basic_streambuf& rhs);
+        basic_streambuf& operator=(const basic_streambuf& rhs);
+
+        void swap(basic_streambuf& rhs);
+
+        // 30.6.3.3.2, get area access
+        char_type* eback()const;
+        char_type* gptr()const;
+        char_type* egptr()const;
+        void gbump(int n);
+        void setg(char_type* gbeg, char_type* gnext, char_type* gend);
+
+        // 30.6.3.3.3, put area access
+        char_type* pbase()const;
+        char_type* pptr()const;
+        char_type* epptr()const;
+        void pbump(int n);
+        void setp(char_type* pbeg, char_type* pend);
+
+        // 30.6.3.4, virtual functions
+        // 30.6.3.4.1, locales
+        virtual void imbue(const locale& loc);
+
+        // 30.6.3.4.2, buffer management and positioning
+        virtual basic_streambuf* setbuf(char_type* s, streamsize n);
+        virtual pos_type seekoff(off_type off, ios_base::seekdir way,
+                                 ios_base::openmode which= ios_base::in | ios_base::out);
+
+        virtual pos_type seekpos(pos_type sp, ios_base::openmode which = ios_base::in | ios_base::out);
+        virtual int sync();
+
+        // 30.6.3.4.3, get area
+        virtual streamsize showmanyc();
+        virtual streamsize xsgetn(char_type* s, streamsize n);
+        virtual int_type underflow();
+        virtual int_type uflow();
+
+        // 30.6.3.4.4, put back
+        virtual int_type pbackfail(int_type c = traits::eof());
+
+        // 30.6.3.4.5, put area
+        virtual streamsize xsputn(const char_type* s, streamsize n);
+        virtual int_type overflow(int_type c = traits::eof());
+    };
+
+    using streambuf  = basic_streambuf<char>;
+    using wstreambuf = basic_streambuf<wchar_t>;
+}
+
+#endif /* __STREAMBUF__ */

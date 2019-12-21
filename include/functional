@@ -171,9 +171,48 @@ namespace std{
         using is_transparent = void;
     };
 
+    template<class F>
+    class __call_wrapper{
+        using FD = std::decay_t<F>;
+        FD fd;
+
+        explicit __call_wrapper(F&& f):
+            fd{std::forward<F>(f)}{}
+
+    public:
+        __call_wrapper(__call_wrapper &&) = default;
+        __call_wrapper(const __call_wrapper &) = default;
+
+        template<class... Args>
+        auto operator()(Args&&... args) &
+            -> decltype(!declval<invoke_result_t<FD&, Args...>>()){
+            return !invoke(fd, std::forward<Args>(args)...);
+        }
+
+        template<class... Args>
+        auto operator()(Args&&... args)const&
+            -> decltype(!declval<invoke_result_t<const FD&, Args...>>()){
+            return !invoke(fd, std::forward<Args>(args)...);
+        }
+
+        template<class... Args>
+        auto operator()(Args&&... args) &&
+            -> decltype(!declval<invoke_result_t<FD, Args...>>()){
+            return !invoke(std::move(fd), std::forward<Args>(args)...);
+        }
+
+        template<class... Args>
+        auto operator()(Args&&... args)const&&
+            -> decltype(!declval<invoke_result_t<const FD, Args...>>()){
+            return !invoke(std::move(fd), std::forward<Args>(args)...);
+        }
+    };
+
     // 23.14.10, function template not_fn
     template <class F>
-    auto not_fn(F&& f);
+    auto not_fn(F&& f){
+        return __call_wrapper<F>(std::forward<F>(f));
+    }
 
     // 23.14.11, bind
     template<class T>

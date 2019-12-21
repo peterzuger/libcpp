@@ -1,0 +1,201 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/sstream
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  String-based streams
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __SSTREAM__
+#define __SSTREAM__
+
+#include <__char_traits>
+#include <ios>
+
+namespace std{
+    template<class charT, class traits,class Allocator>
+    class basic_stringbuf: public basic_streambuf<charT, traits>{
+    public:
+        using char_type      = charT;
+        using int_type       = typename traits::int_type;
+        using pos_type       = typename traits::pos_type;
+        using off_type       = typename traits::off_type;
+        using traits_type    = traits;
+        using allocator_type = Allocator;
+
+        // 30.8.2.1, constructors
+        explicit basic_stringbuf(ios_base::openmode which = ios_base::in | ios_base::out);
+        explicit basic_stringbuf(const basic_string<charT, traits, Allocator>& str,
+                                 ios_base::openmode which = ios_base::in | ios_base::out);
+        basic_stringbuf(const basic_stringbuf& rhs) = delete;
+        basic_stringbuf(basic_stringbuf&& rhs);
+
+        // 30.8.2.2, assign and swap
+        basic_stringbuf& operator=(const basic_stringbuf& rhs) = delete;
+        basic_stringbuf& operator=(basic_stringbuf&& rhs);
+        void swap(basic_stringbuf& rhs);
+
+        // 30.8.2.3, get and set
+        basic_string<charT, traits, Allocator> str()const;
+        void str(const basic_string<charT, traits, Allocator>& s);protected:
+
+        // 30.8.2.4, overridden virtual functions
+        int_type underflow()override;
+        int_type pbackfail(int_type c = traits::eof())override;
+        int_type overflow (int_type c = traits::eof())override;
+        basic_streambuf<charT, traits>* setbuf(charT*, streamsize)override;
+        pos_type seekoff(off_type off, ios_base::seekdir way,
+                         ios_base::openmode which= ios_base::in | ios_base::out)override;
+        pos_type seekpos(pos_type sp,ios_base::openmode which= ios_base::in | ios_base::out)override;
+
+    private:
+        ios_base::openmode mode;
+    };
+
+    template<class charT, class traits, class Allocator>
+    void swap(basic_stringbuf<charT, traits, Allocator>& x,
+              basic_stringbuf<charT, traits, Allocator>& y){
+        x.swap(y);
+    }
+
+    using stringbuf  = basic_stringbuf<char>;
+    using wstringbuf = basic_stringbuf<wchar_t>;
+
+    template<class charT, class traits, class Allocator>
+    class basic_istringstream: public basic_istream<charT, traits>{
+    public:
+        using char_type      = charT;
+        using int_type       = typename traits::int_type;
+        using pos_type       = typename traits::pos_type;
+        using off_type       = typename traits::off_type;
+        using traits_type    = traits;
+        using allocator_type = Allocator;
+
+        // 30.8.3.1, constructors
+        explicit basic_istringstream(ios_base::openmode which = ios_base::in);
+        explicit basic_istringstream(const basic_string<charT, traits, Allocator>& str,
+                                     ios_base::openmode which = ios_base::in);
+        basic_istringstream(const basic_istringstream& rhs) = delete;
+        basic_istringstream(basic_istringstream&& rhs);
+
+        // 30.8.3.2, assign and swap
+        basic_istringstream& operator=(const basic_istringstream& rhs) = delete;
+        basic_istringstream& operator=(basic_istringstream&& rhs);
+
+        void swap(basic_istringstream& rhs);
+
+        // 30.8.3.3, members
+        basic_stringbuf<charT, traits, Allocator>* rdbuf()const;
+        basic_string<charT, traits, Allocator> str()const;
+        void str(const basic_string<charT, traits, Allocator>& s);
+
+    private:
+        basic_stringbuf<charT, traits, Allocator> sb;
+    };
+
+    template<class charT, class traits, class Allocator>
+    void swap(basic_istringstream<charT, traits, Allocator>& x,
+              basic_istringstream<charT, traits, Allocator>& y){
+        x.swap(y);
+    }
+
+    using istringstream  = basic_istringstream<char>;
+    using wistringstream = basic_istringstream<wchar_t>;
+
+    template<class charT, class traits,class Allocator>
+    class basic_ostringstream: public basic_ostream<charT, traits>{
+    public:
+        using char_type      = charT;
+        using int_type       = typename traits::int_type;
+        using pos_type       = typename traits::pos_type;
+        using off_type       = typename traits::off_type;
+        using traits_type    = traits;
+        using allocator_type = Allocator;
+
+        // 30.8.4.1, constructors
+        explicit basic_ostringstream(ios_base::openmode which = ios_base::out);
+        explicit basic_ostringstream(const basic_string<charT, traits, Allocator>& str,
+                                     ios_base::openmode which = ios_base::out);
+        basic_ostringstream(const basic_ostringstream& rhs) = delete;
+        basic_ostringstream(basic_ostringstream&& rhs);
+
+        // 30.8.4.2, assign and swap
+        basic_ostringstream& operator=(const basic_ostringstream& rhs) = delete;
+        basic_ostringstream& operator=(basic_ostringstream&& rhs);
+
+        void swap(basic_ostringstream& rhs);
+
+        // 30.8.4.3, members
+        basic_stringbuf<charT, traits, Allocator>* rdbuf()const;
+        basic_string<charT, traits, Allocator> str()const;
+        void str(const basic_string<charT, traits, Allocator>& s);
+
+    private:
+        basic_stringbuf<charT, traits, Allocator> sb;
+    };
+
+    template<class charT, class traits, class Allocator>
+    void swap(basic_ostringstream<charT, traits, Allocator>& x,
+              basic_ostringstream<charT, traits, Allocator>& y){
+        x.swap(y);
+    }
+
+    using ostringstream  = basic_ostringstream<char>;
+    using wostringstream = basic_ostringstream<wchar_t>;
+
+    template<class charT, class traits,class Allocator>
+    class basic_stringstream: public basic_iostream<charT, traits>{
+    public:
+        using char_type      = charT;
+        using int_type       = typename traits::int_type;
+        using pos_type       = typename traits::pos_type;
+        using off_type       = typename traits::off_type;
+        using traits_type    = traits;
+        using allocator_type = Allocator;
+
+        // 30.8.5.1, constructors
+        explicit basic_stringstream(ios_base::openmode which = ios_base::out | ios_base::in);
+        explicit basic_stringstream(const basic_string<charT, traits, Allocator>& str,
+                                    ios_base::openmode which = ios_base::out | ios_base::in);
+        basic_stringstream(const basic_stringstream& rhs) = delete;
+        basic_stringstream(basic_stringstream&& rhs);
+
+        // 30.8.5.2, assign and swap
+        basic_stringstream& operator=(const basic_stringstream& rhs) = delete;
+        basic_stringstream& operator=(basic_stringstream&& rhs);
+
+        void swap(basic_stringstream& rhs);
+
+        // 30.8.5.3, members
+        basic_stringbuf<charT, traits, Allocator>* rdbuf()const;
+        basic_string<charT, traits, Allocator> str()const;
+        void str(const basic_string<charT, traits, Allocator>& str);
+
+    private:
+        basic_stringbuf<charT, traits> sb;
+    };
+
+    template<class charT, class traits, class Allocator>
+    void swap(basic_stringstream<charT, traits, Allocator>& x,
+              basic_stringstream<charT, traits, Allocator>& y){
+        x.swap(y);
+    }
+
+    using stringstream  = basic_stringstream<char>;
+    using wstringstream = basic_stringstream<wchar_t>;
+}
+
+#endif /* __SSTREAM__ */

@@ -1,0 +1,258 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/functional
+ * @author Peter Züger
+ * @date   14.05.2019
+ * @brief  Function objects
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __FUNCTIONAL__
+#define __FUNCTIONAL__
+
+#include <__arithmetic>
+#include <__comparisons>
+#include <__declval>
+#include <__reference_wrapper>
+#include <iterator>
+#include <type_traits>
+
+namespace std{
+    // 23.14.4, invoke
+    template<class F, class... Args>
+    invoke_result_t<F, Args...> invoke(F&& f, Args&&... args)noexcept(std::is_nothrow_invocable_v<F, Args...>);
+
+    // 23.14.5, reference_wrapper
+    // defined in __reference_wrapper
+
+    // 23.14.6, arithmetic operations
+    // defined in __arithmetic
+
+    // 23.14.7, comparisons
+    // defined in __comparison
+
+    // 23.14.8, logical operations
+    template<class T = void>
+    struct logical_and{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x && y;
+        }
+    };
+
+    template<class T = void>
+    struct logical_or{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x || y;
+        }
+    };
+
+    template<class T = void>
+    struct logical_not{
+        constexpr bool operator()(const T& x)const{
+            return !x;
+        }
+    };
+
+    template<>
+    struct logical_and<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) && std::forward<U>(u)){
+            return std::forward<T>(t) && std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct logical_or<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) || std::forward<U>(u)){
+            return std::forward<T>(t) || std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct logical_not<void>{
+        template<class T>
+        constexpr auto operator()(T&& t) const
+            -> decltype(!std::forward<T>(t)){
+            return !std::forward<T>(t);
+        }
+
+        using is_transparent = void;
+    };
+
+    // 23.14.9, bitwise operations
+    template<class T = void>
+    struct bit_and{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x & y;
+        }
+    };
+
+    template<class T = void>
+    struct bit_or{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x | y;
+        }
+    };
+
+    template<class T = void>
+    struct bit_xor{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x ^ y;
+        }
+    };
+
+    template<class T = void>
+    struct bit_not{
+        constexpr T operator()(const T& x)const{
+            return ~x;
+        }
+    };
+
+    template<>
+    struct bit_and<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u) const
+            -> decltype(std::forward<T>(t) & std::forward<U>(u)){
+            return std::forward<T>(t) & std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct bit_or<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) | std::forward<U>(u)){
+            return std::forward<T>(t) | std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct bit_xor<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) ^ std::forward<U>(u)){
+            return std::forward<T>(t) ^ std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct bit_not<void>{
+        template<class T>
+        constexpr auto operator()(T&& t)const
+            -> decltype( ~std::forward<T>(t)){
+            return ~std::forward<T>(t);
+        }
+
+        using is_transparent = void;
+    };
+
+    // 23.14.10, function template not_fn
+    template <class F>
+    auto not_fn(F&& f);
+
+    // 23.14.11, bind
+    template<class T>
+    struct is_bind_expression;
+
+    template<class T>
+    struct is_placeholder;
+
+    template<class F, class... BoundArgs>
+    void bind(F&&, BoundArgs&&...);
+    template<class R, class F, class... BoundArgs>
+    void bind(F&&, BoundArgs&&...);
+
+    namespace placeholders{
+        //M is the implementation-defined number of placeholders
+        inline constexpr int _1{};
+        inline constexpr int _2{};
+        inline constexpr int _3{};
+        inline constexpr int _4{};
+        inline constexpr int _5{};
+        inline constexpr int _6{};
+        inline constexpr int _7{};
+        inline constexpr int _8{};
+        inline constexpr int _9{};
+        inline constexpr int _10{};
+    }
+
+    // 23.14.12, member function adaptors
+    template<class R, class T>
+    R mem_fn(R T::*)noexcept;
+
+    // 23.14.13, polymorphic function wrappers
+    class bad_function_call;
+
+    template<class>
+    class function;// not defined
+
+    template<class R, class... ArgTypes>
+    class function<R(ArgTypes...)>;
+
+    template<class R, class... ArgTypes>
+    void swap(function<R(ArgTypes...)>&, function<R(ArgTypes...)>&)noexcept;
+
+    template<class R, class... ArgTypes>
+    bool operator==(const function<R(ArgTypes...)>&, nullptr_t)noexcept;
+
+    template<class R, class... ArgTypes>
+    bool operator==(nullptr_t, const function<R(ArgTypes...)>&)noexcept;
+
+    template<class R, class... ArgTypes>
+    bool operator!=(const function<R(ArgTypes...)>&, nullptr_t)noexcept;
+
+    template<class R, class... ArgTypes>
+    bool operator!=(nullptr_t, const function<R(ArgTypes...)>&)noexcept;
+
+    // 23.14.15, hash function primary template
+    template<class T>
+    struct hash; // not defined
+
+    // 23.14.14, searchers
+    template<class ForwardIterator, class BinaryPredicate = equal_to<>>
+    class default_searcher;
+
+    template<class RandomAccessIterator,
+             class Hash = std::hash<typename iterator_traits<RandomAccessIterator>::value_type>,
+             class BinaryPredicate = equal_to<>>
+    class boyer_moore_searcher;
+
+    template<class RandomAccessIterator,
+             class Hash = std::hash<typename iterator_traits<RandomAccessIterator>::value_type>,
+             class BinaryPredicate = equal_to<>>
+    class boyer_moore_horspool_searcher;
+
+    // 23.14.11, function object binders
+    template<class T>
+    inline constexpr bool is_bind_expression_v = is_bind_expression<T>::value;
+
+    template<class T>
+    inline constexpr int is_placeholder_v = is_placeholder<T>::value;
+}
+
+#endif /* __FUNCTIONAL__ */

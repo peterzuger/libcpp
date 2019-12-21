@@ -28,17 +28,17 @@
 
 namespace std{
     // 28.5.1, all of
-    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
     bool all_of(ExecutionPolicy&& exec,// see 28.4.5
                 ForwardIterator first, ForwardIterator last, Predicate pred);
 
     // 28.5.2, any of
-    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
     bool any_of(ExecutionPolicy&& exec,// see 28.4.5
                 ForwardIterator first, ForwardIterator last, Predicate pred);
 
     // 28.5.3, none of
-    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
     bool none_of(ExecutionPolicy&& exec,// see 28.4.5
                  ForwardIterator first, ForwardIterator last, Predicate pred);
 
@@ -279,7 +279,7 @@ namespace std{
                                  ForwardIterator1 last, ForwardIterator2 result);
 
     // 28.7.4, partitions
-    template <class ExecutionPolicy, class ForwardIterator, class Predicate>
+    template<class ExecutionPolicy, class ForwardIterator, class Predicate>
     bool is_partitioned(ExecutionPolicy&& exec,// see 28.4.5
                         ForwardIterator first, ForwardIterator last, Predicate pred);
     template<class ExecutionPolicy, class ForwardIterator, class Predicate>
@@ -288,8 +288,8 @@ namespace std{
     template<class ExecutionPolicy, class BidirectionalIterator, class Predicate>
     BidirectionalIterator stable_partition(ExecutionPolicy&& exec,// see 28.4.5
                                            BidirectionalIterator first,BidirectionalIterator last,Predicate pred);
-    template <class ExecutionPolicy, class ForwardIterator,
-              class ForwardIterator1,class ForwardIterator2, class Predicate>
+    template<class ExecutionPolicy, class ForwardIterator,
+             class ForwardIterator1,class ForwardIterator2, class Predicate>
     std::pair<ForwardIterator1, ForwardIterator2>partition_copy(ExecutionPolicy&& exec,// see 28.4.5
                                                                 ForwardIterator first,
                                                                 ForwardIterator last,

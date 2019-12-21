@@ -42,11 +42,11 @@ namespace std{
     };
 
     [[noreturn]] inline void __throw_bad_optional_access(){
-        #if defined(__cpp_exceptions)
+#if defined(__cpp_exceptions)
         throw bad_optional_access();
-        #else
+#else
         terminate();
-        #endif /* defined(__cpp_exceptions) */
+#endif /* defined(__cpp_exceptions) */
     }
 
     // 23.6.3, class template optional
@@ -396,7 +396,7 @@ namespace std{
     }
 
     // 23.6.9, specialized algorithms
-    template <class T>
+    template<class T>
     std::enable_if_t<std::is_move_constructible_v<T> &&
                      std::is_swappable_v<T>> swap(optional<T>& x, optional<T>& y)noexcept(noexcept(x.swap(y))){
         x.swap(y);

@@ -39,7 +39,8 @@ namespace std{
         virtual ~basic_streambuf();
 
         // 30.6.3.2.1, locales
-        locale   pubimbue(const locale& loc);locale   getloc() const;
+        locale pubimbue(const locale& loc);
+        locale getloc()const;
 
         // 30.6.3.2.2, buffer and positioning
         basic_streambuf* pubsetbuf(char_type* s, streamsize n);

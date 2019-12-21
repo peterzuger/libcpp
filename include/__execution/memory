@@ -34,7 +34,7 @@ namespace std{
     ForwardIterator uninitialized_default_construct_n(ExecutionPolicy&& exec,// see 28.4.5
                                                       ForwardIterator first, Size n);
 
-    template <class ExecutionPolicy, class ForwardIterator>
+    template<class ExecutionPolicy, class ForwardIterator>
     void uninitialized_value_construct(ExecutionPolicy&& exec,// see 28.4.5
                                        ForwardIterator first, ForwardIterator last);
 
@@ -59,7 +59,7 @@ namespace std{
                                                                   InputIterator first, Size n,
                                                                   ForwardIterator result);
 
-    template <class ExecutionPolicy, class ForwardIterator, class T>
+    template<class ExecutionPolicy, class ForwardIterator, class T>
     void uninitialized_fill(ExecutionPolicy&& exec,// see 28.4.5
                             ForwardIterator first, ForwardIterator last,const T& x);
 

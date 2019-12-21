@@ -61,12 +61,12 @@ namespace std{
         template<typename T, typename U, bool = __has_rebind<T, U>::value>
         struct __rebind{using type = typename T::template rebind<U>;};
 
-        template<template <typename , typename...> typename Ptr, typename T, typename ...Args, typename U>
+        template<template<typename , typename...> typename Ptr, typename T, typename ...Args, typename U>
         struct __rebind<Ptr<T, Args...>, U, true>{
             using type = typename Ptr<T, Args...>::template rebind<U>;
         };
 
-        template<template <typename , typename...> typename Ptr, typename T, typename ...Args, typename U>
+        template<template<typename , typename...> typename Ptr, typename T, typename ...Args, typename U>
         struct __rebind<Ptr<T, Args...>, U, false>{
             using type = Ptr<T, Args...>;
         };
@@ -79,7 +79,7 @@ namespace std{
         using element_type    = typename __pointer_traits::__element_type<pointer>::type;
         using difference_type = typename __pointer_traits::__difference_type<pointer>::type;
 
-        template <class U>
+        template<class U>
         using rebind = typename __pointer_traits::__rebind<pointer, U>::type;
 
         static pointer pointer_to(element_type& r){
@@ -93,7 +93,7 @@ namespace std{
         using element_type    = T;
         using difference_type = std::ptrdiff_t;
 
-        template <class U>
+        template<class U>
         using rebind = U*;
 
         static pointer pointer_to(element_type& r)noexcept{

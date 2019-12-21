@@ -90,7 +90,7 @@ namespace std{
     template<>
     struct logical_not<void>{
         template<class T>
-        constexpr auto operator()(T&& t) const
+        constexpr auto operator()(T&& t)const
             -> decltype(!std::forward<T>(t)){
             return !std::forward<T>(t);
         }
@@ -130,7 +130,7 @@ namespace std{
     template<>
     struct bit_and<void>{
         template<class T, class U>
-        constexpr auto operator()(T&& t, U&& u) const
+        constexpr auto operator()(T&& t, U&& u)const
             -> decltype(std::forward<T>(t) & std::forward<U>(u)){
             return std::forward<T>(t) & std::forward<U>(u);
         }
@@ -209,7 +209,7 @@ namespace std{
     };
 
     // 23.14.10, function template not_fn
-    template <class F>
+    template<class F>
     auto not_fn(F&& f){
         return __call_wrapper<F>(std::forward<F>(f));
     }

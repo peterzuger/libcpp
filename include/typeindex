@@ -64,7 +64,7 @@ namespace std{
     };
 
 
-    template <class T>
+    template<class T>
     struct hash;
 
     template<>

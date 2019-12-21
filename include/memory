@@ -327,7 +327,10 @@ namespace std{
 
         // assignment
         unique_ptr& operator=(unique_ptr&& u)noexcept;
-        template <class U, class E>unique_ptr& operator=(unique_ptr<U, E>&& u)noexcept;
+
+        template<class U, class E>
+        unique_ptr& operator=(unique_ptr<U, E>&& u)noexcept;
+
         unique_ptr& operator=(nullptr_t)noexcept;
 
         // 23.11.1.3.3, observers
@@ -832,10 +835,10 @@ namespace std{
                                                  std::memory_order success, std::memory_order failure);
 
     // 23.11.2.7, hash support
-    template <class T>
+    template<class T>
     struct hash;
 
-    template <class T, class D>
+    template<class T, class D>
     struct hash<unique_ptr<T, D>>{
         using argument_type = unique_ptr<T, D>;
         using result_type   = std::size_t;
@@ -845,7 +848,7 @@ namespace std{
         }
     };
 
-    template <class T>
+    template<class T>
     struct hash<shared_ptr<T>>{
         using argument_type = shared_ptr<T>;
         using result_type   = std::size_t;

@@ -53,7 +53,7 @@ namespace std{
         }
 
         // invocation
-        template <class... ArgTypes>
+        template<class... ArgTypes>
         invoke_result_t<T&, ArgTypes...> operator()(ArgTypes&&...)const;
     };
 

@@ -62,7 +62,7 @@ namespace std{
 
         // 22.5.3.3, modifiers
         void assign(int val, const error_category& cat)noexcept;
-        template <class ErrorCodeEnum>error_code& operator=(ErrorCodeEnum e)noexcept;
+        template<class ErrorCodeEnum>error_code& operator=(ErrorCodeEnum e)noexcept;
         void clear()noexcept;
 
         // 22.5.3.4, observers
@@ -283,8 +283,8 @@ namespace std{
     struct hash<error_condition>;
 
     // 22.5, system error support
-    template <class T>inline constexpr bool is_error_code_enum_v = is_error_code_enum<T>::value;
-    template <class T>inline constexpr bool is_error_condition_enum_v = is_error_condition_enum<T>::value;
+    template<class T>inline constexpr bool is_error_code_enum_v = is_error_code_enum<T>::value;
+    template<class T>inline constexpr bool is_error_condition_enum_v = is_error_condition_enum<T>::value;
 }
 
 #endif /* __SYSTEM_ERROR__ */

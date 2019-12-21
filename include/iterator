@@ -115,24 +115,24 @@ namespace std{
         constexpr explicit reverse_iterator(Iterator x):
             current{x.base()}{}
 
-        template <class U>
+        template<class U>
         constexpr reverse_iterator(const reverse_iterator<U>& u):
             current{u.base()}{}
 
-        template <class U>
+        template<class U>
         constexpr reverse_iterator& operator=(const reverse_iterator<U>& u){
             current = u.base();
             return *this;
         }
 
-        constexpr Iterator base() const{
+        constexpr Iterator base()const{
             return current;
         }
-        constexpr reference operator*() const{
+        constexpr reference operator*()const{
             Iterator tmp = current;
             return *--tmp;
         }
-        constexpr pointer operator->() const{
+        constexpr pointer operator->()const{
             return std::addressof(operator*());
         }
 
@@ -154,21 +154,21 @@ namespace std{
             ++current;
             return tmp;
         }
-        constexpr reverse_iterator operator+ (difference_type n) const{
+        constexpr reverse_iterator operator+ (difference_type n)const{
             return reverse_iterator(current - n);
         }
         constexpr reverse_iterator& operator+=(difference_type n){
             current -= n;
             return *this;
         }
-        constexpr reverse_iterator operator- (difference_type n) const{
+        constexpr reverse_iterator operator- (difference_type n)const{
             return reverse_iterator(current + n);
         }
         constexpr reverse_iterator& operator-=(difference_type n){
             current += n;
             return *this;
         }
-        constexpr reference operator[](difference_type n) const{
+        constexpr reference operator[](difference_type n)const{
             return *(*this + n);
         }
     };
@@ -380,13 +380,13 @@ namespace std{
             current = u.base();
         }
 
-        constexpr iterator_type base() const{
+        constexpr iterator_type base()const{
             return current;
         }
-        constexpr reference operator*() const{
+        constexpr reference operator*()const{
             return static_cast<reference>(*current);
         }
-        constexpr pointer operator->() const{
+        constexpr pointer operator->()const{
             return current;
         }
         constexpr move_iterator& operator++(){
@@ -407,21 +407,21 @@ namespace std{
             --current;
             return tmp;
         }
-        constexpr move_iterator operator+(difference_type n) const{
+        constexpr move_iterator operator+(difference_type n)const{
             return move_iterator(current + n);
         }
         constexpr move_iterator& operator+=(difference_type n){
             current += n;
             return *this;
         }
-        constexpr move_iterator operator-(difference_type n) const{
+        constexpr move_iterator operator-(difference_type n)const{
             return move_iterator(current - n);
         }
         constexpr move_iterator& operator-=(difference_type n){
             current -= n;
             return *this;
         }
-        constexpr reference operator[](difference_type n) const{
+        constexpr reference operator[](difference_type n)const{
             return std::move(current[n]);
         }
 
@@ -508,10 +508,10 @@ namespace std{
         istream_iterator(const istream_iterator& x) = default;
         ~istream_iterator() = default;
 
-        const T& operator*() const{
+        const T& operator*()const{
             return value;
         }
-        const T* operator->() const{
+        const T* operator->()const{
             return addressof(operator*());
         }
 
@@ -531,18 +531,18 @@ namespace std{
         T value;
     };
 
-    template <class T, class charT, class traits, class Distance>
+    template<class T, class charT, class traits, class Distance>
     bool operator==(const istream_iterator<T, charT, traits, Distance>& x,
                     const istream_iterator<T, charT, traits, Distance>& y){
         return x.in_stream == y.in_stream;
     }
-    template <class T, class charT, class traits, class Distance>
+    template<class T, class charT, class traits, class Distance>
     bool operator!=(const istream_iterator<T, charT, traits, Distance>& x,
                     const istream_iterator<T, charT, traits, Distance>& y){
         return !(x == y);
     }
 
-    template <class T, class charT, class traits>
+    template<class T, class charT, class traits>
     class ostream_iterator{
     public:
         using iterator_category = output_iterator_tag;
@@ -645,18 +645,18 @@ namespace std{
         streambuf_type* sbuf_;
     };
 
-    template <class charT, class traits>
+    template<class charT, class traits>
     bool operator==(const istreambuf_iterator<charT, traits>& a,
                     const istreambuf_iterator<charT, traits>& b){
         return a.equal(b);
     }
-    template <class charT, class traits>
+    template<class charT, class traits>
     bool operator!=(const istreambuf_iterator<charT, traits>& a,
                     const istreambuf_iterator<charT, traits>& b){
         return !a.equal(b);
     }
 
-    template <class charT, class traits>
+    template<class charT, class traits>
     class ostreambuf_iterator{
     public:
         using iterator_category = output_iterator_tag;

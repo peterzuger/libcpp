@@ -194,15 +194,15 @@ namespace std{
         };
 
 
-        template <class _Alloc>
+        template<class _Alloc>
         auto __has_select_on_container_copy_construction_test(_Alloc&& __a)
             -> decltype(__a.select_on_container_copy_construction(), true_type());
 
-        template <class _Alloc>
+        template<class _Alloc>
         auto __has_select_on_container_copy_construction_test(const volatile _Alloc& __a)
             -> false_type;
 
-        template <class _Alloc>
+        template<class _Alloc>
         struct __has_select_on_container_copy_construction:
             integral_constant<bool,
                               std::is_same<

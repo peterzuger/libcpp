@@ -74,7 +74,8 @@ namespace std{
         basic_istream<charT, traits>& operator>>(basic_streambuf<char_type, traits>* sb);
 
         // 30.7.4.3, unformatted input
-        streamsize gcount() const;int_type get();
+        streamsize gcount()const;
+        int_type get();
         basic_istream<charT, traits>& get(char_type& c);
         basic_istream<charT, traits>& get(char_type* s, streamsize n);
         basic_istream<charT, traits>& get(char_type* s, streamsize n, char_type delim);
@@ -88,7 +89,8 @@ namespace std{
         streamsize                    readsome(char_type* s, streamsize n);
         basic_istream<charT, traits>& putback(char_type c);
         basic_istream<charT, traits>& unget();
-        int sync();pos_type tellg();
+        int sync();
+        pos_type tellg();
         basic_istream<charT, traits>& seekg(pos_type);
         basic_istream<charT, traits>& seekg(off_type, ios_base::seekdir);
 

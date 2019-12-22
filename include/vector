@@ -23,6 +23,7 @@
 #define __VECTOR__
 
 #include <__allocator_traits>
+#include <__bit>
 #include <cstddef>
 #include <limits>
 #include <initializer_list>
@@ -228,19 +229,6 @@ namespace std{
     void swap(vector<T, Allocator>& x, vector<T, Allocator>& y)noexcept(noexcept(x.swap(y))){
         x.swap(y);
     }
-
-    class __bit_iterator{};
-    class __bit_reference{
-        __bit_reference()noexcept;
-
-    public:
-        ~__bit_reference();
-        operator bool()const noexcept;
-        __bit_reference& operator=(const bool x)noexcept;
-        __bit_reference& operator=(const __bit_reference& x)noexcept;
-        void flip()noexcept; // flips the bit
-    };
-
 
     // 26.3.12, class vector<bool>
     template<class Allocator>

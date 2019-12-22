@@ -49,58 +49,98 @@ namespace std{
 #endif /* defined(__cpp_exceptions) */
     }
 
+    template<class T, bool = std::is_trivially_destructible_v<T>>
+    class __optional_base;
+
+    template<class T>
+    class __optional_base<T, false>{
+    public:
+        union{
+            char __nothing;
+            T val;
+        };
+        bool has;
+
+        ~__optional_base(){
+            if(has)
+                val.~T();
+        }
+
+        constexpr __optional_base()noexcept: __nothing{}, has{false}{}
+
+        void reset()noexcept{
+            if(has){
+                val.~value_type();
+                has = false;
+            }
+        }
+    };
+
+    template<class T>
+    class __optional_base<T, true>{
+    public:
+        union{
+            char __nothing;
+            T val;
+        };
+        bool has;
+
+        constexpr __optional_base()noexcept: __nothing{}, has{false}{}
+
+        void reset()noexcept{
+            has = false;
+        }
+    };
+
     // 23.6.3, class template optional
     template<class T>
-    class optional{
+    class optional: private __optional_base<T>{
+        using base = __optional_base<T>;
+
     public:
         using value_type = T;
 
         // 23.6.3.1, constructors
-        constexpr optional()noexcept:has{false}{}
-        constexpr optional(nullopt_t)noexcept:has{false}{}
-        constexpr optional(const optional& other):has{other.has_value()}{
-            if(has)
-                new(std::addressof(val)) T(*other);
+        constexpr optional()noexcept = default;
+        constexpr optional(nullopt_t)noexcept = default;
+        constexpr optional(const optional& other): base::has{other.has_value()}{
+            if(this->has)
+                new(std::addressof(this->val)) T(*other);
         }
         constexpr optional(optional&& other)noexcept(std::is_nothrow_move_constructible_v<T>):
-            has{other.has_value()}{
-            if(has)
-                new(std::addressof(val)) T(std::move(*other));
+            base::has{other.has_value()}{
+            if(this->has)
+                new(std::addressof(this->val)) T(std::move(*other));
         }
 
         template<class... Args>
         constexpr explicit optional(std::conditional_t<std::is_constructible_v<T, Args...>, std::in_place_t, void>,
                                     Args&&... args):
-            has{true},
-            val{std::forward<Args...>(args)...}{}
+            base::has{true},
+            base::val{std::forward<Args...>(args)...}{}
 
         template<class U, class... Args>
         constexpr explicit optional(std::in_place_t, std::initializer_list<U> il, Args&&... args):
-            has{true},
-            val{il, std::forward<Args>(args)...}{}
+            base::has{true},
+            base::val{il, std::forward<Args>(args)...}{}
 
         template<class U = T>
         explicit constexpr optional(U&& v):
-            has{true}, val{std::forward<U>(v)}{}
+            base::has{true},
+            base::val{std::forward<U>(v)}{}
 
         template<class U>
         explicit optional(const optional<U>& other):
-            has{other.has_value()}{
-            if(has)
-                new(std::addressof(val)) T(*other);
+            base::has{other.has_value()}{
+            if(this->has)
+                new(std::addressof(this->val)) T(*other);
         }
 
         template<class U>
         explicit optional(optional<U>&& other):
-            has{other.has_value()}{
-            if(has)
-                new(std::addressof(val)) T(std::move(*other));
-        }
-
-        // 23.6.3.2, destructor
-        ~optional(){
-            if(has)
-                val.T::~T();
+            base::has{other.has_value()}{
+            if(this->has)
+                new(std::addressof(this->val)) T(std::move(*other));
         }
 
         // 23.6.3.3, assignment
@@ -133,13 +173,13 @@ namespace std{
             if(has_value() == other.has_value()){
                 using std::swap;
                 if(has_value())
-                    swap(*val, *(other.val));
+                    swap(this->val, other.val);
             }else{
                 if(has_value()){
-                    *(other.val)(std::move(*val));
+                    (other.val)(std::move(this->val));
                     reset();
                 }else{
-                    (*val)(std::move(*(other.val)));
+                    (this->val)(std::move((other.val)));
                     other.reset();
                 }
             }
@@ -147,51 +187,51 @@ namespace std{
 
         // 23.6.3.5, observers
         constexpr const T* operator->()const{
-            return val;
+            return this->val;
         }
 
         constexpr T* operator->(){
-            return std::addressof(val);
+            return std::addressof(this->val);
         }
 
         constexpr const T& operator*()const&{
-            return std::addressof(val);
+            return std::addressof(this->val);
         }
 
         constexpr T& operator*()&{
-            return val;
+            return this->val;
         }
 
         constexpr T&& operator*()&&{
-            return std::move(val);
+            return std::move(this->val);
         }
 
         constexpr const T&& operator*()const&&{
-            return std::move(val);
+            return std::move(this->val);
         }
 
         constexpr explicit operator bool()const noexcept{
-            return has;
+            return this->has;
         }
 
         constexpr bool has_value()const noexcept{
-            return has;
+            return this->has;
         }
 
         constexpr const T& value()const&{
-            return bool(*this) ? val : __throw_bad_optional_access();
+            return bool(*this) ? this->val : __throw_bad_optional_access();
         }
 
         constexpr T& value()&{
-            return bool(*this) ? val : __throw_bad_optional_access();
+            return bool(*this) ? this->val : __throw_bad_optional_access();
         }
 
         constexpr T&& value()&&{
-            return bool(*this) ? std::move(val) : __throw_bad_optional_access();
+            return bool(*this) ? std::move(this->val) : __throw_bad_optional_access();
         }
 
         constexpr const T&& value()const&&{
-            return bool(*this) ? std::move(val) : __throw_bad_optional_access();
+            return bool(*this) ? std::move(this->val) : __throw_bad_optional_access();
         }
 
         template<class U>
@@ -205,18 +245,7 @@ namespace std{
         }
 
         // 23.6.3.6, modifiers
-        void reset()noexcept{
-            if(has)
-                val.T::~T();
-            has = false;
-        }
-
-    private:
-        union{
-            char __nothing;
-            value_type val;
-        };
-        bool has;
+        using base::reset;
     };
 
     template<class T> optional(T) -> optional<T>;

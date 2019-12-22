@@ -22,19 +22,45 @@
 #ifndef ____BIT__
 #define ____BIT__
 
-namespace std{
-    class __bit_reference{
-        __bit_reference()noexcept;
+#include <cstddef>
 
-    public:
-        ~__bit_reference();
-        operator bool()const noexcept;
-        __bit_reference& operator=(const bool x)noexcept;
-        __bit_reference& operator=(const __bit_reference& x)noexcept;
-        void flip()noexcept; // flips the bit
+namespace std{
+    struct __bit_reference{
+        using pointer   = char*;
+        using size_type = std::size_t;
+
+        __bit_reference(pointer _p, size_type _mask)noexcept:
+            p{_p}, mask{_mask}{}
+
+        operator bool()const noexcept{
+            return static_cast<bool>(*p & mask);
+        }
+
+        bool operator~()const noexcept{
+            *p ^= mask;
+            return bool(*this);
+        }
+
+        __bit_reference& operator=(const bool x)noexcept{
+            if(x)*p |= mask;
+            else *p &= ~mask;
+            return *this;
+        }
+
+        __bit_reference& operator=(const __bit_reference& x)noexcept{
+            return operator=(bool(x));
+        }
+
+        void flip()noexcept{ // flips the bit
+            *p ^= mask;
+        }
+
+    private:
+        pointer p;
+        size_type mask;
     };
 
-    class __bit_iterator{};
+    struct __bit_iterator{};
 }
 
 #endif /* ____BIT__ */

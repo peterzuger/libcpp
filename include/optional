@@ -60,12 +60,12 @@ namespace std{
         constexpr optional(nullopt_t)noexcept:has{false}{}
         constexpr optional(const optional& other):has{other.has_value()}{
             if(has)
-                new(&val) T(*other);
+                new(std::addressof(val)) T(*other);
         }
         constexpr optional(optional&& other)noexcept(std::is_nothrow_move_constructible_v<T>):
             has{other.has_value()}{
             if(has)
-                new(&val) T(std::move(*other));
+                new(std::addressof(val)) T(std::move(*other));
         }
 
         template<class... Args>
@@ -87,14 +87,14 @@ namespace std{
         explicit optional(const optional<U>& other):
             has{other.has_value()}{
             if(has)
-                new(&val) T(*other);
+                new(std::addressof(val)) T(*other);
         }
 
         template<class U>
         explicit optional(optional<U>&& other):
             has{other.has_value()}{
             if(has)
-                new(&val) T(std::move(*other));
+                new(std::addressof(val)) T(std::move(*other));
         }
 
         // 23.6.3.2, destructor

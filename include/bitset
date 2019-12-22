@@ -22,6 +22,7 @@
 #ifndef __BITSET__
 #define __BITSET__
 
+#include <__bit>
 #include <cstddef>
 #include <string>
 #include <iosfwd> // for istream (30.7.1), ostream (30.7.2), see 30.3.1
@@ -30,21 +31,6 @@ namespace std{
     template<size_t N>
     class bitset{
     public:
-        // bit reference:
-        class reference{
-            friend class bitset;
-
-            reference()noexcept;
-
-        public:
-            ~reference()noexcept;
-            reference& operator=(bool x)noexcept;           // forb[i] = x;
-            reference& operator=(const reference&)noexcept; // forb[i] = b[j];
-            bool operator~()const noexcept; // flips the bit
-            operator bool()const noexcept; // forx = b[i];
-            reference& flip()noexcept;      // forb[i].flip();
-        };
-
         // 23.9.2.1, constructors
         constexpr bitset()noexcept;
         constexpr bitset(unsigned long long val)noexcept;
@@ -77,7 +63,7 @@ namespace std{
 
         // element access:
         constexpr bool operator[](size_t pos)const;// forb[i];
-        reference operator[](size_t pos);// forb[i];
+        __bit_reference operator[](size_t pos);// forb[i];
 
         unsigned long to_ulong()const;
         unsigned long long to_ullong()const;

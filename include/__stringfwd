@@ -26,7 +26,7 @@
 #include <__char_traits>
 
 namespace std{
-    template<class charT, class traits = char_traits<charT>, class Allocator = allocator<charT>>
+    template<class charT, class traits = std::char_traits<charT>, class Allocator = std::allocator<charT>>
     class basic_string;
 
     // basic_string typedef names

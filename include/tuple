@@ -48,14 +48,14 @@ namespace std{
     constexpr T make_from_tuple(Tuple&& t);
 
     // 23.5.3.7, element access
-    template<size_t I, class... Types>
+    template<std::size_t I, class... Types>
     constexpr tuple_element_t<I, tuple<Types...>>& get(tuple<Types...>&)noexcept;
-    template<size_t I, class... Types>
+    template<std::size_t I, class... Types>
     constexpr tuple_element_t<I, tuple<Types...>>&& get(tuple<Types...>&&)noexcept;
-    template<size_t I, class... Types>
+    template<std::size_t I, class... Types>
     constexpr const tuple_element_t<I, tuple<Types...>>& get(const tuple<Types...>&)noexcept;
 
-    template<size_t I, class... Types>
+    template<std::size_t I, class... Types>
     constexpr const tuple_element_t<I, tuple<Types...>>&& get(const tuple<Types...>&&)noexcept;
     template<class T, class... Types>
     constexpr T& get(tuple<Types...>& t)noexcept;
@@ -92,7 +92,7 @@ namespace std{
 
     // 23.5.3.6, tuple helper classes
     template<class T>
-    inline constexpr size_t tuple_size_v = tuple_size<T>::value;
+    inline constexpr std::size_t tuple_size_v = tuple_size<T>::value;
 }
 
 #endif /* __TUPLE__ */

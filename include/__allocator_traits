@@ -196,7 +196,7 @@ namespace std{
 
         template<class _Alloc>
         auto __has_select_on_container_copy_construction_test(_Alloc&& __a)
-            -> decltype(__a.select_on_container_copy_construction(), true_type());
+            -> decltype(__a.select_on_container_copy_construction(), std::true_type());
 
         template<class _Alloc>
         auto __has_select_on_container_copy_construction_test(const volatile _Alloc& __a)

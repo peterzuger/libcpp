@@ -28,7 +28,7 @@
 namespace std{
     class logic_error: public exception{
     public:
-        explicit logic_error(const string& what_arg);
+        explicit logic_error(const std::string& what_arg);
         explicit logic_error(const char* what_arg);
 
         logic_error(const logic_error& err)noexcept;
@@ -42,7 +42,7 @@ namespace std{
 
     class domain_error: public logic_error{
     public:
-        explicit domain_error(const string& what_arg): logic_error(what_arg){}
+        explicit domain_error(const std::string& what_arg): logic_error(what_arg){}
         explicit domain_error(const char* what_arg)  : logic_error(what_arg){}
 
         virtual ~domain_error()noexcept;
@@ -51,7 +51,7 @@ namespace std{
 
     class invalid_argument: public logic_error{
     public:
-        explicit invalid_argument(const string& what_arg): logic_error(what_arg){}
+        explicit invalid_argument(const std::string& what_arg): logic_error(what_arg){}
         explicit invalid_argument(const char* what_arg)  : logic_error(what_arg){}
 
         virtual ~invalid_argument()noexcept;
@@ -60,7 +60,7 @@ namespace std{
 
     class length_error: public logic_error{
     public:
-        explicit length_error(const string& what_arg): logic_error(what_arg){}
+        explicit length_error(const std::string& what_arg): logic_error(what_arg){}
         explicit length_error(const char* what_arg)  : logic_error(what_arg){}
 
         virtual ~length_error()noexcept;
@@ -69,7 +69,7 @@ namespace std{
 
     class out_of_range: public logic_error{
     public:
-        explicit out_of_range(const string& what_arg): logic_error(what_arg){}
+        explicit out_of_range(const std::string& what_arg): logic_error(what_arg){}
         explicit out_of_range(const char* what_arg)  : logic_error(what_arg){}
 
         virtual ~out_of_range()noexcept;
@@ -78,7 +78,7 @@ namespace std{
 
     class runtime_error: public exception{
     public:
-        explicit runtime_error(const string& what_arg);
+        explicit runtime_error(const std::string& what_arg);
         explicit runtime_error(const char* what_arg);
 
         runtime_error(const runtime_error& err)noexcept;
@@ -92,7 +92,7 @@ namespace std{
 
     class range_error: public runtime_error{
     public:
-        explicit range_error(const string& what_arg): runtime_error(what_arg){}
+        explicit range_error(const std::string& what_arg): runtime_error(what_arg){}
         explicit range_error(const char* what_arg)  : runtime_error(what_arg){}
 
         virtual ~range_error()noexcept;
@@ -101,7 +101,7 @@ namespace std{
 
     class overflow_error: public runtime_error{
     public:
-        explicit overflow_error(const string& what_arg): runtime_error(what_arg){}
+        explicit overflow_error(const std::string& what_arg): runtime_error(what_arg){}
         explicit overflow_error(const char* what_arg)  : runtime_error(what_arg){}
 
         virtual ~overflow_error()noexcept;
@@ -110,7 +110,7 @@ namespace std{
 
     class underflow_error: public runtime_error{
     public:
-        explicit underflow_error(const string& what_arg): runtime_error(what_arg){}
+        explicit underflow_error(const std::string& what_arg): runtime_error(what_arg){}
         explicit underflow_error(const char* what_arg)  : runtime_error(what_arg){}
 
         virtual ~underflow_error()noexcept;

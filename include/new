@@ -59,8 +59,8 @@ namespace std{
     constexpr T* launder(T* p)noexcept;
 
     // 21.6.5, hardware interference size
-    inline constexpr size_t hardware_destructive_interference_size = sizeof(int);
-    inline constexpr size_t hardware_constructive_interference_size = sizeof(int);
+    inline constexpr std::size_t hardware_destructive_interference_size = sizeof(int);
+    inline constexpr std::size_t hardware_constructive_interference_size = sizeof(int);
 }
 
 void* operator new(std::size_t size);

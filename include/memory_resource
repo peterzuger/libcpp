@@ -28,14 +28,14 @@
 namespace std::pmr{
     // 23.12.2, class memory_resource
     class memory_resource {
-        static constexpr size_t max_align = alignof(max_align_t);
+        static constexpr std::size_t max_align = alignof(max_align_t);
 
     public:
         virtual ~memory_resource();
-        void* allocate(size_t bytes, size_t alignment = max_align){
+        void* allocate(std::size_t bytes, std::size_t alignment = max_align){
             return do_allocate(bytes, alignment);
         }
-        void deallocate(void* p, size_t bytes, size_t alignment = max_align){
+        void deallocate(void* p, std::size_t bytes, std::size_t alignment = max_align){
             do_deallocate(p, bytes, alignment);
         }
         bool is_equal(const memory_resource& other)const noexcept{
@@ -43,8 +43,8 @@ namespace std::pmr{
         }
 
     private:
-        virtual void* do_allocate(size_t bytes, size_t alignment) = 0;
-        virtual void do_deallocate(void* p, size_t bytes, size_t alignment) = 0;
+        virtual void* do_allocate(std::size_t bytes, std::size_t alignment) = 0;
+        virtual void do_deallocate(void* p, std::size_t bytes, std::size_t alignment) = 0;
         virtual bool do_is_equal(const memory_resource& other)const noexcept = 0;
     };
 
@@ -80,10 +80,10 @@ namespace std::pmr{
         operator=(const polymorphic_allocator& rhs) = delete;
 
         // 23.12.3.2, member functions
-        Tp* allocate(size_t n){
+        Tp* allocate(std::size_t n){
             return static_cast<Tp*>(memory_rsrc->allocate(n * sizeof(Tp), alignof(Tp)));
         }
-        void deallocate(Tp* p, size_t n){
+        void deallocate(Tp* p, std::size_t n){
             memory_rsrc->deallocate(p, n * sizeof(Tp), alignof(Tp));
         }
 
@@ -128,8 +128,8 @@ namespace std::pmr{
 
     // 23.12.5, pool resource classes
     struct pool_options{
-        size_t max_blocks_per_chunk = 0;
-        size_t largest_required_pool_block = 0;
+        std::size_t max_blocks_per_chunk = 0;
+        std::size_t largest_required_pool_block = 0;
     };
 
     class synchronized_pool_resource: public memory_resource{
@@ -152,8 +152,8 @@ namespace std::pmr{
         pool_options options()const;
 
     protected:
-        void *do_allocate(size_t bytes, size_t alignment)override;
-        void do_deallocate(void *p, size_t bytes, size_t alignment)override;
+        void *do_allocate(std::size_t bytes, std::size_t alignment)override;
+        void do_deallocate(void *p, std::size_t bytes, std::size_t alignment)override;
 
         bool do_is_equal(const memory_resource& other)const noexcept override;
     };
@@ -175,8 +175,8 @@ namespace std::pmr{
         pool_options options()const;
 
     protected:
-        void* do_allocate(size_t bytes, size_t alignment)override;
-        void do_deallocate(void* p, size_t bytes, size_t alignment)override;
+        void* do_allocate(std::size_t bytes, std::size_t alignment)override;
+        void do_deallocate(void* p, std::size_t bytes, std::size_t alignment)override;
 
         bool do_is_equal(const memory_resource& other)const noexcept override;
     };
@@ -184,17 +184,17 @@ namespace std::pmr{
     class monotonic_buffer_resource: public memory_resource {
         memory_resource *upstream_rsrc;
         void *current_buffer;
-        size_t next_buffer_size;
+        std::size_t next_buffer_size;
 
     public:
         explicit monotonic_buffer_resource(memory_resource *upstream);
-        monotonic_buffer_resource(size_t initial_size, memory_resource *upstream);
-        monotonic_buffer_resource(void *buffer, size_t buffer_size, memory_resource *upstream);
+        monotonic_buffer_resource(std::size_t initial_size, memory_resource *upstream);
+        monotonic_buffer_resource(void *buffer, std::size_t buffer_size, memory_resource *upstream);
         monotonic_buffer_resource()
             :monotonic_buffer_resource(get_default_resource()) {}
-        explicit monotonic_buffer_resource(size_t initial_size)
+        explicit monotonic_buffer_resource(std::size_t initial_size)
             :monotonic_buffer_resource(initial_size, get_default_resource()) {}
-        monotonic_buffer_resource(void *buffer, size_t buffer_size)
+        monotonic_buffer_resource(void *buffer, std::size_t buffer_size)
             :monotonic_buffer_resource(buffer, buffer_size, get_default_resource()) {}
 
         monotonic_buffer_resource(const monotonic_buffer_resource&) = delete;
@@ -207,8 +207,8 @@ namespace std::pmr{
         memory_resource* upstream_resource()const;
 
     protected:
-        void* do_allocate(size_t bytes, size_t alignment)override;
-        void do_deallocate(void* p, size_t bytes, size_t alignment)override;
+        void* do_allocate(std::size_t bytes, std::size_t alignment)override;
+        void do_deallocate(void* p, std::size_t bytes, std::size_t alignment)override;
 
         bool do_is_equal(const memory_resource& other)const noexcept override;
     };

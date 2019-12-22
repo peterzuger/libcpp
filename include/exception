@@ -43,7 +43,7 @@ namespace std{
         const char* what()const noexcept override;
     };
 
-    using exception_ptr = size_t*;
+    using exception_ptr = std::size_t*;
 
     class nested_exception{
     public:

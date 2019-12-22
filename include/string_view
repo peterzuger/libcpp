@@ -274,16 +274,16 @@ namespace std{
         inline
         namespace string_view_literals{
             // 24.4.6, suffix forbasic_string_viewliterals
-            constexpr string_view    operator ""sv(const char* str, size_t len)noexcept{
+            constexpr string_view    operator ""sv(const char* str, std::size_t len)noexcept{
                 return string_view{str, len};
             }
-            constexpr u16string_view operator ""sv(const char16_t* str, size_t len)noexcept{
+            constexpr u16string_view operator ""sv(const char16_t* str, std::size_t len)noexcept{
                 return u16string_view{str, len};
             }
-            constexpr u32string_view operator ""sv(const char32_t* str, size_t len)noexcept{
+            constexpr u32string_view operator ""sv(const char32_t* str, std::size_t len)noexcept{
                 return u32string_view{str, len};
             }
-            constexpr wstring_view   operator ""sv(const wchar_t* str, size_t len)noexcept{
+            constexpr wstring_view   operator ""sv(const wchar_t* str, std::size_t len)noexcept{
                 return wstring_view{str, len};
             }
         }

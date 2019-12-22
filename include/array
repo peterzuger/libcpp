@@ -32,7 +32,7 @@
 
 namespace std{
     // 26.3.7, class template array
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     struct array{
         // types:
         using value_type             = T;
@@ -40,8 +40,8 @@ namespace std{
         using const_pointer          = const value_type*;
         using reference              = value_type&;
         using const_reference        = const value_type&;
-        using size_type              = size_t;
-        using difference_type        = ptrdiff_t;
+        using size_type              = std::size_t;
+        using difference_type        = std::ptrdiff_t;
         using iterator               = pointer; // see 26.2
         using const_iterator         = const_pointer; // see 26.2
         using reverse_iterator       = std::reverse_iterator<iterator>;
@@ -161,8 +161,8 @@ namespace std{
         using const_pointer          = const value_type*;
         using reference              = value_type&;
         using const_reference        = const value_type&;
-        using size_type              = size_t;
-        using difference_type        = ptrdiff_t;
+        using size_type              = std::size_t;
+        using difference_type        = std::ptrdiff_t;
         using iterator               = pointer; // see 26.2
         using const_iterator         = const_pointer; // see 26.2
         using reverse_iterator       = std::reverse_iterator<iterator>;
@@ -282,7 +282,7 @@ namespace std{
     array(T, U...) -> array<T, 1 + sizeof...(U)>;
 
     // array specialized algorithms
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     bool operator==(const array<T, N>& x, const array<T, N>& y){
         for(size_t i = 0; i < N; i++)
             if(!(x[i] == y[i]))
@@ -290,12 +290,12 @@ namespace std{
         return true;
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     bool operator!=(const array<T, N>& x, const array<T, N>& y){
         return !(x == y);
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     bool operator< (const array<T, N>& x, const array<T, N>& y){
         for(size_t i = 0; i < N; i++){
             if(x[i] < y[i])return true;
@@ -304,33 +304,33 @@ namespace std{
         return false;
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     bool operator> (const array<T, N>& x, const array<T, N>& y){
         return y < x;
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     bool operator<=(const array<T, N>& x, const array<T, N>& y){
         return !(y < x);
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     bool operator>=(const array<T, N>& x, const array<T, N>& y){
         return !(x < y);
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     std::enable_if_t<(N == 0) || std::is_swappable_v<T>, void>
     swap(array<T, N>& x, array<T, N>& y)noexcept(noexcept(x.swap(y))){
         x.swap(y);
     }
 
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     class tuple_size<array<T, N>>
-        :std::integral_constant<size_t, N>{};
+        :std::integral_constant<std::size_t, N>{};
 
-    template<size_t I, class T, size_t N>
+    template<std::size_t I, class T, std::size_t N>
     class tuple_element<I, array<T, N>>{
         static_assert(I < N, "Index out of bounds in std::tuple_element<> (std::array)");
 
@@ -339,25 +339,25 @@ namespace std{
     };
 
 
-    template<size_t I, class T, size_t N>
+    template<std::size_t I, class T, std::size_t N>
     constexpr T& get(array<T, N>& a)noexcept{
         static_assert(I < N, "Index out of bounds in std::get<> (std::array)");
         return a._elem[I];
     }
 
-    template<size_t I, class T, size_t N>
+    template<std::size_t I, class T, std::size_t N>
     constexpr T&& get(array<T, N>&& a)noexcept{
         static_assert(I < N, "Index out of bounds in std::get<> (const std::array)");
         return a._elem[I];
     }
 
-    template<size_t I, class T, size_t N>
+    template<std::size_t I, class T, std::size_t N>
     constexpr const T& get(const array<T, N>& a)noexcept{
         static_assert(I < N, "Index out of bounds in std::get<> (std::array &&)");
         return std::move(a._elem[I]);
     }
 
-    template<size_t I, class T, size_t N>
+    template<std::size_t I, class T, std::size_t N>
     constexpr const T&& get(const array<T, N>&& a)noexcept{
         static_assert(I < N, "Index out of bounds in std::get<> (const std::array &&)");
         return std::move(a._elem[I]);

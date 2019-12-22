@@ -50,7 +50,7 @@ namespace std{
             return c1 < c2;
         }
 
-        static constexpr int compare(const char_type* s1, const char_type* s2, size_t n){
+        static constexpr int compare(const char_type* s1, const char_type* s2, std::size_t n){
             if(n == 0)
                 return 0;
             for(; n; --n, ++s1, ++s2){
@@ -61,13 +61,13 @@ namespace std{
             }
             return 0;
         }
-        static constexpr size_t length(const char_type* s){
-            size_t len = 0;
+        static constexpr std::size_t length(const char_type* s){
+            std::size_t len = 0;
             for(; !eq(*s, char_type(0)); ++s)
                 ++len;
             return len;
         }
-        static constexpr const char_type* find(const char_type* s, size_t n,
+        static constexpr const char_type* find(const char_type* s, std::size_t n,
                                                const char_type& a){
             if(n == 0)
                 return nullptr;
@@ -78,7 +78,7 @@ namespace std{
             }
             return nullptr;
         }
-        static char_type* move(char_type* s1, const char_type* s2, size_t n){
+        static char_type* move(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             if(s1 < s2){
                 for (; n; --n, ++s1, ++s2)
@@ -91,13 +91,13 @@ namespace std{
             }
             return r;
         }
-        static char_type* copy(char_type* s1, const char_type* s2, size_t n){
+        static char_type* copy(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             for (; n; --n, ++s1, ++s2)
                 assign(*s1, *s2);
             return r;
         }
-        static char_type* assign(char_type* s, size_t n, char_type a){
+        static char_type* assign(char_type* s, std::size_t n, char_type a){
             char_type* r = s;
             for (; n; --n, ++s)
                 assign(*s, a);
@@ -139,7 +139,7 @@ namespace std{
             return (unsigned char)c1 < (unsigned char)c2;
         }
 
-        static constexpr int compare(const char_type* s1, const char_type* s2, size_t n){
+        static constexpr int compare(const char_type* s1, const char_type* s2, std::size_t n){
             if(n == 0)
                 return 0;
             for(; n; --n, ++s1, ++s2){
@@ -150,13 +150,13 @@ namespace std{
             }
             return 0;
         }
-        static constexpr size_t length(const char_type* s){
-            size_t len = 0;
+        static constexpr std::size_t length(const char_type* s){
+            std::size_t len = 0;
             for(; !eq(*s, char_type(0)); ++s)
                 ++len;
             return len;
         }
-        static constexpr const char_type* find(const char_type* s, size_t n,
+        static constexpr const char_type* find(const char_type* s, std::size_t n,
                                                const char_type& a){
             if(n == 0)
                 return nullptr;
@@ -167,13 +167,13 @@ namespace std{
             }
             return nullptr;
         }
-        static char_type* move(char_type* s1, const char_type* s2, size_t n){
+        static char_type* move(char_type* s1, const char_type* s2, std::size_t n){
             return n == 0 ? s1 : (char_type*) std::memmove(s1, s2, n);
         }
-        static char_type* copy(char_type* s1, const char_type* s2, size_t n){
+        static char_type* copy(char_type* s1, const char_type* s2, std::size_t n){
             return n == 0 ? s1 : (char_type*) std::memcpy(s1, s2, n);
         }
-        static char_type* assign(char_type* s, size_t n, char_type a){
+        static char_type* assign(char_type* s, std::size_t n, char_type a){
             return n == 0 ? s : (char_type*) std::memset(s, to_int_type(a), n);
         }
 
@@ -199,9 +199,9 @@ namespace std{
     struct char_traits<char8_t>{
         using char_type  = char8_t;
         using int_type   = int;
-        using off_type   = streamoff;
-        using pos_type   = streampos;
-        using state_type = mbstate_t;
+        using off_type   = std::streamoff;
+        using pos_type   = std::streampos;
+        using state_type = std::mbstate_t;
 
         static constexpr void assign(char_type& c1, const char_type& c2)noexcept{
             (unsigned char)c1 = (unsigned char)c2;
@@ -213,7 +213,7 @@ namespace std{
             return (unsigned char)c1 < (unsigned char)c2;
         }
 
-        static constexpr int compare(const char_type* s1, const char_type* s2, size_t n){
+        static constexpr int compare(const char_type* s1, const char_type* s2, std::size_t n){
             if(n == 0)
                 return 0;
             for(; n; --n, ++s1, ++s2){
@@ -224,10 +224,10 @@ namespace std{
             }
             return 0;
         }
-        static constexpr size_t length(const char_type* s){
+        static constexpr std::size_t length(const char_type* s){
             return std::strlen(s);
         }
-        static constexpr const char_type* find(const char_type* s, size_t n,
+        static constexpr const char_type* find(const char_type* s, std::size_t n,
                                                const char_type& a){
             if(n == 0)
                 return nullptr;
@@ -238,13 +238,13 @@ namespace std{
             }
             return nullptr;
         }
-        static char_type* move(char_type* s1, const char_type* s2, size_t n){
+        static char_type* move(char_type* s1, const char_type* s2, std::size_t n){
             return n == 0 ? s1 : (char_type*) std::memmove(s1, s2, n);
         }
-        static char_type* copy(char_type* s1, const char_type* s2, size_t n){
+        static char_type* copy(char_type* s1, const char_type* s2, std::size_t n){
             return n == 0 ? s1 : (char_type*) std::memcpy(s1, s2, n);
         }
-        static char_type* assign(char_type* s, size_t n, char_type a){
+        static char_type* assign(char_type* s, std::size_t n, char_type a){
             return n == 0 ? s : (char_type*) std::memset(s, to_int_type(a), n);
         }
 
@@ -284,7 +284,7 @@ namespace std{
             return c1 < c2;
         }
 
-        static constexpr int compare(const char_type* s1, const char_type* s2, size_t n){
+        static constexpr int compare(const char_type* s1, const char_type* s2, std::size_t n){
             if(n == 0)
                 return 0;
             for(; n; --n, ++s1, ++s2){
@@ -295,13 +295,13 @@ namespace std{
             }
             return 0;
         }
-        static constexpr size_t length(const char_type* s){
-            size_t len = 0;
+        static constexpr std::size_t length(const char_type* s){
+            std::size_t len = 0;
             for(; !eq(*s, char_type(0)); ++s)
                 ++len;
             return len;
         }
-        static constexpr const char_type* find(const char_type* s, size_t n,
+        static constexpr const char_type* find(const char_type* s, std::size_t n,
                                                const char_type& a){
             if(n == 0)
                 return nullptr;
@@ -312,7 +312,7 @@ namespace std{
             }
             return 0;
         }
-        static char_type* move(char_type* s1, const char_type* s2, size_t n){
+        static char_type* move(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             if(s1 < s2){
                 for (; n; --n, ++s1, ++s2)
@@ -325,13 +325,13 @@ namespace std{
             }
             return r;
         }
-        static char_type* copy(char_type* s1, const char_type* s2, size_t n){
+        static char_type* copy(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             for(; n; --n, ++s1, ++s2)
                 assign(*s1, *s2);
             return r;
         }
-        static char_type* assign(char_type* s, size_t n, char_type a){
+        static char_type* assign(char_type* s, std::size_t n, char_type a){
             char_type* r = s;
             for(; n; --n, ++s)
                 assign(*s, a);
@@ -373,7 +373,7 @@ namespace std{
             return c1 < c2;
         }
 
-        static constexpr int compare(const char_type* s1, const char_type* s2, size_t n){
+        static constexpr int compare(const char_type* s1, const char_type* s2, std::size_t n){
             if(n == 0)
                 return 0;
             for(; n; --n, ++s1, ++s2){
@@ -384,13 +384,13 @@ namespace std{
             }
             return 0;
         }
-        static constexpr size_t length(const char_type* s){
-            size_t len = 0;
+        static constexpr std::size_t length(const char_type* s){
+            std::size_t len = 0;
             for(; !eq(*s, char_type(0)); ++s)
                 ++len;
             return len;
         }
-        static constexpr const char_type* find(const char_type* s, size_t n,
+        static constexpr const char_type* find(const char_type* s, std::size_t n,
                                                const char_type& a){
             if(n == 0)
                 return nullptr;
@@ -401,7 +401,7 @@ namespace std{
             }
             return 0;
         }
-        static char_type* move(char_type* s1, const char_type* s2, size_t n){
+        static char_type* move(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             if(s1 < s2){
                 for (; n; --n, ++s1, ++s2)
@@ -414,13 +414,13 @@ namespace std{
             }
             return r;
         }
-        static char_type* copy(char_type* s1, const char_type* s2, size_t n){
+        static char_type* copy(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             for(; n; --n, ++s1, ++s2)
                 assign(*s1, *s2);
             return r;
         }
-        static char_type* assign(char_type* s, size_t n, char_type a){
+        static char_type* assign(char_type* s, std::size_t n, char_type a){
             char_type* r = s;
             for(; n; --n, ++s)
                 assign(*s, a);
@@ -461,7 +461,7 @@ namespace std{
             return c1 < c2;
         }
 
-        static constexpr int compare(const char_type* s1, const char_type* s2, size_t n){
+        static constexpr int compare(const char_type* s1, const char_type* s2, std::size_t n){
             if(n == 0)
                 return 0;
             for(; n; --n, ++s1, ++s2){
@@ -472,13 +472,13 @@ namespace std{
             }
             return 0;
         }
-        static constexpr size_t length(const char_type* s){
-            size_t len = 0;
+        static constexpr std::size_t length(const char_type* s){
+            std::size_t len = 0;
             for(; !eq(*s, char_type(0)); ++s)
                 ++len;
             return len;
         }
-        static constexpr const char_type* find(const char_type* s, size_t n,
+        static constexpr const char_type* find(const char_type* s, std::size_t n,
                                                const char_type& a){
             if(n == 0)
                 return nullptr;
@@ -489,7 +489,7 @@ namespace std{
             }
             return 0;
         }
-        static char_type* move(char_type* s1, const char_type* s2, size_t n){
+        static char_type* move(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             if(s1 < s2){
                 for (; n; --n, ++s1, ++s2)
@@ -502,13 +502,13 @@ namespace std{
             }
             return r;
         }
-        static char_type* copy(char_type* s1, const char_type* s2, size_t n){
+        static char_type* copy(char_type* s1, const char_type* s2, std::size_t n){
             char_type* r = s1;
             for(; n; --n, ++s1, ++s2)
                 assign(*s1, *s2);
             return r;
         }
-        static char_type* assign(char_type* s, size_t n, char_type a){
+        static char_type* assign(char_type* s, std::size_t n, char_type a){
             char_type* r = s;
             for(; n; --n, ++s)
                 assign(*s, a);

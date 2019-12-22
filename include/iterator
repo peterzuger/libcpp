@@ -717,12 +717,12 @@ namespace std{
         return c.end();
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     constexpr T* begin(T (&array)[N])noexcept{
         return array;
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     constexpr T* end(T (&array)[N])noexcept{
         return array + N;
     }
@@ -759,12 +759,12 @@ namespace std{
         return c.rend();
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     constexpr reverse_iterator<T*> rbegin(T (&array)[N]){
         return reverse_iterator<T*>(array + N);
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     constexpr reverse_iterator<T*> rend(T (&array)[N]){
         return reverse_iterator<T*>(array);
     }
@@ -796,8 +796,8 @@ namespace std{
         return c.size();
     }
 
-    template<class T, size_t N>
-    constexpr size_t size(const T (&)[N])noexcept{
+    template<class T, std::size_t N>
+    constexpr std::size_t size(const T (&)[N])noexcept{
         return N;
     }
 
@@ -806,7 +806,7 @@ namespace std{
         return c.empty();
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     constexpr bool empty(const T (&)[N])noexcept{
         return false;
     }
@@ -826,7 +826,7 @@ namespace std{
         return c.data();
     }
 
-    template<class T, size_t N>
+    template<class T, std::size_t N>
     constexpr T* data(T (&array)[N])noexcept{
         return array;
     }

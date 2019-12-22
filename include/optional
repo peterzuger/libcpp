@@ -103,10 +103,13 @@ namespace std{
         // 23.6.3.1, constructors
         constexpr optional()noexcept = default;
         constexpr optional(nullopt_t)noexcept = default;
-        constexpr optional(const optional& other): base::has{other.has_value()}{
+
+        constexpr optional(const optional& other):
+            base::has{other.has_value()}{
             if(this->has)
                 new(std::addressof(this->val)) T(*other);
         }
+
         constexpr optional(optional&& other)noexcept(std::is_nothrow_move_constructible_v<T>):
             base::has{other.has_value()}{
             if(this->has)
@@ -114,13 +117,16 @@ namespace std{
         }
 
         template<class... Args>
-        constexpr explicit optional(std::conditional_t<std::is_constructible_v<T, Args...>, std::in_place_t, void>,
+        constexpr explicit optional(std::conditional_t<std::is_constructible_v<T, Args...>,
+                                    std::in_place_t, void>,
                                     Args&&... args):
             base::has{true},
             base::val{std::forward<Args...>(args)...}{}
 
         template<class U, class... Args>
-        constexpr explicit optional(std::in_place_t, std::initializer_list<U> il, Args&&... args):
+        constexpr explicit optional(std::in_place_t,
+                                    std::initializer_list<U> il,
+                                    Args&&... args):
             base::has{true},
             base::val{il, std::forward<Args>(args)...}{}
 

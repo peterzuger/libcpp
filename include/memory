@@ -24,13 +24,13 @@
 
 #include <__addressof>
 #include <__allocator_traits>
-#include <__comparisons>
 #include <__execution/memory>
 #include <__iterator_traits>
 #include <__pointer_traits>
 #include <__uses_allocator>
 #include <atomic>
 #include <cstddef>
+#include <functional>
 #include <iosfwd>
 #include <stdexcept>
 #include <type_traits>

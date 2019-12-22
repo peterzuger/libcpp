@@ -104,7 +104,10 @@ namespace std{
         }
 
         // 23.6.3.3, assignment
-        optional& operator=(nullopt_t)noexcept;
+        optional& operator=(nullopt_t)noexcept{
+            reset();
+            return *this;
+        }
         optional& operator=(const optional&);
         optional& operator=(optional&&)noexcept(std::is_nothrow_move_assignable_v<T> &&
                                                 std::is_nothrow_move_constructible_v<T>);

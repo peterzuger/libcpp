@@ -60,7 +60,105 @@ namespace std{
         size_type mask;
     };
 
-    struct __bit_iterator{};
+    struct __bit_iterator{
+        using difference_type   = std::ptrdiff_t;
+        using value_type        = bool;
+        using pointer           = char*;
+        using reference         = __bit_reference;
+        using iterator_category = void;
+
+        __bit_iterator(pointer _p, std::size_t _bit)noexcept
+            : p{_p}, bit{_bit}{}
+
+        __bit_iterator()noexcept: p(nullptr), bit(0){}
+
+        __bit_iterator(const __bit_iterator& other) = default;
+
+        reference operator*()const noexcept{
+            return reference(p, 1 << bit);
+        }
+
+        __bit_iterator& operator++(){
+            if(bit == 7){
+                bit = 0;
+                ++p;
+            }else{
+                ++bit;
+            }
+            return *this;
+        }
+
+        __bit_iterator operator++(int){
+            __bit_iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        __bit_iterator& operator--(){
+            if(!bit){
+                bit = 7;
+                --p;
+            }else{
+                --bit;
+            }
+            return *this;
+        }
+
+        __bit_iterator operator--(int){
+            __bit_iterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        __bit_iterator operator+(difference_type n)const{
+            __bit_iterator t(*this);
+            t += n;
+            return t;
+        }
+
+        __bit_iterator& operator+=(difference_type n){
+            if(n >= 0){
+                p += (n + static_cast<difference_type>(bit)) / 8;
+                bit = (n + static_cast<difference_type>(bit)) % 8;
+            }else{
+                return operator-=(-n);
+            }
+            return *this;
+        }
+
+        __bit_iterator operator-(difference_type n)const{
+            __bit_iterator t(*this);
+            t -= n;
+            return t;
+        }
+
+        __bit_iterator& operator-=(difference_type n){
+            if(n >= 0){
+                p -= (n + static_cast<difference_type>(bit)) / 8;
+                bit = (n + static_cast<difference_type>(bit)) % 8;
+            }else{
+                return operator+=(-n);
+            }
+            return *this;
+        }
+
+        reference operator[](difference_type n)const{
+            return *(*this + n);
+        }
+
+        char* p;
+        std::size_t bit;
+    };
+
+    constexpr bool operator==(const __bit_iterator& x,
+                              const __bit_iterator& y){
+        return (x.p == y.p) && (x.bit == y.bit);
+    }
+
+    constexpr bool operator!=(const __bit_iterator& x,
+                              const __bit_iterator& y){
+        return !(x == y);
+    }
 }
 
 #endif /* ____BIT__ */

@@ -100,7 +100,7 @@ namespace std{
         // 23.6.3.2, destructor
         ~optional(){
             if(has)
-                val->T::~T();
+                val.T::~T();
         }
 
         // 23.6.3.3, assignment
@@ -148,23 +148,23 @@ namespace std{
         }
 
         constexpr T* operator->(){
-            return val;
+            return std::addressof(val);
         }
 
         constexpr const T& operator*()const&{
-            return *val;
+            return std::addressof(val);
         }
 
         constexpr T& operator*()&{
-            return *val;
+            return val;
         }
 
         constexpr T&& operator*()&&{
-            return std::move(*val);
+            return std::move(val);
         }
 
         constexpr const T&& operator*()const&&{
-            return std::move(*val);
+            return std::move(val);
         }
 
         constexpr explicit operator bool()const noexcept{
@@ -176,19 +176,19 @@ namespace std{
         }
 
         constexpr const T& value()const&{
-            return bool(*this) ? *val : __throw_bad_optional_access();
+            return bool(*this) ? val : __throw_bad_optional_access();
         }
 
         constexpr T& value()&{
-            return bool(*this) ? *val : __throw_bad_optional_access();
+            return bool(*this) ? val : __throw_bad_optional_access();
         }
 
         constexpr T&& value()&&{
-            return bool(*this) ? std::move(*val) : __throw_bad_optional_access();
+            return bool(*this) ? std::move(val) : __throw_bad_optional_access();
         }
 
         constexpr const T&& value()const&&{
-            return bool(*this) ? std::move(*val) : __throw_bad_optional_access();
+            return bool(*this) ? std::move(val) : __throw_bad_optional_access();
         }
 
         template<class U>
@@ -204,7 +204,7 @@ namespace std{
         // 23.6.3.6, modifiers
         void reset()noexcept{
             if(has)
-                val->T::~T();
+                val.T::~T();
             has = false;
         }
 

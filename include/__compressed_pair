@@ -1,0 +1,109 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__compressed_pair
+ * @author Peter Züger
+ * @date   23.12.2019
+ * @brief  std::pair with empty base class optimiation
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____COMPRESSED_PAIR___
+#define ____COMPRESSED_PAIR__
+
+#include <__swap>
+#include <type_traits>
+
+namespace std{
+    template<class T, int N, bool = std::is_empty_v<T>>
+    struct __compressed_pair_element{
+        using reference       = T&;
+        using const_reference = const T&;
+        using value_type      = T;
+
+        constexpr __compressed_pair_element(): val{}{}
+
+        constexpr __compressed_pair_element(T&& v): val{std::forward<T>(v)}{}
+
+        reference get(){
+            return val;
+        }
+        const_reference get()const{
+            return val;
+        }
+
+    private:
+        T val;
+    };
+
+    template<class T, int N>
+    struct __compressed_pair_element<T, N, true>: private T{
+        using reference       = T&;
+        using const_reference = const T&;
+        using value_type      = T;
+
+        constexpr __compressed_pair_element() = default;
+
+        constexpr __compressed_pair_element(T&& v): T{std::forward<T>(v)}{}
+
+        reference get(){
+            return *this;
+        }
+        const_reference get()const{
+            return *this;
+        }
+    };
+
+    template<class T1, class T2>
+    struct __compressed_pair:
+        private __compressed_pair_element<T1, 1>,
+        private __compressed_pair_element<T2, 2>{
+    public:
+        using first_type   = __compressed_pair_element<T1, 1>;
+        using second_type  = __compressed_pair_element<T2, 2>;
+
+        using first_reference        = typename first_type::reference;
+        using second_reference       = typename second_type::reference;
+        using first_const_reference  = typename first_type::const_reference;
+        using second_const_reference = typename second_type::const_reference;
+
+        __compressed_pair() = default;
+
+        __compressed_pair(T1&& t1, T2&& t2):
+            first_type{std::forward<T1>(t1)},
+            second_type{std::forward<T2>(t2)}{}
+
+        first_reference first(){
+            return static_cast<first_type>(*this).get();
+        }
+        first_const_reference first()const{
+            return static_cast<first_type>(*this).get();
+        }
+        second_reference second(){
+            return static_cast<second_type>(*this).get();
+        }
+        second_const_reference second()const{
+            return static_cast<second_type>(*this).get();
+        }
+    };
+
+    template<class T1, class T2>
+    std::enable_if_t<std::is_swappable_v<T1> &&
+                     std::is_swappable_v<T2>>
+    swap(__compressed_pair<T1, T2>& x, __compressed_pair<T1, T2>& y)noexcept(noexcept(x.swap(y))){
+        x.swap(y);
+    }
+}
+
+#endif /* ____COMPRESSED_PAIR__ */

@@ -24,10 +24,11 @@
 
 #include <__allocator_traits>
 #include <__bit>
+#include <__compressed_pair>
 #include <cstddef>
-#include <limits>
 #include <initializer_list>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <memory_resource>
 
@@ -131,7 +132,7 @@ namespace std{
             return std::numeric_limits<size_type>::max();
         }
         size_type capacity()const noexcept{
-            return _cap_end - _begin;
+            return _cap_end.first() - _begin;
         }
         void resize(size_type sz);
         void resize(size_type sz, const T& c);
@@ -204,7 +205,7 @@ namespace std{
     private:
         pointer _begin;
         pointer _end;
-        pointer _cap_end;
+        __compressed_pair<pointer, Allocator> _cap_end;
     };
 
     template<class InputIterator,

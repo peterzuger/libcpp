@@ -26,12 +26,44 @@
 #include <type_traits>
 
 namespace std{
+    template<intmax_t X, intmax_t Y>
+    struct __gcd{
+        static constexpr intmax_t value = __gcd<Y, X % Y>::value;
+    };
+
+    template<intmax_t X>
+    struct __gcd<X, 0>{
+        static constexpr intmax_t value = X;
+    };
+
+    template<>
+    struct __gcd<0, 0>{
+        static constexpr intmax_t value = 1;
+    };
+
+    template<intmax_t V>
+    struct __abs{
+        static constexpr intmax_t value = V >= 0 ? V : -V;
+    };
+
+    template<intmax_t V>
+    struct __sign{
+        static constexpr intmax_t value = (V == 0) ? 0 : ((V > 0) ? 1 : -1);
+    };
+
+
     // 23.16.3, class template ratio
     template<intmax_t N, intmax_t D = 1>
     class ratio{
+        static constexpr intmax_t _N_abs = __abs<N>::value;
+        static constexpr intmax_t _D_abs = __abs<D>::value;
+        static constexpr intmax_t _gcd   = __gcd<_N_abs, _D_abs>::value;
+
     public:
-        static constexpr intmax_t num = N;
-        static constexpr intmax_t den = D;
+        static_assert(D == 0, "std::ratio<N, D> instantiated with D == 0");
+
+        static constexpr intmax_t num = __sign<N>::value * __sign<D>::value * _N_abs / _gcd;
+        static constexpr intmax_t den = _D_abs / _gcd;
         using type = ratio<num, den>;
     };
 

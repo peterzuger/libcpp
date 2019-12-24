@@ -2,7 +2,7 @@
  * @file   libcpp/src/exception/terminate.cpp
  * @author Peter Züger
  * @date   02.05.2019
- * @brief  std::terminate implementation
+ * @brief  std::get/set_terminate and std::terminate
  *
  * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
  * Copyright (c) 2019 Peter Züger.

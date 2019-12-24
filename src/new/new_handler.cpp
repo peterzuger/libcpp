@@ -2,7 +2,7 @@
  * @file   libcpp/src/new/new_handler.cpp
  * @author Peter Züger
  * @date   17.10.2019
- * @brief  std::get/set_new_handler implementation
+ * @brief  std::get/set_new_handler
  *
  * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
  * Copyright (c) 2019 Peter Züger.

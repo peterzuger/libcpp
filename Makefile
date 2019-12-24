@@ -13,8 +13,8 @@ else
 	Q = @
 endif
 
-CXXSRC  = $(wildcard src/*.cpp)
 CXXSRC += $(wildcard src/exception/*.cpp)
+CXXSRC += $(wildcard src/memory/*.cpp)
 CXXSRC += $(wildcard src/new/*.cpp)
 CXXSRC += $(wildcard src/typeinfo/*.cpp)
 

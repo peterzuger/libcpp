@@ -121,6 +121,23 @@ namespace std{
         valarray apply(T func(T))const;
         valarray apply(T func(const T&))const;
         void resize(size_t sz, T c = T());
+
+        value_type* __begin()noexcept{
+            return _begin;
+        }
+        const value_type* __begin()const noexcept{
+            return _begin;
+        }
+        value_type* __end()noexcept{
+            return _end;
+        }
+        const value_type* __end()const noexcept{
+            return _end;
+        }
+
+    private:
+        value_type* _begin;
+        value_type* _end;
     };
 
     template<class T, size_t cnt>
@@ -360,10 +377,18 @@ namespace std{
     template<class T>valarray<T> tan(const valarray<T>&);
     template<class T>valarray<T> tanh(const valarray<T>&);
 
-    template<class T>T* begin(valarray<T>& v);
-    template<class T>T* begin(const valarray<T>& v);
-    template<class T>T* end(valarray<T>& v);
-    template<class T>T* end(const valarray<T>& v);
+    template<class T>T* begin(valarray<T>& v){
+        return v.__begin();
+    }
+    template<class T>T* begin(const valarray<T>& v){
+        return v.__begin();
+    }
+    template<class T>T* end(valarray<T>& v){
+        return v.__end();
+    }
+    template<class T>T* end(const valarray<T>& v){
+        return v.__end();
+    }
 }
 
 #endif /* __VALARRAY__ */

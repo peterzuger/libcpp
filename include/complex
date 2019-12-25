@@ -118,7 +118,10 @@ namespace std{
     public:
         using value_type = float;
 
-        constexpr complex(float re = 0.0f, float im = 0.0f);
+        constexpr complex(float re = 0.0f, float im = 0.0f):
+            _real{re},
+            _imag{im}{}
+
         constexpr explicit complex(const complex<double>&);
         constexpr explicit complex(const complex<long double>&);
 
@@ -168,7 +171,10 @@ namespace std{
     public:
         using value_type = double;
 
-        constexpr complex(double re = 0.0, double im = 0.0);
+        constexpr complex(double re = 0.0, double im = 0.0):
+            _real{re},
+            _imag{im}{}
+
         constexpr complex(const complex<float>&);
         constexpr explicit complex(const complex<long double>&);
 
@@ -218,7 +224,10 @@ namespace std{
     public:
         using value_type = long double;
 
-        constexpr complex(long double re = 0.0L, long double im = 0.0L);
+        constexpr complex(long double re = 0.0L, long double im = 0.0L):
+            _real{re},
+            _imag{im}{}
+
         constexpr complex(const complex<float>&);
         constexpr complex(const complex<double>&);
 
@@ -262,6 +271,29 @@ namespace std{
         value_type _real;
         value_type _imag;
     };
+
+
+    inline constexpr complex<float>::complex(const complex<double>& other):
+        _real{static_cast<float>(other.real())},
+        _imag(static_cast<float>(other.imag())){}
+    inline constexpr complex<float>::complex(const complex<long double>& other):
+        _real{static_cast<float>(other.real())},
+        _imag(static_cast<float>(other.imag())){}
+
+    inline constexpr complex<double>::complex(const complex<float>& other):
+        _real{static_cast<double>(other.real())},
+        _imag(static_cast<double>(other.imag())){}
+    inline constexpr complex<double>::complex(const complex<long double>& other):
+        _real{static_cast<double>(other.real())},
+        _imag(static_cast<double>(other.imag())){}
+
+    inline constexpr complex<long double>::complex(const complex<float>& other):
+        _real{static_cast<long double>(other.real())},
+        _imag(static_cast<long double>(other.imag())){}
+    inline constexpr complex<long double>::complex(const complex<double>& other):
+        _real{static_cast<long double>(other.real())},
+        _imag(static_cast<long double>(other.imag())){}
+
 
     // 29.5.6, operators
     template<class T>complex<T> operator+(const complex<T>&, const complex<T>&);

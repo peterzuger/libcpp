@@ -133,12 +133,24 @@ namespace std{
     template<class T> complex<T> operator+(const complex<T>&);
     template<class T> complex<T> operator-(const complex<T>&);
 
-    template<class T> constexpr bool operator==(const complex<T>&, const complex<T>&);
-    template<class T> constexpr bool operator==(const complex<T>&, const T&);
-    template<class T> constexpr bool operator==(const T&, const complex<T>&);
-    template<class T> constexpr bool operator!=(const complex<T>&, const complex<T>&);
-    template<class T> constexpr bool operator!=(const complex<T>&, const T&);
-    template<class T> constexpr bool operator!=(const T&, const complex<T>&);
+    template<class T> constexpr bool operator==(const complex<T>& x, const complex<T>& y){
+        return x.real() == y.real() && x.imag() == y.imag();
+    }
+    template<class T> constexpr bool operator==(const complex<T>& x, const T& y){
+        return x.real() == y && x.imag() == 0;
+    }
+    template<class T> constexpr bool operator==(const T& x, const complex<T>& y){
+        return x == y.real() && 0 == y.imag();
+    }
+    template<class T> constexpr bool operator!=(const complex<T>& x, const complex<T>& y){
+        return !(x == y);
+    }
+    template<class T> constexpr bool operator!=(const complex<T>& x, const T& y){
+        return !(x == y);
+    }
+    template<class T> constexpr bool operator!=(const T& x, const complex<T>& y){
+        return !(x == y);
+    }
 
     template<class T, class charT, class traits>
     basic_istream<charT, traits>&operator>>(basic_istream<charT, traits>&, complex<T>&);
@@ -148,10 +160,14 @@ namespace std{
 
     // 29.5.7, values
     template<class T>
-    constexpr T real(const complex<T>&);
+    constexpr T real(const complex<T>& c){
+        return c.real();
+    }
 
     template<class T>
-    constexpr T imag(const complex<T>&);
+    constexpr T imag(const complex<T>& c){
+        return c.imag();
+    }
 
     template<class T> T abs(const complex<T>&);
     template<class T> T arg(const complex<T>&);

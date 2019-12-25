@@ -171,6 +171,15 @@ namespace std{
 
     template<class T>
     class slice_array{
+        T* _data;
+        std::size_t _size;
+        std::size_t _stride;
+
+        slice_array(const slice& slice, const valarray<T>& val):
+            _data{const_cast<T*>(val.__begin( + slice.start()))},
+            _size{slice.size()},
+            _stride{slice.stride()}{}
+
     public:
         using value_type = T;
 

@@ -113,9 +113,119 @@ namespace std{
         value_type _imag;
     };
 
-    template<>class complex<float>;
-    template<>class complex<double>;
-    template<>class complex<long double>;
+    template<>
+    class complex<float>{
+    public:
+        using value_type = float;
+
+        constexpr complex(float re = 0.0f, float im = 0.0f);
+        constexpr explicit complex(const complex<double>&);
+        constexpr explicit complex(const complex<long double>&);
+
+        constexpr float real()const;
+        void real(float);
+
+        constexpr float imag()const;
+        void imag(float);
+
+        complex<float>& operator= (float);
+        complex<float>& operator+=(float);
+        complex<float>& operator-=(float);
+        complex<float>& operator*=(float);
+        complex<float>& operator/=(float);
+        complex<float>& operator=(const complex<float>&);
+
+        template<class X>
+        complex<float>& operator= (const complex<X>&);
+
+        template<class X>
+        complex<float>& operator+=(const complex<X>&);
+
+        template<class X>
+        complex<float>& operator-=(const complex<X>&);
+
+        template<class X>
+        complex<float>& operator*=(const complex<X>&);
+
+        template<class X>
+        complex<float>& operator/=(const complex<X>&);
+    };
+
+    template<>
+    class complex<double>{
+    public:
+        using value_type = double;
+
+        constexpr complex(double re = 0.0, double im = 0.0);
+        constexpr complex(const complex<float>&);
+        constexpr explicit complex(const complex<long double>&);
+
+        constexpr double real()const;
+        void real(double);
+
+        constexpr double imag()const;
+        void imag(double);
+
+        complex<double>& operator= (double);
+        complex<double>& operator+=(double);
+        complex<double>& operator-=(double);
+        complex<double>& operator*=(double);
+        complex<double>& operator/=(double);
+        complex<double>& operator=(const complex<double>&);
+
+        template<class X>
+        complex<double>& operator= (const complex<X>&);
+
+        template<class X>
+        complex<double>& operator+=(const complex<X>&);
+
+        template<class X>
+        complex<double>& operator-=(const complex<X>&);
+
+        template<class X>
+        complex<double>& operator*=(const complex<X>&);
+
+        template<class X>
+        complex<double>& operator/=(const complex<X>&);
+    };
+
+    template<>
+    class complex<long double>{
+    public:
+        using value_type = long double;
+
+        constexpr complex(long double re = 0.0L, long double im = 0.0L);
+        constexpr complex(const complex<float>&);
+        constexpr complex(const complex<double>&);
+
+        constexpr long double real()const;
+        void real(long double);
+
+        constexpr long double imag()const;
+        void imag(long double);
+
+        complex<long double>& operator=(const complex<long double>&);
+        complex<long double>& operator= (long double);
+        complex<long double>& operator+=(long double);
+        complex<long double>& operator-=(long double);
+        complex<long double>& operator*=(long double);
+        complex<long double>& operator/=(long double);
+
+        template<class X>
+        complex<long double>& operator= (const complex<X>&);
+
+        template<class X>
+        complex<long double>& operator+=(const complex<X>&);
+
+        template<class X>
+        complex<long double>& operator-=(const complex<X>&);
+
+        template<class X>
+        complex<long double>& operator*=(const complex<X>&);
+
+        template<class X>
+        complex<long double>& operator/=(const complex<X>&);
+    };
 
     // 29.5.6, operators
     template<class T>complex<T> operator+(const complex<T>&, const complex<T>&);

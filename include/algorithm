@@ -381,9 +381,17 @@ namespace std{
     // 28.6.7, generate
     template<class ForwardIterator, class Generator>
     void generate(ForwardIterator first, ForwardIterator last,
-                  Generator gen);
+                  Generator gen){
+        for(; first != last; ++first)
+            *first = gen();
+    }
     template<class OutputIterator, class Size, class Generator>
-    OutputIterator generate_n(OutputIterator first, Size n, Generator gen);
+    OutputIterator generate_n(OutputIterator first, Size _n, Generator gen){
+        typename std::iterator_traits<OutputIterator>::difference_type n = _n;
+        for(; n > 0; --n, (void)++first)
+            *first = gen();
+        return first;
+    }
 
     // 28.6.8, remove
     template<class ForwardIterator, class T>

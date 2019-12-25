@@ -161,13 +161,25 @@ namespace std{
 
     // 23.9.4, bitset operators
     template<std::size_t N>
-    bitset<N> operator&(const bitset<N>&, const bitset<N>&)noexcept;
+    bitset<N> operator&(const bitset<N>& x, const bitset<N>& y)noexcept{
+        bitset<N> tmp = x;
+        x &= y;
+        return x;
+    }
 
     template<std::size_t N>
-    bitset<N> operator|(const bitset<N>&, const bitset<N>&)noexcept;
+    bitset<N> operator|(const bitset<N>& x, const bitset<N>& y)noexcept{
+        bitset<N> tmp = x;
+        x |= y;
+        return x;
+    }
 
     template<std::size_t N>
-    bitset<N> operator^(const bitset<N>&, const bitset<N>&)noexcept;
+    bitset<N> operator^(const bitset<N>& x, const bitset<N>& y)noexcept{
+        bitset<N> tmp = x;
+        x ^= y;
+        return x;
+    }
 
     template<class charT, class traits, std::size_t N>
     std::basic_istream<charT, traits>&

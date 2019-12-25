@@ -366,9 +366,17 @@ namespace std{
 
     // 28.6.6, fill
     template<class ForwardIterator, class T>
-    void fill(ForwardIterator first, ForwardIterator last, const T& value);
+    void fill(ForwardIterator first, ForwardIterator last, const T& value){
+        for(; first != last; ++first)
+            *first = value;
+    }
     template<class OutputIterator, class Size, class T>
-    OutputIterator fill_n(OutputIterator first, Size n, const T& value);
+    OutputIterator fill_n(OutputIterator first, Size _n, const T& value){
+        typename std::iterator_traits<OutputIterator>::difference_type n = _n;
+        for(; n > 0; --n, (void)++first)
+            *first = value;
+        return first;
+    }
 
     // 28.6.7, generate
     template<class ForwardIterator, class Generator>

@@ -26,6 +26,7 @@
 #include <__iterator_traits>
 #include <__minmax>
 #include <functional>
+#include <iterator>
 #include <initializer_list>
 #include <utility>
 
@@ -166,13 +167,6 @@ namespace std{
                                                        BinaryPredicate pred);
 
     // 28.5.11, equal
-    template<class InputIterator1, class InputIterator2>
-    bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2){
-        for(; first1 != last1; ++first1, (void)++first2)
-            if(!(*first1 == *first2))
-                return false;
-        return true;
-    }
     template<class InputIterator1, class InputIterator2, class BinaryPredicate>
     bool equal(InputIterator1 first1, InputIterator1 last1,
                InputIterator2 first2, BinaryPredicate pred){
@@ -181,22 +175,57 @@ namespace std{
                 return false;
         return true;
     }
+
+    template<class InputIterator1, class InputIterator2>
+    bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2){
+        using value_type = typename std::iterator_traits<InputIterator1>::value_type;
+
+        return equal(first1, last1, first2, std::equal_to<value_type>());
+    }
+
+    namespace impl{
+        template<class InputIterator1, class InputIterator2, class BinaryPredicate>
+        bool __equal(InputIterator1 first1, InputIterator1 last1,
+                     InputIterator2 first2, InputIterator2 last2,
+                     BinaryPredicate pred,
+                     std::input_iterator_tag, std::input_iterator_tag){
+            for(; first1 != last1 && first2 != last2; ++first1, (void)++first2)
+                if(!pred(*first1, *first2))
+                    return false;
+            return first1 == last1 && first2 == last2;
+        }
+
+        template<class InputIterator1, class InputIterator2, class BinaryPredicate>
+        bool __equal(InputIterator1 first1, InputIterator1 last1,
+                     InputIterator2 first2, InputIterator2 last2,
+                     BinaryPredicate pred,
+                     std::random_access_iterator_tag, std::random_access_iterator_tag){
+            if(std::distance(first1, last1) != std::distance(first2, last2))
+                return false;
+            return equal(first1, last1, first2, pred);
+        }
+    }
+
     template<class InputIterator1, class InputIterator2>
     bool equal(InputIterator1 first1, InputIterator1 last1,
                InputIterator2 first2, InputIterator2 last2){
-        for(; first1 != last1 && first2 != last2; ++first1, (void)++first2)
-            if(!(*first1 == *first2))
-                return false;
-        return first1 == last1 && first2 == last2;
+        using value_type = typename std::iterator_traits<InputIterator1>::value_type;
+        using tag1 = typename std::iterator_traits<InputIterator1>::iterator_category;
+        using tag2 = typename std::iterator_traits<InputIterator2>::iterator_category;
+
+        return impl::__equal(first1, last1, first2, last2,
+                             std::equal_to<value_type>(), tag1(), tag2());
     }
+
     template<class InputIterator1, class InputIterator2, class BinaryPredicate>
     bool equal(InputIterator1 first1, InputIterator1 last1,
                InputIterator2 first2, InputIterator2 last2,
                BinaryPredicate pred){
-        for(; first1 != last1 && first2 != last2; ++first1, (void)++first2)
-            if(!pred(*first1, *first2))
-                return false;
-        return first1 == last1 && first2 == last2;
+        using tag1 = typename std::iterator_traits<InputIterator1>::iterator_category;
+        using tag2 = typename std::iterator_traits<InputIterator2>::iterator_category;
+
+        return impl::__equal(first1, last1, first2, last2,
+                             pred, tag1(), tag2());
     }
 
     // 28.5.12, is permutation

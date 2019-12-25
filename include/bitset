@@ -108,8 +108,12 @@ namespace std{
         }
 
         // element access:
-        constexpr bool operator[](std::size_t pos)const;// forb[i];
-        __bit_reference operator[](std::size_t pos);// forb[i];
+        constexpr bool operator[](std::size_t pos)const{
+            return __storage[pos / CHAR_BIT] & 0b1 << (pos % CHAR_BIT);
+        }
+        __bit_reference operator[](std::size_t pos){
+            return __bit_reference(&__storage[pos / CHAR_BIT], pos % CHAR_BIT);
+        }
 
         unsigned long to_ulong()const;
         unsigned long long to_ullong()const;

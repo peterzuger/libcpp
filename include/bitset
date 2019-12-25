@@ -53,18 +53,59 @@ namespace std{
                         charT zero = charT('0'), charT one = charT('1'));
 
         // 23.9.2.2, bitset operations
-        bitset<N>& operator&=(const bitset<N>& rhs)noexcept;
-        bitset<N>& operator|=(const bitset<N>& rhs)noexcept;
-        bitset<N>& operator^=(const bitset<N>& rhs)noexcept;
+        bitset<N>& operator&=(const bitset<N>& rhs)noexcept{
+            for(std::size_t i = 0; i < N_BYTE; i++)
+                __storage[i] &= rhs.__storage[i];
+        }
+        bitset<N>& operator|=(const bitset<N>& rhs)noexcept{
+            for(std::size_t i = 0; i < N_BYTE; i++)
+                __storage[i] |= rhs.__storage[i];
+        }
+        bitset<N>& operator^=(const bitset<N>& rhs)noexcept{
+            for(std::size_t i = 0; i < N_BYTE; i++)
+                __storage[i] ^= rhs.__storage[i];
+        }
         bitset<N>& operator<<=(std::size_t pos)noexcept;
         bitset<N>& operator>>=(std::size_t pos)noexcept;
-        bitset<N>& set()noexcept;
-        bitset<N>& set(std::size_t pos, bool val = true);
-        bitset<N>& reset()noexcept;
-        bitset<N>& reset(std::size_t pos);
-        bitset<N>  operator~()const noexcept;
-        bitset<N>& flip()noexcept;
-        bitset<N>& flip(std::size_t pos);
+
+        bitset<N>& set()noexcept{
+            for(std::size_t i = 0; i < N_BYTE; i++)
+                __storage[i] = 0xFF;
+        }
+        bitset<N>& set(std::size_t pos, bool val = true){
+            if(pos >= N)
+                std::__throw_out_of_range("std::bitset::set");
+            if(val)
+                __storage[pos / CHAR_BIT] |= 0b1 << (pos % CHAR_BIT);
+            else
+                reset(pos);
+        }
+
+        bitset<N>& reset()noexcept{
+            for(std::size_t i = 0; i < N_BYTE; i++)
+                __storage[i] = 0x00;
+        }
+        bitset<N>& reset(std::size_t pos){
+            if(pos >= N)
+                std::__throw_out_of_range("std::bitset::reset");
+            __storage[pos / CHAR_BIT] |=  static_cast<char>(~(0b1 << (pos % CHAR_BIT)));
+        }
+
+        bitset<N> operator~()const noexcept{
+            bitset<N> tmp = *this;
+            tmp.flip();
+            return tmp;
+        }
+
+        bitset<N>& flip()noexcept{
+            for(std::size_t i = 0; i < N_BYTE; i++)
+                __storage[i] ^= 0xFF;
+        }
+        bitset<N>& flip(std::size_t pos){
+            if(pos >= N)
+                std::__throw_out_of_range("std::bitset::flip");
+            __storage[pos / CHAR_BIT] ^=  0b1 << (pos % CHAR_BIT);
+        }
 
         // element access:
         constexpr bool operator[](std::size_t pos)const;// forb[i];

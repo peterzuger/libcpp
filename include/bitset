@@ -23,6 +23,7 @@
 #define __BITSET__
 
 #include <__bit>
+#include <climits>
 #include <cstddef>
 #include <string>
 #include <iosfwd> // for istream (30.7.1), ostream (30.7.2), see 30.3.1
@@ -30,6 +31,10 @@
 namespace std{
     template<std::size_t N>
     class bitset{
+        static const unsigned N_BYTE = (N + (CHAR_BIT - 1)) / CHAR_BIT;
+        static const unsigned N_FULL_BYTE = N / CHAR_BIT;
+        char __storage[N_BYTE];
+
     public:
         // 23.9.2.1, constructors
         constexpr bitset()noexcept;

@@ -122,11 +122,19 @@ namespace std{
         constexpr explicit complex(const complex<double>&);
         constexpr explicit complex(const complex<long double>&);
 
-        constexpr float real()const;
-        void real(float);
+        constexpr float real()const{
+            return _real;
+        }
+        void real(float re){
+            _real = re;
+        }
 
-        constexpr float imag()const;
-        void imag(float);
+        constexpr float imag()const{
+            return _imag;
+        }
+        void imag(float im){
+            _imag = im;
+        }
 
         complex<float>& operator= (float);
         complex<float>& operator+=(float);
@@ -149,6 +157,10 @@ namespace std{
 
         template<class X>
         complex<float>& operator/=(const complex<X>&);
+
+    private:
+        value_type _real;
+        value_type _imag;
     };
 
     template<>
@@ -160,11 +172,19 @@ namespace std{
         constexpr complex(const complex<float>&);
         constexpr explicit complex(const complex<long double>&);
 
-        constexpr double real()const;
-        void real(double);
+        constexpr double real()const{
+            return _real;
+        }
+        void real(double re){
+            _real = re;
+        }
 
-        constexpr double imag()const;
-        void imag(double);
+        constexpr double imag()const{
+            return _imag;
+        }
+        void imag(double im){
+            _imag = im;
+        }
 
         complex<double>& operator= (double);
         complex<double>& operator+=(double);
@@ -187,6 +207,10 @@ namespace std{
 
         template<class X>
         complex<double>& operator/=(const complex<X>&);
+
+    private:
+        value_type _real;
+        value_type _imag;
     };
 
     template<>
@@ -198,11 +222,19 @@ namespace std{
         constexpr complex(const complex<float>&);
         constexpr complex(const complex<double>&);
 
-        constexpr long double real()const;
-        void real(long double);
+        constexpr long double real()const{
+            return _real;
+        }
+        void real(long double re){
+            _real = re;
+        }
 
-        constexpr long double imag()const;
-        void imag(long double);
+        constexpr long double imag()const{
+            return _imag;
+        }
+        void imag(long double im){
+            _imag = im;
+        }
 
         complex<long double>& operator=(const complex<long double>&);
         complex<long double>& operator= (long double);
@@ -225,6 +257,10 @@ namespace std{
 
         template<class X>
         complex<long double>& operator/=(const complex<X>&);
+
+    private:
+        value_type _real;
+        value_type _imag;
     };
 
     // 29.5.6, operators

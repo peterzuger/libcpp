@@ -124,13 +124,30 @@ namespace std{
                                                         charT one = charT('1'))const;
 
         std::size_t count()const noexcept;
-        constexpr std::size_t size()const noexcept;
+
+        constexpr std::size_t size()const noexcept{
+            return N;
+        }
+
         bool operator==(const bitset<N>& rhs)const noexcept;
         bool operator!=(const bitset<N>& rhs)const noexcept;
-        bool test(std::size_t pos)const;
-        bool all()const noexcept;
-        bool any()const noexcept;
-        bool none()const noexcept;
+
+        bool test(std::size_t pos)const{
+            if(pos >= N)
+                std::__throw_out_of_range("std::bitset::test");
+            return __storage[pos / CHAR_BIT] & (0b1 << (pos % CHAR_BIT));
+        }
+
+        bool all()const noexcept{
+            return count() == N;
+        }
+        bool any()const noexcept{
+            return count();
+        }
+        bool none()const noexcept{
+            return count() == 0;
+        }
+
         bitset<N> operator<<(std::size_t pos)const noexcept;
         bitset<N> operator>>(std::size_t pos)const noexcept;
     };

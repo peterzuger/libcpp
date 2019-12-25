@@ -29,8 +29,8 @@ namespace std{
         using pointer   = char*;
         using size_type = std::size_t;
 
-        __bit_reference(pointer _p, size_type _mask)noexcept:
-            p{_p}, mask{_mask}{}
+        __bit_reference(pointer _p, size_type bit)noexcept:
+            p{_p}, mask{static_cast<size_type>(0b1 << bit)}{}
 
         operator bool()const noexcept{
             return static_cast<bool>(*p & mask);

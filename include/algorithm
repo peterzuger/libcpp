@@ -326,18 +326,43 @@ namespace std{
     // 28.6.5, replace
     template<class ForwardIterator, class T>
     void replace(ForwardIterator first, ForwardIterator last,
-                 const T& old_value, const T& new_value);
+                 const T& old_value, const T& new_value){
+        for(; first != last; ++first)
+            if(*first == old_value)
+                *first = new_value;
+    }
+
     template<class ForwardIterator, class Predicate, class T>
     void replace_if(ForwardIterator first, ForwardIterator last,
-                    Predicate pred, const T& new_value);
+                    Predicate pred, const T& new_value){
+        for(; first != last; ++first)
+            if(pred(*first))
+                *first = new_value;
+    }
+
     template<class InputIterator, class OutputIterator, class T>
     OutputIterator replace_copy(InputIterator first, InputIterator last,
                                 OutputIterator result,
-                                const T& old_value, const T& new_value);
+                                const T& old_value, const T& new_value){
+        for(; first != last; ++first, (void)++result)
+            if(*first == old_value)
+                *result = new_value;
+            else
+                *result = *first;
+        return result;
+    }
+
     template<class InputIterator, class OutputIterator, class Predicate, class T>
     OutputIterator replace_copy_if(InputIterator first, InputIterator last,
                                    OutputIterator result,
-                                   Predicate pred, const T& new_value);
+                                   Predicate pred, const T& new_value){
+        for(; first != last; ++first, (void)++result)
+            if(pred(*first))
+                *result = new_value;
+            else
+                *result = *first;
+        return result;
+    }
 
     // 28.6.6, fill
     template<class ForwardIterator, class T>

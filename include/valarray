@@ -146,13 +146,27 @@ namespace std{
 
     // a BLAS-like slice out of an array
     class slice{
-    public:
-        slice();
-        slice(size_t, size_t, size_t);
+        std::size_t _start;
+        std::size_t _size;
+        std::size_t _stride;
 
-        size_t start()const;
-        size_t size()const;
-        size_t stride()const;
+    public:
+        slice() = default;
+
+        slice(size_t st, size_t sz, size_t sr):
+            _start{st},
+            _size{sz},
+            _stride{sr}{}
+
+        size_t start()const{
+            return _start;
+        }
+        size_t size()const{
+            return _size;
+        }
+        size_t stride()const{
+            return _stride;
+        }
     };
 
     template<class T>

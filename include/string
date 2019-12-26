@@ -24,6 +24,7 @@
 
 #include <__allocator_traits>
 #include <__char_traits>
+#include <__stringfwd>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>

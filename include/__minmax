@@ -62,28 +62,62 @@ namespace std{
             pair<const T&, const T&>(a, b);
     }
 
-    template<class ForwardIterator>
-    constexpr ForwardIterator min_element(ForwardIterator first, ForwardIterator last);
-
     template<class ForwardIterator, class Compare>
     constexpr ForwardIterator min_element(ForwardIterator first, ForwardIterator last,
-                                          Compare comp);
+                                          Compare comp){
+        if(first != last){
+            ForwardIterator tmp = first;
+            while(++tmp != last)
+                if(comp(*tmp, *first))
+                    first = tmp;
+        }
+        return first;
+    }
 
     template<class ForwardIterator>
-    constexpr ForwardIterator max_element(ForwardIterator first, ForwardIterator last);
+    constexpr ForwardIterator min_element(ForwardIterator first, ForwardIterator last){
+        return min_element(first, last, std::less<>());
+    }
 
     template<class ForwardIterator, class Compare>
     constexpr ForwardIterator max_element(ForwardIterator first, ForwardIterator last,
-                                          Compare comp);
+                                          Compare comp){
+        if(first != last){
+            ForwardIterator tmp = first;
+            while(++tmp != last)
+                if(comp(*first, *tmp))
+                    first = tmp;
+        }
+        return first;
+    }
 
     template<class ForwardIterator>
-    constexpr std::pair<ForwardIterator, ForwardIterator> minmax_element(ForwardIterator first,
-                                                                         ForwardIterator last);
+    constexpr ForwardIterator max_element(ForwardIterator first, ForwardIterator last){
+        return std::max_element(first, last, std::less<>());
+    }
 
     template<class ForwardIterator, class Compare>
     constexpr std::pair<ForwardIterator, ForwardIterator> minmax_element(ForwardIterator first,
                                                                          ForwardIterator last,
-                                                                         Compare comp);
+                                                                         Compare comp){
+        ForwardIterator max = first;
+        if(first != last){
+            ForwardIterator tmp = first;
+            while(++tmp != last){
+                if(comp(*first, *tmp))
+                    first = tmp;
+                if(comp(*tmp, *first))
+                    max = tmp;
+            }
+        }
+        return std::make_pair(first, max);
+    }
+
+    template<class ForwardIterator>
+    constexpr std::pair<ForwardIterator, ForwardIterator> minmax_element(ForwardIterator first,
+                                                                         ForwardIterator last){
+        return std::minmax_element(first, last, std::less<>());
+    }
 
     template<class T>
     constexpr T min(std::initializer_list<T> t){

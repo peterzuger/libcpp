@@ -286,10 +286,10 @@ namespace std{
     template<class T> using remove_all_extents_t = typename remove_all_extents<T>::type;
 
     // 23.15.7.5, pointer modifications
-    template<class T> struct remove_pointer                   {using type = T;};
-    template<class T> struct remove_pointer<T*>               {using type = T;};
-    template<class T> struct remove_pointer<T* const>         {using type = T;};
-    template<class T> struct remove_pointer<T* volatile>      {using type = T;};
+    template<class T> struct remove_pointer{using type = T;};
+    template<class T> struct remove_pointer<T*>{using type = T;};
+    template<class T> struct remove_pointer<T* const>{using type = T;};
+    template<class T> struct remove_pointer<T* volatile>{using type = T;};
     template<class T> struct remove_pointer<T* const volatile>{using type = T;};
 
     template<class T> struct add_pointer{using type = T*;};
@@ -314,10 +314,10 @@ namespace std{
     template<std::size_t Len, std::size_t Align = sizeof(int)> struct aligned_storage;
     template<std::size_t Len, class... Types>             struct aligned_union;
 
-    template<bool, class T = void>                   struct enable_if         {};
+    template<bool, class T = void>                   struct enable_if{};
     template<class T>                                struct enable_if<true, T>{using type = T;};
 
-    template<bool, class T, class F>                 struct conditional             {using type = T;};
+    template<bool, class T, class F>                 struct conditional{using type = T;};
     template<class T, class F>                       struct conditional<false, T, F>{using type = F;};
 
     template<class T>

@@ -33,7 +33,7 @@ namespace std{
     class bitset{
         static const unsigned N_BYTE = (N + (CHAR_BIT - 1)) / CHAR_BIT;
         static const unsigned N_FULL_BYTE = N / CHAR_BIT;
-        char __storage[N_BYTE];
+        unsigned char __storage[N_BYTE];
 
     public:
         // 23.9.2.1, constructors

@@ -23,6 +23,7 @@
 #define __BITSET__
 
 #include <__bit>
+#include <__minmax>
 #include <climits>
 #include <cstddef>
 #include <string>
@@ -33,6 +34,7 @@ namespace std{
     class bitset{
         static const unsigned N_BYTE = (N + (CHAR_BIT - 1)) / CHAR_BIT;
         static const unsigned N_FULL_BYTE = N / CHAR_BIT;
+        static const unsigned char MASK = (1 << (1 + (N % CHAR_BIT))) - 1;
         unsigned char __storage[N_BYTE];
 
     public:
@@ -119,8 +121,29 @@ namespace std{
             return __bit_reference(&__storage[pos / CHAR_BIT], pos % CHAR_BIT);
         }
 
-        unsigned long to_ulong()const;
-        unsigned long long to_ullong()const;
+        unsigned long to_ulong()const{
+            if(N_BYTE > sizeof(unsigned long))
+                __throw_overflow_error("std::bitset::to_ulong");
+            unsigned long tmp;
+            unsigned char* p = reinterpret_cast<unsigned char*>(&tmp);
+            for(std::size_t i = 0; i < std::min(N_FULL_BYTE, sizeof(unsigned long)); i++)
+                p[i] = __storage[i];
+            if(N % CHAR_BIT)
+                p[sizeof(unsigned long) - 1] = __storage[sizeof(unsigned long) - 1] & MASK;
+            return tmp;
+        }
+
+        unsigned long long to_ullong()const{
+            if(N_BYTE > sizeof(unsigned long long))
+                __throw_overflow_error("std::bitset::to_ullong");
+            unsigned long long tmp;
+            unsigned char* p = reinterpret_cast<unsigned char*>(&tmp);
+            for(std::size_t i = 0; i < std::min(N_FULL_BYTE, sizeof(unsigned long long)); i++)
+                p[i] = __storage[i];
+            if(N % CHAR_BIT)
+                p[sizeof(unsigned long long) - 1] = __storage[sizeof(unsigned long long) - 1] & MASK;
+            return tmp;
+        }
 
         template<class charT = char, class traits = char_traits<charT>,
                  class Allocator = allocator<charT>>

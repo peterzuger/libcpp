@@ -37,8 +37,12 @@ namespace std{
 
     public:
         // 23.9.2.1, constructors
-        constexpr bitset()noexcept;
-        constexpr bitset(unsigned long long val)noexcept;
+        constexpr bitset()noexcept = default;
+        constexpr bitset(unsigned long long val)noexcept{
+            unsigned char* tmp = reinterpret_cast<unsigned char*>(&val);
+            for(std::size_t i = 0; i < std::min(N_BYTE, sizeof(unsigned long long)); i++)
+                __storage[i] = tmp[i];
+        }
 
         template<class charT, class traits, class Allocator>
         explicit bitset(const basic_string<charT, traits, Allocator>& str,

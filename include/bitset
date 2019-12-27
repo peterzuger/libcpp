@@ -156,8 +156,18 @@ namespace std{
             return N;
         }
 
-        bool operator==(const bitset<N>& rhs)const noexcept;
-        bool operator!=(const bitset<N>& rhs)const noexcept;
+        bool operator==(const bitset<N>& rhs)const noexcept{
+            for(std::size_t i = 0; i < N_FULL_BYTE; i++)
+                if(__storage[i] != rhs.__storage[i])
+                    return false;
+            if(N % CHAR_BIT)
+                if((__storage[N_BYTE - 1] & MASK) != (rhs.__storage[N_BYTE - 1] & MASK))
+                    return false;
+            return true;
+        }
+        bool operator!=(const bitset<N>& rhs)const noexcept{
+            return !(*this == rhs);
+        }
 
         bool test(std::size_t pos)const{
             if(pos >= N)

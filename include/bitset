@@ -51,12 +51,33 @@ namespace std{
                         typename basic_string<charT, traits, Allocator>::size_type pos = 0,
                         typename basic_string<charT, traits, Allocator>::size_type n =
                         basic_string<charT, traits, Allocator>::npos,
-                        charT zero = charT('0'), charT one = charT('1'));
+                        charT zero = charT('0'), charT one = charT('1')){
+            if(pos > str.size())
+                __throw_out_of_range("std::bitset string pos out of range");
+
+            std::size_t rlen = std::min(n, str.size() - pos);
+            std::size_t M = std::min(N, rlen);
+
+            std::size_t i = 0;
+            for(; i < M; ++i){
+                charT ch = str[pos + M - 1 - i];
+                if(traits::eq(ch, zero))
+                    (*this)[i] = false;
+                else if(traits::eq(ch, one))
+                    (*this)[i] = true;
+                else
+                    __throw_invalid_argument("std::bitset string constructor invalid argument");
+            }
+            for(; i < N; ++i)
+                (*this)[i] = false;
+        }
 
         template<class charT>
         explicit bitset(const charT* str,
                         typename basic_string<charT>::size_type n = basic_string<charT>::npos,
-                        charT zero = charT('0'), charT one = charT('1'));
+                        charT zero = charT('0'), charT one = charT('1')):
+            bitset(n == basic_string<charT>::npos ? basic_string<charT>(str) : basic_string<charT>(str, n),
+                   0, n, zero, one){}
 
         // 23.9.2.2, bitset operations
         bitset<N>& operator&=(const bitset<N>& rhs)noexcept{

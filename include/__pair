@@ -168,23 +168,24 @@ namespace std{
         x.swap(y);
     }
 
+    namespace impl{
+        template<class T>
+        struct __remove_reference_wrapper{
+            using type = T;
+        };
 
-    template<class T>
-    struct __remove_reference_wrapper{
-        using type = T;
-    };
-
-    template<class T>
-    struct __remove_reference_wrapper<std::reference_wrapper<T>>{
-        using type = T;
-    };
-    template<class T> using __remove_reference_wrapper_t = typename __remove_reference_wrapper<T>::type;
+        template<class T>
+        struct __remove_reference_wrapper<std::reference_wrapper<T>>{
+            using type = T;
+        };
+        template<class T> using __remove_reference_wrapper_t = typename __remove_reference_wrapper<T>::type;
+    }
 
     template<class T1, class T2>
-    constexpr pair<__remove_reference_wrapper_t<T1>,
-                   __remove_reference_wrapper_t<T2>> make_pair(T1&& x, T2&& y){
-        return pair<__remove_reference_wrapper_t<T1>,
-                    __remove_reference_wrapper_t<T2>>(std::forward<T1>(x), std::forward<T2>(y));
+    constexpr pair<impl::__remove_reference_wrapper_t<T1>,
+                   impl::__remove_reference_wrapper_t<T2>> make_pair(T1&& x, T2&& y){
+        return pair<impl::__remove_reference_wrapper_t<T1>,
+                    impl::__remove_reference_wrapper_t<T2>>(std::forward<T1>(x), std::forward<T2>(y));
     }
 
     // 23.4.4, tuple-like access to pair

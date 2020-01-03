@@ -24,18 +24,15 @@
 #define ____PAIR__
 
 #include <__move>
+#include <__tuple>
 #include <cstddef>
 #include <functional>
-#include <tuple>
 #include <type_traits>
 
 namespace std{
     // 23.4.5, pair piecewise construction
     struct piecewise_construct_t{explicit piecewise_construct_t() = default;};
     inline constexpr piecewise_construct_t piecewise_construct{};
-
-    template<class... Types>
-    class tuple;// defined in<tuple>(23.5.2)
 
     // 23.4, class template pair
     template<class T1, class T2>
@@ -191,12 +188,6 @@ namespace std{
     }
 
     // 23.4.4, tuple-like access to pair
-    template<class T>
-    class tuple_size;
-
-    template<std::size_t I, class T>
-    class tuple_element;
-
     template<class T1, class T2>
     class tuple_size<pair<T1, T2>>: std::integral_constant<std::size_t, 2>{};
 

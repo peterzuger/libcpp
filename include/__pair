@@ -43,44 +43,48 @@ namespace std{
         T1 first;
         T2 second;
 
+    private:
+        static constexpr bool is_default_constructible = std::is_default_constructible_v<first_type> && std::is_default_constructible_v<second_type>;
+        static constexpr bool is_nothrow_default_constructible = std::is_nothrow_default_constructible_v<first_type> && std::is_nothrow_default_constructible_v<second_type>;
+        static constexpr bool is_copy_constructible = std::is_copy_constructible_v<first_type> && std::is_copy_constructible_v<second_type>;
+        static constexpr bool is_nothrow_copy_constructible = std::is_nothrow_copy_constructible_v<first_type> && std::is_nothrow_copy_constructible_v<second_type>;
+        static constexpr bool is_nothrow_swappable = std::is_nothrow_swappable_v<first_type> && std::is_nothrow_swappable_v<second_type>;
+
+        template<class U1, class U2>
+        static constexpr bool is_constructible = std::is_constructible_v<first_type, U1> && std::is_constructible_v<second_type, U2>;
+
+        template<class U1, class U2>
+        static constexpr bool is_nothrow_constructible = std::is_nothrow_constructible_v<first_type, U1> && std::is_nothrow_constructible_v<second_type, U2>;
+
+    public:
         pair(const pair&) = default;
         pair(pair&&) = default;
 
-        template<class = std::enable_if_t<std::is_default_constructible_v<first_type> &&
-                                          std::is_default_constructible_v<second_type>>>
-        explicit constexpr pair()noexcept(std::is_nothrow_default_constructible_v<first_type> &&
-                                          std::is_nothrow_default_constructible_v<second_type>):
+        template<class = std::enable_if_t<is_default_constructible>>
+        explicit constexpr pair()noexcept(is_nothrow_default_constructible):
             first{},
             second{}{}
 
-        template<class = std::enable_if_t<std::is_copy_constructible_v<first_type> &&
-                                          std::is_copy_constructible_v<second_type>>>
+        template<class = std::enable_if_t<is_copy_constructible>>
         explicit constexpr pair(const T1& x, const T2& y)
-            noexcept(std::is_nothrow_copy_constructible_v<first_type> &&
-                     std::is_nothrow_copy_constructible_v<second_type>):
+            noexcept(is_nothrow_copy_constructible):
             first{x},
             second{y}{}
 
-        template<class U1, class U2, class = std::enable_if_t<std::is_constructible_v<first_type, U1&&> &&
-                                                              std::is_constructible_v<second_type, U2&&>>>
-        explicit constexpr pair(U1&& x, U2&& y)noexcept(std::is_nothrow_constructible_v<first_type, U1&&> &&
-                                                        std::is_nothrow_constructible_v<second_type, U2&&>):
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>>
+        explicit constexpr pair(U1&& x, U2&& y)noexcept(is_nothrow_constructible<U1&&, U2&&>):
             first{std::forward<U1>(x)},
             second{std::forward<U2>(y)}{}
 
-        template<class U1, class U2, class = std::enable_if_t<std::is_constructible_v<first_type, const U1&> &&
-                                                              std::is_constructible_v<second_type, const U2&>>>
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<const U1&, const U2&>>>
         explicit constexpr pair(const pair<U1, U2>& p)
-            noexcept(std::is_nothrow_constructible_v<first_type, U1 const&> &&
-                     std::is_nothrow_constructible_v<second_type, U2 const&>):
+            noexcept(is_nothrow_constructible<U1 const&, U2 const&>):
             first{p.first},
             second{p.second}{}
 
-        template<class U1, class U2, class = std::enable_if_t<std::is_constructible_v<first_type, U1&&> &&
-                                                              std::is_constructible_v<second_type, U2&&>>>
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>>
         explicit constexpr pair(pair<U1, U2>&& p)
-            noexcept(std::is_nothrow_constructible_v<first_type, U1&&> &&
-                     std::is_nothrow_constructible_v<second_type, U2&&>):
+            noexcept(is_nothrow_constructible<U1&&, U2&&>):
             first{std::forward<U1>(p.first)},
             second{std::forward<U1>(p.second)}{}
 
@@ -126,8 +130,7 @@ namespace std{
             return *this;
         }
 
-        void swap(pair& p)noexcept(std::is_nothrow_swappable_v<first_type> &&
-                                   std::is_nothrow_swappable_v<second_type>){
+        void swap(pair& p)noexcept(is_nothrow_swappable){
             using std::swap;
             swap(first, p.first);
             swap(second, p.second);

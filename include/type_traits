@@ -241,22 +241,30 @@ namespace std{
     template<class T> struct has_unique_object_representations;
 
     // 23.15.5, type property queries
-    template<class T> struct alignment_of :
+    template<class T> struct alignment_of:
         public integral_constant<std::size_t, alignof(T)>{};
 
-    template<class T> struct rank: public integral_constant<size_t, 0>{};
-    template<class T> struct rank<T[]>: public integral_constant<size_t, rank<T>::value + 1>{};
-    template<class T, std::size_t N> struct rank<T[N]>: public integral_constant<size_t, rank<T>::value + 1>{};
+    template<class T> struct rank:
+        public integral_constant<size_t, 0>{};
+    template<class T> struct rank<T[]>:
+        public integral_constant<size_t, rank<T>::value + 1>{};
+    template<class T, std::size_t N> struct rank<T[N]>:
+        public integral_constant<size_t, rank<T>::value + 1>{};
 
-    template<class T, unsigned I = 0> struct extent: public integral_constant<size_t, 0>{};
-    template<class T> struct extent<T[], 0>: public integral_constant<size_t, 0>{};
-    template<class T, unsigned I> struct extent<T[], I>: public integral_constant<size_t, extent<T, I-1>::value>{};
-    template<class T, size_t N> struct extent<T[N], 0>: public integral_constant<size_t, N>{};
-    template<class T, size_t N, unsigned I> struct extent<T[N], I>: public integral_constant<size_t, extent<T, I-1>::value>{};
+    template<class T, unsigned I = 0> struct extent:
+        public integral_constant<size_t, 0>{};
+    template<class T> struct extent<T[], 0>:
+        public integral_constant<size_t, 0>{};
+    template<class T, unsigned I> struct extent<T[], I>:
+        public integral_constant<size_t, extent<T, I-1>::value>{};
+    template<class T, size_t N> struct extent<T[N], 0>:
+        public integral_constant<size_t, N>{};
+    template<class T, size_t N, unsigned I> struct extent<T[N], I>:
+        public integral_constant<size_t, extent<T, I-1>::value>{};
 
     // 23.15.6, type relations
-    template<class T, class U> struct is_same : public false_type{};
-    template<class T> struct is_same<T, T> : public true_type{};
+    template<class T, class U> struct is_same: public false_type{};
+    template<class T> struct is_same<T, T>: public true_type{};
 
     template<class Base, class Derived> struct is_base_of;
 
@@ -364,42 +372,42 @@ namespace std{
     template<class...>                               using void_t            = void;
 
     // 23.15.8, logical operator traits
-    template<class... B> struct conjunction : public true_type{};
-    template<class B1>   struct conjunction<B1> : public B1{};
+    template<class... B> struct conjunction: public true_type{};
+    template<class B1>   struct conjunction<B1>: public B1{};
     template<class B1, class... Bn>
-    struct conjunction<B1, Bn...> : public conditional_t<bool(B1::value), conjunction<Bn...>, B1>{};
+    struct conjunction<B1, Bn...>: public conditional_t<bool(B1::value), conjunction<Bn...>, B1>{};
 
-    template<class... B> struct disjunction : public true_type{};
-    template<class B1> struct disjunction<B1> : public B1{};
+    template<class... B> struct disjunction: public true_type{};
+    template<class B1> struct disjunction<B1>: public B1{};
     template<class B1, class... Bn>
-    struct disjunction<B1, Bn...> : public conditional_t<bool(B1::value), B1, disjunction<Bn...>>{};
+    struct disjunction<B1, Bn...>: public conditional_t<bool(B1::value), B1, disjunction<Bn...>>{};
 
-    template<class B>    struct negation : public bool_constant<!bool(B::value)>{};
+    template<class B> struct negation: public bool_constant<!bool(B::value)>{};
 
     // 23.15.4.1, primary type categories
-    template<class T>          inline constexpr bool is_void_v                            = is_void<T>::value;
-    template<class T>          inline constexpr bool is_null_pointer_v                    = is_null_pointer<T>::value;
-    template<class T>          inline constexpr bool is_integral_v                        = is_integral<T>::value;
-    template<class T>          inline constexpr bool is_floating_point_v                  = is_floating_point<T>::value;
-    template<class T>          inline constexpr bool is_array_v                           = is_array<T>::value;
-    template<class T>          inline constexpr bool is_pointer_v                         = is_pointer<T>::value;
-    template<class T>          inline constexpr bool is_lvalue_reference_v                = is_lvalue_reference<T>::value;
-    template<class T>          inline constexpr bool is_rvalue_reference_v                = is_rvalue_reference<T>::value;
-    template<class T>          inline constexpr bool is_member_object_pointer_v           = is_member_object_pointer<T>::value;
-    template<class T>          inline constexpr bool is_member_function_pointer_v         = is_member_function_pointer<T>::value;
-    template<class T>          inline constexpr bool is_enum_v                            = is_enum<T>::value;
-    template<class T>          inline constexpr bool is_union_v                           = is_union<T>::value;
-    template<class T>          inline constexpr bool is_class_v                           = is_class<T>::value;
-    template<class T>          inline constexpr bool is_function_v                        = is_function<T>::value;
+    template<class T> inline constexpr bool is_void_v                    = is_void<T>::value;
+    template<class T> inline constexpr bool is_null_pointer_v            = is_null_pointer<T>::value;
+    template<class T> inline constexpr bool is_integral_v                = is_integral<T>::value;
+    template<class T> inline constexpr bool is_floating_point_v          = is_floating_point<T>::value;
+    template<class T> inline constexpr bool is_array_v                   = is_array<T>::value;
+    template<class T> inline constexpr bool is_pointer_v                 = is_pointer<T>::value;
+    template<class T> inline constexpr bool is_lvalue_reference_v        = is_lvalue_reference<T>::value;
+    template<class T> inline constexpr bool is_rvalue_reference_v        = is_rvalue_reference<T>::value;
+    template<class T> inline constexpr bool is_member_object_pointer_v   = is_member_object_pointer<T>::value;
+    template<class T> inline constexpr bool is_member_function_pointer_v = is_member_function_pointer<T>::value;
+    template<class T> inline constexpr bool is_enum_v                    = is_enum<T>::value;
+    template<class T> inline constexpr bool is_union_v                   = is_union<T>::value;
+    template<class T> inline constexpr bool is_class_v                   = is_class<T>::value;
+    template<class T> inline constexpr bool is_function_v                = is_function<T>::value;
 
     // 23.15.4.2, composite type categories
-    template<class T>          inline constexpr bool is_reference_v                       = is_reference<T>::value;
-    template<class T>          inline constexpr bool is_arithmetic_v                      = is_arithmetic<T>::value;
-    template<class T>          inline constexpr bool is_fundamental_v                     = is_fundamental<T>::value;
-    template<class T>          inline constexpr bool is_object_v                          = is_object<T>::value;
-    template<class T>          inline constexpr bool is_scalar_v                          = is_scalar<T>::value;
-    template<class T>          inline constexpr bool is_compound_v                        = is_compound<T>::value;
-    template<class T>          inline constexpr bool is_member_pointer_v                  = is_member_pointer<T>::value;
+    template<class T> inline constexpr bool is_reference_v      = is_reference<T>::value;
+    template<class T> inline constexpr bool is_arithmetic_v     = is_arithmetic<T>::value;
+    template<class T> inline constexpr bool is_fundamental_v    = is_fundamental<T>::value;
+    template<class T> inline constexpr bool is_object_v         = is_object<T>::value;
+    template<class T> inline constexpr bool is_scalar_v         = is_scalar<T>::value;
+    template<class T> inline constexpr bool is_compound_v       = is_compound<T>::value;
+    template<class T> inline constexpr bool is_member_pointer_v = is_member_pointer<T>::value;
 
     // 23.15.4.3, type properties
     template<class T>          inline constexpr bool is_const_v                           = is_const<T>::value;

@@ -34,6 +34,20 @@ namespace std{
     struct piecewise_construct_t{explicit piecewise_construct_t() = default;};
     inline constexpr piecewise_construct_t piecewise_construct{};
 
+    namespace impl{
+        template<class T>
+        void __consume_type(T);
+
+        template<class T, class = void>
+        struct __is_implicitly_default_constructible: std::false_type{};
+
+        template<class T>
+        struct __is_implicitly_default_constructible<T, decltype(__consume_type<T const&>({}))>: std::true_type{};
+
+        template<class T>
+        inline constexpr bool __is_implicitly_default_constructible_v = __is_implicitly_default_constructible<T>::value;
+    }
+
     // 23.4, class template pair
     template<class T1, class T2>
     struct pair{

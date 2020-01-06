@@ -65,28 +65,72 @@ namespace std{
             first{},
             second{}{}
 
-        template<class = std::enable_if_t<is_copy_constructible>>
+
+        template<class = std::enable_if_t<is_copy_constructible>,
+                 std::enable_if_t<std::is_convertible_v<const first_type&, first_type> &&
+                                  std::is_convertible_v<const second_type&, second_type>, bool> = false>
+        constexpr pair(const T1& x, const T2& y)
+            noexcept(is_nothrow_copy_constructible):
+            first{x},
+            second{y}{}
+
+        template<class = std::enable_if_t<is_copy_constructible>,
+                 std::enable_if_t<!(std::is_convertible_v<const first_type&, first_type> &&
+                                    std::is_convertible_v<const second_type&, second_type>), bool> = false>
         explicit constexpr pair(const T1& x, const T2& y)
             noexcept(is_nothrow_copy_constructible):
             first{x},
             second{y}{}
 
-        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>>
+
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>,
+                 std::enable_if_t<std::is_convertible_v<U1&&, first_type> &&
+                                  std::is_convertible_v<U2&&, second_type>, bool> = false>
+        constexpr pair(U1&& x, U2&& y)noexcept(is_nothrow_constructible<U1&&, U2&&>):
+            first{std::forward<U1>(x)},
+            second{std::forward<U2>(y)}{}
+
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>,
+                 std::enable_if_t<!(std::is_convertible_v<U1&&, first_type> &&
+                                    std::is_convertible_v<U2&&, second_type>), bool> = false>
         explicit constexpr pair(U1&& x, U2&& y)noexcept(is_nothrow_constructible<U1&&, U2&&>):
             first{std::forward<U1>(x)},
             second{std::forward<U2>(y)}{}
 
-        template<class U1, class U2, class = std::enable_if_t<is_constructible<const U1&, const U2&>>>
+
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<const U1&, const U2&>>,
+                 std::enable_if_t<std::is_convertible_v<const U1&, first_type> &&
+                                  std::is_convertible_v<const U2&, second_type>, bool> = false>
+        constexpr pair(const pair<U1, U2>& p)
+            noexcept(is_nothrow_constructible<U1 const&, U2 const&>):
+            first{p.first},
+            second{p.second}{}
+
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<const U1&, const U2&>>,
+                 std::enable_if_t<!(std::is_convertible_v<const U1&, first_type> &&
+                                    std::is_convertible_v<const U2&, second_type>), bool> = false>
         explicit constexpr pair(const pair<U1, U2>& p)
             noexcept(is_nothrow_constructible<U1 const&, U2 const&>):
             first{p.first},
             second{p.second}{}
 
-        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>>
+
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>,
+                 std::enable_if_t<std::is_convertible_v<U1&&, first_type> &&
+                                  std::is_convertible_v<U2&&, second_type>, bool> = false>
+        constexpr pair(pair<U1, U2>&& p)
+            noexcept(is_nothrow_constructible<U1&&, U2&&>):
+            first{std::forward<U1>(p.first)},
+            second{std::forward<U1>(p.second)}{}
+
+        template<class U1, class U2, class = std::enable_if_t<is_constructible<U1&&, U2&&>>,
+                 std::enable_if_t<!(std::is_convertible_v<U1&&, first_type> &&
+                                    std::is_convertible_v<U2&&, second_type>), bool> = false>
         explicit constexpr pair(pair<U1, U2>&& p)
             noexcept(is_nothrow_constructible<U1&&, U2&&>):
             first{std::forward<U1>(p.first)},
             second{std::forward<U1>(p.second)}{}
+
 
         template<class... Args1, class... Args2>
         pair(piecewise_construct_t, tuple<Args1...> first_args, tuple<Args2...> second_args);

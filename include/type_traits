@@ -244,8 +244,15 @@ namespace std{
     template<class T> struct alignment_of :
         public integral_constant<std::size_t, alignof(T)>{};
 
-    template<class T> struct rank;
-    template<class T, unsigned I = 0> struct extent;
+    template<class T> struct rank: public integral_constant<size_t, 0>{};
+    template<class T> struct rank<T[]>: public integral_constant<size_t, rank<T>::value + 1>{};
+    template<class T, std::size_t N> struct rank<T[N]>: public integral_constant<size_t, rank<T>::value + 1>{};
+
+    template<class T, unsigned I = 0> struct extent: public integral_constant<size_t, 0>{};
+    template<class T> struct extent<T[], 0>: public integral_constant<size_t, 0>{};
+    template<class T, unsigned I> struct extent<T[], I>: public integral_constant<size_t, extent<T, I-1>::value>{};
+    template<class T, size_t N> struct extent<T[N], 0>: public integral_constant<size_t, N>{};
+    template<class T, size_t N, unsigned I> struct extent<T[N], I>: public integral_constant<size_t, extent<T, I-1>::value>{};
 
     // 23.15.6, type relations
     template<class T, class U> struct is_same : public false_type{};

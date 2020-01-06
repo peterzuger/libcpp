@@ -63,6 +63,7 @@ namespace std{
         static constexpr bool is_copy_constructible = std::is_copy_constructible_v<first_type> && std::is_copy_constructible_v<second_type>;
         static constexpr bool is_nothrow_copy_constructible = std::is_nothrow_copy_constructible_v<first_type> && std::is_nothrow_copy_constructible_v<second_type>;
         static constexpr bool is_nothrow_swappable = std::is_nothrow_swappable_v<first_type> && std::is_nothrow_swappable_v<second_type>;
+        static constexpr bool is_implicitly_default_constructible = impl::__is_implicitly_default_constructible_v<first_type> && impl::__is_implicitly_default_constructible_v<second_type>;
 
         template<class U1, class U2>
         static constexpr bool is_constructible = std::is_constructible_v<first_type, U1> && std::is_constructible_v<second_type, U2>;
@@ -74,7 +75,14 @@ namespace std{
         pair(const pair&) = default;
         pair(pair&&) = default;
 
-        template<class = std::enable_if_t<is_default_constructible>>
+        template<class = std::enable_if_t<is_default_constructible>,
+                 std::enable_if_t<is_implicitly_default_constructible, bool> = false>
+        constexpr pair()noexcept(is_nothrow_default_constructible):
+            first{},
+            second{}{}
+
+        template<class = std::enable_if_t<is_default_constructible>,
+                 std::enable_if_t<!is_implicitly_default_constructible, bool> = false>
         explicit constexpr pair()noexcept(is_nothrow_default_constructible):
             first{},
             second{}{}

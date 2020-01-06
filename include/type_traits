@@ -102,10 +102,13 @@ namespace std{
     template<class T> struct is_rvalue_reference: public false_type{};
     template<class T> struct is_rvalue_reference<T&&>: public true_type{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_enum: public bool_constant<__is_enum(T)>{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_union: public bool_constant<__is_union(T)>{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_class: public bool_constant<__is_class(T)>{};
 
     // 23.15.4.2, composite type categories
@@ -143,18 +146,24 @@ namespace std{
     template<class T> struct is_volatile: public false_type{};
     template<class T> struct is_volatile<volatile T>: public true_type{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_trivial: public bool_constant<__is_trivial(T)>{};
 
     template<class T> struct is_trivially_copyable;
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_standard_layout: public bool_constant<__is_standard_layout(T)>{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_pod: public bool_constant<__is_pod(T)>{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_empty: public bool_constant<__is_empty(T)>{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_polymorphic: public bool_constant<__is_polymorphic(T)>{};
 
+    // TODO: implement without compiler intrinsic
     template<class T> struct is_abstract: public bool_constant<__is_abstract(T)>{};
 
     template<class T> struct is_final;

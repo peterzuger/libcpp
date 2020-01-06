@@ -102,10 +102,6 @@ namespace std{
     template<class T> struct is_rvalue_reference: public false_type{};
     template<class T> struct is_rvalue_reference<T&&>: public true_type{};
 
-    template<class T> struct is_member_object_pointer;
-
-    template<class T> struct is_member_function_pointer;
-
     template<class T> struct is_enum: public bool_constant<__is_enum(T)>{};
 
     template<class T> struct is_union: public bool_constant<__is_union(T)>{};
@@ -129,7 +125,8 @@ namespace std{
 
     template<class T> struct is_compound;
 
-    template<class T> struct is_member_pointer;
+    template<class T> struct is_member_pointer: public false_type{};
+    template<class T, class U> struct is_member_pointer<T U::*>: public true_type{};
 
     // 23.15.4.3, type properties
     template<class T> struct is_const: public false_type{};
@@ -309,6 +306,12 @@ namespace std{
 
     template<class T> struct is_function: __is_function_impl<remove_reference_t<remove_cv_t<T>>>{};
 
+
+    template<class T> struct is_member_object_pointer:
+        public bool_constant<is_member_pointer<T>::value && is_object<T>::value>{};
+
+    template<class T> struct is_member_function_pointer:
+        public bool_constant<is_member_pointer<T>::value && is_function<T>::value>{};
 
     // 23.15.7.6, other transformations
     template<std::size_t Len, std::size_t Align = sizeof(int)> struct aligned_storage;

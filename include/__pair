@@ -204,7 +204,8 @@ namespace std{
     };
 
     template<class T1, class T2>
-    pair(T1, T2) -> pair<T1, T2>;
+    pair(T1, T2)
+        -> pair<T1, T2>;
 
     // 23.4.3, pair specialized algorithms
     template<class T1, class T2>
@@ -254,6 +255,7 @@ namespace std{
         struct __remove_reference_wrapper<std::reference_wrapper<T>>{
             using type = T&;
         };
+
         template<class T>
         using __remove_reference_wrapper_t = typename __remove_reference_wrapper<T>::type;
 

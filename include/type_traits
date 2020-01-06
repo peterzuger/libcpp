@@ -119,14 +119,22 @@ namespace std{
     template<class T> struct is_fundamental: public bool_constant<is_void<T>::value ||
                                                                   is_null_pointer<T>::value ||
                                                                   is_arithmetic<T>::value>{};
-    template<class T> struct is_object;
 
-    template<class T> struct is_scalar;
-
-    template<class T> struct is_compound;
+    template<class T> struct is_compound: public bool_constant<!is_fundamental<T>::value>{};
 
     template<class T> struct is_member_pointer: public false_type{};
     template<class T, class U> struct is_member_pointer<T U::*>: public true_type{};
+
+    template<class T> struct is_scalar: public bool_constant<is_arithmetic<T>::value ||
+                                                             is_member_pointer<T>::value ||
+                                                             is_pointer<T>::value ||
+                                                             is_null_pointer<T>::value ||
+                                                             is_enum<T>::value>{};
+
+    template<class T> struct is_object: public bool_constant<is_scalar<T>::value ||
+                                                             is_array<T>::value ||
+                                                             is_union<T>::value ||
+                                                             is_class<T>::value>{};
 
     // 23.15.4.3, type properties
     template<class T> struct is_const: public false_type{};

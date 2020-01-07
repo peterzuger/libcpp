@@ -27,68 +27,13 @@
 #include <__functional>
 #include <__iterator_traits>
 #include <__move>
+#include <__reference_wrapper>
 #include <type_traits>
 
 namespace std{
     // 23.14.4, invoke
     template<class F, class... Args>
     invoke_result_t<F, Args...> invoke(F&& f, Args&&... args)noexcept(std::is_nothrow_invocable_v<F, Args...>);
-
-    // 23.14.5, reference_wrapper
-    template<class T>
-    class reference_wrapper{
-        T* ref;
-
-    public:
-        // types
-        using type = T;
-
-        // construct/copy/destroy
-        reference_wrapper(T& _ref)noexcept:ref{std::addressof(_ref)}{}
-        reference_wrapper(T&&) = delete; // do not bind to temporary objects
-        reference_wrapper(const reference_wrapper& x)noexcept;
-
-        // assignment
-        reference_wrapper& operator=(const reference_wrapper& x)noexcept = default;
-
-        // access
-        operator T& ()const noexcept{
-            return *ref;
-        }
-        T& get()const noexcept{
-            return *ref;
-        }
-
-        // invocation
-        template<class... ArgTypes>
-        invoke_result_t<T&, ArgTypes...> operator()(ArgTypes&&...)const;
-    };
-
-    template<class T>
-    reference_wrapper(reference_wrapper<T>) -> reference_wrapper<T>;
-
-    template<class T>
-    reference_wrapper<T> ref(T& t)noexcept{
-        return reference_wrapper<T>(t);
-    }
-
-    template<class T>
-    reference_wrapper<const T> cref(const T& t)noexcept{
-        return reference_wrapper<const T>(t);
-    }
-
-    template<class T>void ref(const T&&) = delete;
-    template<class T>void cref(const T&&) = delete;
-
-    template<class T>
-    reference_wrapper<T> ref(reference_wrapper<T> t)noexcept{
-        return ref(t.get());
-    }
-
-    template<class T>
-    reference_wrapper<const T> cref(reference_wrapper<T> t)noexcept{
-        return cref(t.get());
-    }
 
     template<class F>
     class __call_wrapper{

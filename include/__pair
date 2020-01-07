@@ -24,9 +24,10 @@
 #define ____PAIR__
 
 #include <__move>
+#include <__reference_wrapper>
+#include <__swap>
 #include <__tuple>
 #include <cstddef>
-#include <functional>
 #include <type_traits>
 
 namespace std{
@@ -247,20 +248,7 @@ namespace std{
 
     namespace impl{
         template<class T>
-        struct __remove_reference_wrapper{
-            using type = T;
-        };
-
-        template<class T>
-        struct __remove_reference_wrapper<std::reference_wrapper<T>>{
-            using type = T&;
-        };
-
-        template<class T>
-        using __remove_reference_wrapper_t = typename __remove_reference_wrapper<T>::type;
-
-        template<class T>
-        using __make_pair_t = __remove_reference_wrapper_t<std::decay_t<T>>;
+        using __make_pair_t = std::impl::__remove_reference_wrapper_t<std::decay_t<T>>;
     }
 
     template<class T1, class T2>

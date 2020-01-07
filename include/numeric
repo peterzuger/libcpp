@@ -268,7 +268,10 @@ namespace std{
 
     // 29.8.12, iota
     template<class ForwardIterator, class T>
-    void iota(ForwardIterator first, ForwardIterator last, T value);
+    void iota(ForwardIterator first, ForwardIterator last, T value){
+        for(; first != last; ++first, (void)++value)
+            *first = value;
+    }
 
 
     // 29.8.13, greatest common divisor

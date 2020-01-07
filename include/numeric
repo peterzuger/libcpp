@@ -140,27 +140,56 @@ namespace std{
 
 
     // 29.8.7, exclusive scan
-    template<class InputIterator, class OutputIterator, class T>
-    OutputIterator exclusive_scan(InputIterator first, InputIterator last,
-                                  OutputIterator result, T init);
-
     template<class InputIterator, class OutputIterator, class T, class BinaryOperation>
     OutputIterator exclusive_scan(InputIterator first, InputIterator last,
-                                  OutputIterator result, T init, BinaryOperation binary_op);
+                                  OutputIterator result, T init, BinaryOperation binary_op){
+        if(first != last){
+            T tmp = init;
+            do{
+                init = binary_op(init, *first);
+                *result = tmp;
+                tmp = init;
+                ++result;
+            }while(++first != last);
+        }
+        return result;
+    }
+
+    template<class InputIterator, class OutputIterator, class T>
+    OutputIterator exclusive_scan(InputIterator first, InputIterator last,
+                                  OutputIterator result, T init){
+        return exclusive_scan(first, last, result, init, std::plus<>());
+    }
 
 
     // 29.8.8, inclusive scan
-    template<class InputIterator, class OutputIterator>
-    OutputIterator inclusive_scan(InputIterator first, InputIterator last,
-                                  OutputIterator result);
+    template<class InputIterator, class OutputIterator, class BinaryOperation, class T>
+    OutputIterator inclusive_scan(InputIterator first, InputIterator last, OutputIterator result,
+                                  BinaryOperation binary_op, T init){
+        for(; first != last; ++first, (void)++result){
+            init = binary_op(init, *first);
+            *result = init;
+        }
+        return result;
+    }
 
     template<class InputIterator, class OutputIterator, class BinaryOperation>
     OutputIterator inclusive_scan(InputIterator first, InputIterator last,
-                                  OutputIterator result, BinaryOperation binary_op);
+                                  OutputIterator result, BinaryOperation binary_op){
+        if(first != last){
+            typename std::iterator_traits<InputIterator>::value_type init = *first;
+            *result++ = init;
+            if(++first != last)
+                return inclusive_scan(first, last, result, binary_op, init);
+        }
+        return result;
+    }
 
-    template<class InputIterator, class OutputIterator, class BinaryOperation, class T>
-    OutputIterator inclusive_scan(InputIterator first, InputIterator last, OutputIterator result,
-                                  BinaryOperation binary_op, T init);
+    template<class InputIterator, class OutputIterator>
+    OutputIterator inclusive_scan(InputIterator first, InputIterator last,
+                                  OutputIterator result){
+        return inclusive_scan(first, last, result, std::plus<>());
+    }
 
 
     // 29.8.9, transform exclusive scan

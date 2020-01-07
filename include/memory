@@ -28,6 +28,7 @@
 #include <__iterator_traits>
 #include <__pointer_traits>
 #include <__uses_allocator>
+#include <__compressed_pair>
 #include <atomic>
 #include <cstddef>
 #include <functional>
@@ -255,15 +256,26 @@ namespace std{
         using deleter_type = D;
 
         // 23.11.1.2.1, constructors
-        constexpr unique_ptr()noexcept;
-        explicit unique_ptr(pointer p)noexcept;
-        unique_ptr(pointer p, const D& d1)noexcept;
-        unique_ptr(pointer p, D&& d2)noexcept;
-        unique_ptr(unique_ptr&& u)noexcept;
-        constexpr unique_ptr(nullptr_t)noexcept;
+        constexpr unique_ptr()noexcept: _ptr{pointer{}, deleter_type{}}{}
+
+        explicit unique_ptr(pointer p)noexcept:
+            _ptr{p, deleter_type{}}{}
+
+        unique_ptr(pointer p, const D& d1)noexcept:
+            _ptr{p, d1}{}
+
+        unique_ptr(pointer p, D&& d2)noexcept:
+            _ptr{p, d2}{}
+
+        unique_ptr(unique_ptr&& u)noexcept:
+            _ptr{u.release(), std::forward<deleter_type>(u.get_deleter())}{}
+
+        constexpr unique_ptr(nullptr_t)noexcept:
+            _ptr{pointer{}, deleter_type{}}{}
 
         template<class U, class E>
-        unique_ptr(unique_ptr<U, E>&& u)noexcept;
+        unique_ptr(unique_ptr<U, E>&& u)noexcept:
+            _ptr(u.release(), std::forward<E>(u.get_deleter())){}
 
         // 23.11.1.2.2, destructor
         ~unique_ptr(){
@@ -271,29 +283,66 @@ namespace std{
         }
 
         // 23.11.1.2.3, assignment
-        unique_ptr& operator=(unique_ptr&& u)noexcept;
+        unique_ptr& operator=(unique_ptr&& u)noexcept{
+            reset(u.release());
+            _ptr.second() = std::forward<deleter_type>(u.get_deleter());
+            return *this;
+        }
 
         template<class U, class E>
-        unique_ptr& operator=(unique_ptr<U, E>&& u)noexcept;
+        unique_ptr& operator=(unique_ptr<U, E>&& u)noexcept{
+            reset(u.release());
+            _ptr.second() = std::forward<E>(u.get_deleter());
+            return *this;
+        }
 
-        unique_ptr& operator=(nullptr_t)noexcept;
+        unique_ptr& operator=(nullptr_t)noexcept{
+            reset();
+            return *this;
+        }
 
         // 23.11.1.2.4, observers
-        add_lvalue_reference_t<T> operator*()const;
-        pointer operator->()const noexcept;
-        pointer get()const noexcept;
-        deleter_type& get_deleter()noexcept;
-        const deleter_type& get_deleter()const noexcept;
-        explicit operator bool()const noexcept;
+        add_lvalue_reference_t<T> operator*()const{
+            return *_ptr.first();
+        }
+        pointer operator->()const noexcept{
+            return _ptr.first();
+        }
+        pointer get()const noexcept{
+            return _ptr.first();
+        }
+        deleter_type& get_deleter()noexcept{
+            return _ptr.second();
+        }
+        const deleter_type& get_deleter()const noexcept{
+            return _ptr.second();
+        }
+        explicit operator bool()const noexcept{
+            return _ptr.first() != nullptr;
+        }
 
         // 23.11.1.2.5, modifiers
-        pointer release()noexcept;
-        void reset(pointer p = pointer())noexcept;
-        void swap(unique_ptr& u)noexcept;
+        pointer release()noexcept{
+            pointer tmp = _ptr.first();
+            _ptr.first() = pointer{};
+            return tmp;
+        }
+        void reset(pointer p = pointer())noexcept{
+            pointer tmp = _ptr.first();
+            _ptr.first() = p;
+            if(tmp)
+                _ptr.second()(tmp);
+        }
+        void swap(unique_ptr& u)noexcept{
+            _ptr.swap(u._ptr);
+        }
 
         // disable copy from lvalue
         unique_ptr(const unique_ptr&) = delete;
         unique_ptr& operator=(const unique_ptr&) = delete;
+
+    private:
+        __compressed_pair<pointer, deleter_type> _ptr;
     };
 
     template<class T, class D>

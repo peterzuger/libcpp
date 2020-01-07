@@ -112,11 +112,31 @@ namespace std{
 
     // 29.8.6, partial sum
     template<class InputIterator, class OutputIterator>
-    OutputIterator partial_sum(InputIterator first, InputIterator last, OutputIterator result);
+    OutputIterator partial_sum(InputIterator first, InputIterator last, OutputIterator result){
+        if(first != last){
+            typename iterator_traits<InputIterator>::value_type tmp(*first);
+            *result = tmp;
+            for(++first, (void)++result; first != last; ++first, (void)++result){
+                tmp = tmp + *first;
+                *result = tmp;
+            }
+        }
+        return result;
+    }
 
     template<class InputIterator, class OutputIterator, class BinaryOperation>
     OutputIterator partial_sum(InputIterator first, InputIterator last,
-                               OutputIterator result, BinaryOperation binary_op);
+                               OutputIterator result, BinaryOperation binary_op){
+        if(first != last){
+            typename iterator_traits<InputIterator>::value_type tmp(*first);
+            *result = tmp;
+            for(++first, (void)++result; first != last; ++first, (void)++result){
+                tmp = binary_op(tmp, *first);
+                *result = tmp;
+            }
+        }
+        return result;
+    }
 
 
     // 29.8.7, exclusive scan

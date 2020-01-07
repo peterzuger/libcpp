@@ -25,25 +25,42 @@
 #include <__execution/numeric>
 #include <__iterator_traits>
 #include <type_traits>
+#include <functional>
 
 namespace std{
     // 29.8.2, accumulate
     template<class InputIterator, class T>
-    T accumulate(InputIterator first, InputIterator last, T init);
+    T accumulate(InputIterator first, InputIterator last, T init){
+        for(; first != last; ++first)
+            init = init + *first;
+        return init;
+    }
 
     template<class InputIterator, class T, class BinaryOperation>
-    T accumulate(InputIterator first, InputIterator last, T init, BinaryOperation binary_op);
+    T accumulate(InputIterator first, InputIterator last, T init, BinaryOperation binary_op){
+        for(; first != last; ++first)
+            init = binary_op(init, *first);
+        return init;
+    }
 
 
     // 29.8.3, reduce
-    template<class InputIterator>
-    typename std::iterator_traits<InputIterator>::value_type reduce(InputIterator first, InputIterator last);
+    template<class InputIterator, class T, class BinaryOperation>
+    T reduce(InputIterator first, InputIterator last, T init, BinaryOperation binary_op){
+        for(; first != last; ++first)
+            init = binary_op(init, *first);
+        return init;
+    }
 
     template<class InputIterator, class T>
-    T reduce(InputIterator first, InputIterator last, T init);
+    T reduce(InputIterator first, InputIterator last, T init){
+        return reduce(first, last, init, std::plus<>());
+    }
 
-    template<class InputIterator, class T, class BinaryOperation>
-    T reduce(InputIterator first, InputIterator last, T init, BinaryOperation binary_op);
+    template<class InputIterator>
+    typename std::iterator_traits<InputIterator>::value_type reduce(InputIterator first, InputIterator last){
+        return reduce(first, last, typename iterator_traits<InputIterator>::value_type{});
+    }
 
 
     // 29.8.4, inner product

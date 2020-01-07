@@ -23,9 +23,10 @@
 #define __NUMERIC__
 
 #include <__execution/numeric>
+#include <__functional>
 #include <__iterator_traits>
+#include <__move>
 #include <type_traits>
-#include <functional>
 
 namespace std{
     // 29.8.2, accumulate

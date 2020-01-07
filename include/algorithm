@@ -23,11 +23,12 @@
 #define __ALGORITHM__
 
 #include <__execution/algorithm>
+#include <__functional>
 #include <__iterator_traits>
 #include <__minmax>
-#include <functional>
-#include <iterator>
+#include <__swap>
 #include <initializer_list>
+#include <iterator>
 #include <utility>
 
 namespace std{

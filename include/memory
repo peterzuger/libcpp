@@ -24,14 +24,15 @@
 
 #include <__addressof>
 #include <__allocator_traits>
+#include <__compressed_pair>
 #include <__execution/memory>
+#include <__functional>
 #include <__iterator_traits>
+#include <__move>
 #include <__pointer_traits>
 #include <__uses_allocator>
-#include <__compressed_pair>
 #include <atomic>
 #include <cstddef>
-#include <functional>
 #include <iosfwd>
 #include <stdexcept>
 #include <type_traits>

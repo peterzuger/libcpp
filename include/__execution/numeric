@@ -1,0 +1,136 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__execution/numeric
+ * @author Peter Züger
+ * @date   18.12.2019
+ * @brief  Generalized numeric operations with excecution policy's
+ * @note   defined in header <numeric>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____EXCECUTION_NUMERIC__
+#define ____EXCECUTION_NUMERIC__
+
+#include <__iterator_traits>
+#include <type_traits>
+
+namespace std{
+    // 29.8.3, reduce
+    template<class ExecutionPolicy, class ForwardIterator>
+    typename std::iterator_traits<ForwardIterator>::value_type reduce(ExecutionPolicy&& exec, // see 28.4.5
+                                                                      ForwardIterator first, ForwardIterator last);
+
+    template<class ExecutionPolicy, class ForwardIterator, class T>
+    T reduce(ExecutionPolicy&& exec, // see 28.4.5
+             ForwardIterator first, ForwardIterator last, T init);
+
+    template<class ExecutionPolicy, class ForwardIterator, class T, class BinaryOperation>
+    T reduce(ExecutionPolicy&& exec, // see 28.4.5
+             ForwardIterator first, ForwardIterator last, T init, BinaryOperation binary_op);
+
+
+    // 29.8.5, transform reduce
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2, class T>
+    T transform_reduce(ExecutionPolicy&& exec, // see 28.4.5
+                       ForwardIterator1 first1, ForwardIterator1 last1, ForwardIterator2 first2, T init);
+
+    template<class ExecutionPolicy,
+             class ForwardIterator1, class ForwardIterator2, class T,
+             class BinaryOperation1, class BinaryOperation2>
+    T transform_reduce(ExecutionPolicy&& exec, // see 28.4.5
+                       ForwardIterator1 first1, ForwardIterator1 last1,
+                       ForwardIterator2 first2, T init,
+                       BinaryOperation1 binary_op1, BinaryOperation2 binary_op2);
+
+    template<class ExecutionPolicy,
+             class ForwardIterator, class T, class BinaryOperation, class UnaryOperation>
+    T transform_reduce(ExecutionPolicy&& exec, // see 28.4.5
+                       ForwardIterator first, ForwardIterator last,
+                       T init, BinaryOperation binary_op, UnaryOperation unary_op);
+
+
+    // 29.8.7, exclusive scan
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2, class T>
+    ForwardIterator2 exclusive_scan(ExecutionPolicy&& exec,// see 28.4.5
+                                    ForwardIterator1 first, ForwardIterator1 last,
+                                    ForwardIterator2 result,
+                                    T init);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2, class T, class BinaryOperation>
+    ForwardIterator2 exclusive_scan(ExecutionPolicy&& exec, // see 28.4.5
+                                    ForwardIterator1 first, ForwardIterator1 last,
+                                    ForwardIterator2 result,
+                                    T init, BinaryOperation binary_op);
+
+
+    // 29.8.8, inclusive scan
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator2 inclusive_scan(ExecutionPolicy&& exec, // see 28.4.5
+                                    ForwardIterator1 first, ForwardIterator1 last, ForwardIterator2 result);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2, class BinaryOperation>
+    ForwardIterator2 inclusive_scan(ExecutionPolicy&& exec, // see 28.4.5
+                                    ForwardIterator1 first, ForwardIterator1 last,
+                                    ForwardIterator2 result, BinaryOperation binary_op);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2, class BinaryOperation, class T>
+    ForwardIterator2 inclusive_scan(ExecutionPolicy&& exec, // see 28.4.5
+                                    ForwardIterator1 first, ForwardIterator1 last,
+                                    ForwardIterator2 result, BinaryOperation binary_op, T init);
+
+
+    // 29.8.9, transform exclusive scan
+    template<class ExecutionPolicy,
+             class ForwardIterator1, class ForwardIterator2, class T,
+             class BinaryOperation, class UnaryOperation>
+    ForwardIterator2 transform_exclusive_scan(ExecutionPolicy&& exec, // see 28.4.5
+                                              ForwardIterator1 first, ForwardIterator1 last,
+                                              ForwardIterator2 result, T init,
+                                              BinaryOperation binary_op, UnaryOperation unary_op);
+
+
+    // 29.8.10, transform inclusive scan
+    template<class ExecutionPolicy,
+             class ForwardIterator1, class ForwardIterator2,
+             class BinaryOperation, class UnaryOperation>
+    ForwardIterator2 transform_inclusive_scan(ExecutionPolicy&& exec, // see 28.4.5
+                                              ForwardIterator1 first, ForwardIterator1 last,
+                                              ForwardIterator2 result,
+                                              BinaryOperation binary_op, UnaryOperation unary_op);
+
+    template<class ExecutionPolicy,
+             class ForwardIterator1, class ForwardIterator2,
+             class BinaryOperation, class UnaryOperation, class T>
+    ForwardIterator2 transform_inclusive_scan(ExecutionPolicy&& exec, // see 28.4.5
+                                              ForwardIterator1 first, ForwardIterator1 last,
+                                              ForwardIterator2 result,
+                                              BinaryOperation binary_op, UnaryOperation unary_op,
+                                              T init);
+
+
+    // 29.8.11, adjacent difference
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2>
+    ForwardIterator2 adjacent_difference(ExecutionPolicy&& exec, // see 28.4.5
+                                         ForwardIterator1 first, ForwardIterator1 last,
+                                         ForwardIterator2 result);
+
+    template<class ExecutionPolicy, class ForwardIterator1, class ForwardIterator2, class BinaryOperation>
+    ForwardIterator2 adjacent_difference(ExecutionPolicy&& exec, // see 28.4.5
+                                         ForwardIterator1 first, ForwardIterator1 last,
+                                         ForwardIterator2 result, BinaryOperation binary_op);
+}
+
+
+#endif /* ____EXCECUTION_NUMERIC__ */

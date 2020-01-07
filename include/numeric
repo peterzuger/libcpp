@@ -196,18 +196,43 @@ namespace std{
     template<class InputIterator, class OutputIterator, class T, class BinaryOperation, class UnaryOperation>
     OutputIterator transform_exclusive_scan(InputIterator first, InputIterator last,
                                             OutputIterator result, T init,
-                                            BinaryOperation binary_op, UnaryOperation unary_op);
+                                            BinaryOperation binary_op, UnaryOperation unary_op){
+        if(first != last){
+            T tmp = init;
+            do{
+                init = binary_op(init, unary_op(*first));
+                *result = tmp;
+                tmp = init;
+                ++result;
+            }while(++first != last);
+        }
+        return result;
+    }
 
 
     // 29.8.10, transform inclusive scan
-    template<class InputIterator, class OutputIterator, class BinaryOperation, class UnaryOperation>
-    OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last, OutputIterator result,
-                                            BinaryOperation binary_op, UnaryOperation unary_op);
-
     template<class InputIterator, class OutputIterator, class BinaryOperation, class UnaryOperation, class T>
     OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last, OutputIterator result,
                                             BinaryOperation binary_op, UnaryOperation unary_op,
-                                            T init);
+                                            T init){
+        for(; first != last; ++first, (void)++result){
+            init = binary_op(init, unary_op(*first));
+            *result = init;
+        }
+        return result;
+    }
+
+    template<class InputIterator, class OutputIterator, class BinaryOperation, class UnaryOperation>
+    OutputIterator transform_inclusive_scan(InputIterator first, InputIterator last, OutputIterator result,
+                                            BinaryOperation binary_op, UnaryOperation unary_op){
+        if(first != last){
+            typename std::iterator_traits<InputIterator>::value_type init = unary_op(*first);
+            *result++ = init;
+            if(++first != last)
+                return std::transform_inclusive_scan(first, last, result, binary_op, unary_op, init);
+        }
+        return result;
+    }
 
 
     // 29.8.11, adjacent difference

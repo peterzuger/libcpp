@@ -29,6 +29,7 @@
 #include <__move>
 #include <__reference_wrapper>
 #include <type_traits>
+#include <exception>
 
 namespace std{
     // 23.14.4, invoke
@@ -114,7 +115,11 @@ namespace std{
     R mem_fn(R T::*)noexcept;
 
     // 23.14.13, polymorphic function wrappers
-    class bad_function_call;
+    class bad_function_call: public std::exception{
+    public:
+        // 23.14.13.1.1, constructor
+        bad_function_call() noexcept;
+    };
 
     template<class>
     class function;// not defined

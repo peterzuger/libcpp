@@ -237,11 +237,33 @@ namespace std{
 
     // 29.8.11, adjacent difference
     template<class InputIterator, class OutputIterator>
-    OutputIterator adjacent_difference(InputIterator first, InputIterator last, OutputIterator result);
+    OutputIterator adjacent_difference(InputIterator first, InputIterator last, OutputIterator result){
+        if(first != last){
+            typename iterator_traits<InputIterator>::value_type tmp1(*first);
+            *result = tmp1;
+            for(++first, (void)++result; first != last; ++first, (void)++result){
+                typename iterator_traits<InputIterator>::value_type tmp2(*first);
+                *result = tmp2 - tmp1;
+                tmp1 = std::move(tmp2);
+            }
+        }
+        return result;
+    }
 
     template<class InputIterator, class OutputIterator, class BinaryOperation>
     OutputIterator adjacent_difference(InputIterator first, InputIterator last,
-                                       OutputIterator result, BinaryOperation binary_op);
+                                       OutputIterator result, BinaryOperation binary_op){
+        if(first != last){
+            typename iterator_traits<InputIterator>::value_type tmp1(*first);
+            *result = tmp1;
+            for(++first, (void)++result; first != last; ++first, (void)++result){
+                typename iterator_traits<InputIterator>::value_type tmp2(*first);
+                *result = binary_op(tmp2, tmp1);
+                tmp1 = std::move(tmp2);
+            }
+        }
+        return result;
+    }
 
 
     // 29.8.12, iota

@@ -83,7 +83,7 @@ namespace std{
     struct is_bind_expression;
 
     template<class T>
-    struct is_placeholder;
+    struct is_placeholder: std::false_type{};
 
     template<class F, class... BoundArgs>
     void bind(F&&, BoundArgs&&...);
@@ -91,18 +91,23 @@ namespace std{
     void bind(F&&, BoundArgs&&...);
 
     namespace placeholders{
-        //M is the implementation-defined number of placeholders
-        inline constexpr int _1{};
-        inline constexpr int _2{};
-        inline constexpr int _3{};
-        inline constexpr int _4{};
-        inline constexpr int _5{};
-        inline constexpr int _6{};
-        inline constexpr int _7{};
-        inline constexpr int _8{};
-        inline constexpr int _9{};
-        inline constexpr int _10{};
+        template<int N>
+        struct __placeholder{};
+
+        inline constexpr __placeholder<1> _1{};
+        inline constexpr __placeholder<2> _2{};
+        inline constexpr __placeholder<3> _3{};
+        inline constexpr __placeholder<4> _4{};
+        inline constexpr __placeholder<5> _5{};
+        inline constexpr __placeholder<6> _6{};
+        inline constexpr __placeholder<7> _7{};
+        inline constexpr __placeholder<8> _8{};
+        inline constexpr __placeholder<9> _9{};
+        inline constexpr __placeholder<10> _10{};
     }
+
+    template<int N>
+    struct is_placeholder<placeholders::__placeholder<N>>: public std::true_type{};
 
     // 23.14.12, member function adaptors
     template<class R, class T>

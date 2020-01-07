@@ -327,8 +327,8 @@ namespace std{
 
 
     template<class T, std::size_t N>
-    class tuple_size<array<T, N>>
-        :std::integral_constant<std::size_t, N>{};
+    class tuple_size<array<T, N>>:
+        std::integral_constant<std::size_t, N>{};
 
     template<std::size_t I, class T, std::size_t N>
     class tuple_element<I, array<T, N>>{

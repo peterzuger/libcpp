@@ -33,7 +33,7 @@ namespace std{
     using nullptr_t = decltype(nullptr);
 
 
-    enum class byte : unsigned char {};
+    enum class byte: unsigned char{};
 
     // 21.2.5, byte type operations
     template<class IntType>

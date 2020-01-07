@@ -152,7 +152,7 @@ namespace std{
 
     template<class InputIterator, class Size, class ForwardIterator>
     ForwardIterator uninitialized_copy_n(InputIterator first, Size n,ForwardIterator result){
-        for( ; n > 0; ++result, (void) ++first, --n) {
+        for( ; n > 0; ++result, (void) ++first, --n){
             ::new (static_cast<void*>(addressof(*result)))
                 typename iterator_traits<ForwardIterator>::value_type(*first);
         }

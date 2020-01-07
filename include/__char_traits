@@ -444,7 +444,7 @@ namespace std{
         }
     };
 
-    template<> struct char_traits<wchar_t> {
+    template<> struct char_traits<wchar_t>{
         using char_type  = wchar_t;
         using int_type   = std::wint_t;
         using off_type   = std::streamoff;

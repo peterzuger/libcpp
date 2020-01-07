@@ -223,7 +223,7 @@ namespace std{
         wrong_protocol_type,                //EPROTOTYPE
     };
 
-    template<> struct is_error_condition_enum<errc> : std::true_type{};
+    template<> struct is_error_condition_enum<errc>: std::true_type{};
 
     // 22.5.3.5, non-member functions
     error_code make_error_code(errc e)noexcept;

@@ -67,8 +67,8 @@ namespace std{
         using reference         = __bit_reference;
         using iterator_category = void;
 
-        __bit_iterator(pointer _p, std::size_t _bit)noexcept
-            : p{_p}, bit{_bit}{}
+        __bit_iterator(pointer _p, std::size_t _bit)noexcept:
+            p{_p}, bit{_bit}{}
 
         __bit_iterator()noexcept: p(nullptr), bit(0){}
 

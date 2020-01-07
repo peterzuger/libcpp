@@ -24,6 +24,7 @@
 
 #include <__allocator_traits>
 #include <__char_traits>
+#include <__compressed_pair>
 #include <__stringfwd>
 #include <cstdint>
 #include <cstdio>
@@ -60,12 +61,6 @@ namespace std{
 
         static const size_type npos  = -1;
 
-    private:
-        size_type _cap;
-        size_type _size;
-        pointer   _data;
-
-    public:
         // 24.3.2.2, construct/copy/destroy
         basic_string()noexcept(noexcept(Allocator())): basic_string(Allocator()){}
         explicit basic_string(const Allocator& a)noexcept;
@@ -101,29 +96,29 @@ namespace std{
 
         // 24.3.2.3, iterators
         iterator begin()noexcept{
-            return iterator(_data);
+            return iterator(_begin);
         }
         const_iterator begin()const noexcept{
-            return const_iterator(_data);
+            return const_iterator(_begin);
         }
         iterator end()noexcept{
-            return iterator(_data + _size);
+            return iterator(_end);
         }
         const_iterator end()const noexcept{
-            return const_iterator(_data + _size);
+            return const_iterator(_end);
         }
 
         reverse_iterator rbegin()noexcept{
-            return reverse_iterator(_data + _size);
+            return reverse_iterator(_end);
         }
         const_reverse_iterator rbegin()const noexcept{
-            return const_reverse_iterator(_data + _size);
+            return const_reverse_iterator(_end);
         }
         reverse_iterator rend()noexcept{
-            return reverse_iterator(_data);
+            return reverse_iterator(_begin);
         }
         const_reverse_iterator rend()const noexcept{
-            return const_reverse_iterator(_data);
+            return const_reverse_iterator(_begin);
         }
 
         const_iterator cbegin()const noexcept{
@@ -141,7 +136,7 @@ namespace std{
 
         // 24.3.2.4, capacity
         size_type size()const noexcept{
-            return _size;
+            return _end - _begin;
         }
         size_type length()const noexcept{
             return size();
@@ -152,7 +147,7 @@ namespace std{
         void resize(size_type n, charT c);
         void resize(size_type n);
         size_type capacity()const noexcept{
-            return _cap;
+            return _cap_end.first() - _begin;
         }
         void reserve(size_type res_arg = 0);
         void shrink_to_fit();
@@ -165,33 +160,33 @@ namespace std{
 
         // 24.3.2.5, element access
         const_reference operator[](size_type pos)const{
-            return _data[pos];
+            return _begin[pos];
         }
         reference operator[](size_type pos){
-            return _data[pos];
+            return _begin[pos];
         }
         const_reference at(size_type n)const{
             if(n >= size())
                 __throw_out_of_range("string::at");
-            return _data[n];
+            return _begin[n];
         }
         reference at(size_type n){
             if(n >= size())
                 __throw_out_of_range("string::at");
-            return _data[n];
+            return _begin[n];
         }
 
         const charT& front()const{
-            return _data[0];
+            return _begin[0];
         }
         charT& front(){
-            return _data[0];
+            return _begin[0];
         }
         const charT& back()const{
-            return _data[size() - 1];
+            return _begin[size() - 1];
         }
         charT& back(){
-            return _data[size() - 1];
+            return _begin[size() - 1];
         }
 
         // 24.3.2.6, modifiers
@@ -284,10 +279,10 @@ namespace std{
         // 24.3.2.7, string operations
         const charT* c_str()const noexcept;
         const charT* data()const noexcept{
-            return _data;
+            return _begin;
         }
         charT* data()noexcept{
-            return _data;
+            return _begin;
         }
         operator basic_string_view<charT, traits>()const noexcept;
         allocator_type get_allocator()const noexcept;
@@ -342,6 +337,11 @@ namespace std{
         int compare(const charT* s)const;
         int compare(size_type pos1, size_type n1, const charT* s)const;
         int compare(size_type pos1, size_type n1, const charT* s, size_type n2)const;
+
+    private:
+        pointer _begin;
+        pointer _end;
+        __compressed_pair<pointer, Allocator> _cap_end;
     };
 
     template<class InputIterator,

@@ -1,0 +1,378 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/__functional
+ * @author Peter Züger
+ * @date   07.01.2020
+ * @brief  Function objects
+ * @note   defined in header <functional>
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef ____FUNCTIONAL__
+#define ____FUNCTIONAL__
+
+#include <__move>
+
+namespace std{
+    // 23.14.6, arithmetic operations
+    template<class T = void>
+    struct plus{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x + y;
+        }
+    };
+
+    template<class T = void>
+    struct minus{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x - y;
+        }
+    };
+
+    template<class T = void>
+    struct multiplies{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x * y;
+        }
+    };
+
+    template<class T = void>
+    struct divides{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x / y;
+        }
+    };
+
+    template<class T = void>
+    struct modulus{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x % y;
+        }
+    };
+
+    template<class T = void>
+    struct negate{
+        constexpr T operator()(const T& x)const{
+            return -x;
+        }
+    };
+
+
+    template<>
+    struct plus<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) + std::forward<U>(u)){
+            return std::forward<T>(t) + std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+
+    template<>
+    struct minus<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) - std::forward<U>(u)){
+            return std::forward<T>(t) - std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct multiplies<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) * std::forward<U>(u)){
+            return std::forward<T>(t) * std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct divides<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) / std::forward<U>(u)){
+            return std::forward<T>(t) / std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct modulus<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) % std::forward<U>(u)){
+            return std::forward<T>(t) % std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct negate<void>{
+        template<class T>
+        constexpr auto operator()(T&& t)const
+            -> decltype(-std::forward<T>(t)){
+            return -std::forward<T>(t);
+        }
+
+        using is_transparent = void;
+    };
+
+    // 23.14.7, comparisons
+    template<class T = void>
+    struct equal_to{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x == y;
+        }
+    };
+
+    template<class T = void>
+    struct not_equal_to{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x != y;
+        }
+    };
+
+    template<class T = void>
+    struct greater{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x > y;
+        }
+    };
+
+    template<class T = void>
+    struct less{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x < y;
+        }
+    };
+
+    template<class T = void>
+    struct greater_equal{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x >= y;
+        }
+    };
+
+    template<class T = void>
+    struct less_equal{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x <= y;
+        }
+    };
+
+    template<>
+    struct equal_to<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) == std::forward<U>(u)){
+            return std::forward<T>(t) == std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct not_equal_to<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) != std::forward<U>(u)){
+            return std::forward<T>(t) != std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct greater<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) > std::forward<U>(u)){
+            return std::forward<T>(t) > std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct less<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) < std::forward<U>(u)){
+            return std::forward<T>(t) < std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct greater_equal<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) >= std::forward<U>(u)){
+            return std::forward<T>(t) >= std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct less_equal<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) <= std::forward<U>(u)){
+            return std::forward<T>(t) <= std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    // 23.14.8, logical operations
+    template<class T = void>
+    struct logical_and{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x && y;
+        }
+    };
+
+    template<class T = void>
+    struct logical_or{
+        constexpr bool operator()(const T& x, const T& y)const{
+            return x || y;
+        }
+    };
+
+    template<class T = void>
+    struct logical_not{
+        constexpr bool operator()(const T& x)const{
+            return !x;
+        }
+    };
+
+    template<>
+    struct logical_and<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) && std::forward<U>(u)){
+            return std::forward<T>(t) && std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct logical_or<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) || std::forward<U>(u)){
+            return std::forward<T>(t) || std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct logical_not<void>{
+        template<class T>
+        constexpr auto operator()(T&& t)const
+            -> decltype(!std::forward<T>(t)){
+            return !std::forward<T>(t);
+        }
+
+        using is_transparent = void;
+    };
+
+    // 23.14.9, bitwise operations
+    template<class T = void>
+    struct bit_and{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x & y;
+        }
+    };
+
+    template<class T = void>
+    struct bit_or{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x | y;
+        }
+    };
+
+    template<class T = void>
+    struct bit_xor{
+        constexpr T operator()(const T& x, const T& y)const{
+            return x ^ y;
+        }
+    };
+
+    template<class T = void>
+    struct bit_not{
+        constexpr T operator()(const T& x)const{
+            return ~x;
+        }
+    };
+
+    template<>
+    struct bit_and<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) & std::forward<U>(u)){
+            return std::forward<T>(t) & std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct bit_or<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) | std::forward<U>(u)){
+            return std::forward<T>(t) | std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct bit_xor<void>{
+        template<class T, class U>
+        constexpr auto operator()(T&& t, U&& u)const
+            -> decltype(std::forward<T>(t) ^ std::forward<U>(u)){
+            return std::forward<T>(t) ^ std::forward<U>(u);
+        }
+
+        using is_transparent = void;
+    };
+
+    template<>
+    struct bit_not<void>{
+        template<class T>
+        constexpr auto operator()(T&& t)const
+            -> decltype( ~std::forward<T>(t)){
+            return ~std::forward<T>(t);
+        }
+
+        using is_transparent = void;
+    };
+}
+
+#endif /* ____FUNCTIONAL__ */

@@ -24,28 +24,58 @@
 #define ____TUPLE__
 
 #include <cstddef>
+#include <type_traits>
 
 namespace std{
     template<class... Types>
     class tuple;
 
     // 23.5.3.6, tuple helper classes
-    template<class T> class tuple_size;
+    template<class T>
+    class tuple_size;
 
-    // not defined
-    template<class T> class tuple_size<const T>; // not defined
-    template<class T> class tuple_size<volatile T>;
-    template<class T> class tuple_size<const volatile T>;
-    template<class... Types> class tuple_size<tuple<Types...>>;
+    template<class T>
+    class tuple_size<const T>:
+        public std::integral_constant<size_t, tuple_size<T>::value>{};
 
-    template<size_t I, class T> class tuple_element;
+    template<class T>
+    class tuple_size<volatile T>:
+        public std::integral_constant<size_t, tuple_size<T>::value>{};
 
-    template<size_t I, class T> class tuple_element<I, const T>;
-    template<size_t I, class T> class tuple_element<I, volatile T>;
-    template<size_t I, class T> class tuple_element<I, const volatile T>;
+    template<class T>
+    class tuple_size<const volatile T>:
+        public std::integral_constant<size_t, tuple_size<T>::value>{};
+
+    template<class... Types>
+    class tuple_size<tuple<Types...>>:
+        public integral_constant<size_t, sizeof...(Types)>{};
+
+    template<class T>
+    inline constexpr std::size_t tuple_size_v = tuple_size<T>::value;
+
+
+    template<size_t I, class T>
+    class tuple_element;
+
+    template<size_t I, class T>
+    class tuple_element<I, const T>{
+        using type = std::add_const_t<typename tuple_element<I, T>::type>;
+    };
+
+    template<size_t I, class T>
+    class tuple_element<I, volatile T>{
+        using type = std::add_volatile_t<typename tuple_element<I, T>::type>;
+    };
+
+    template<size_t I, class T>
+    class tuple_element<I, const volatile T>{
+        using type = std::add_cv_t<typename tuple_element<I, T>::type>;
+    };
 
     template<size_t I, class... Types>
-    class tuple_element<I, tuple<Types...>>;
+    class tuple_element<I, tuple<Types...>>{
+        static_assert(I < sizeof...(Types), "Index out of bounds in std::tuple_element<> (std::tuple)");
+    };
 
     template<size_t I, class T>
     using tuple_element_t = typename tuple_element<I, T>::type;

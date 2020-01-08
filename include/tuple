@@ -291,10 +291,6 @@ namespace std{
     // 23.5.3.10, specialized algorithms
     template<class... Types>
     void swap(tuple<Types...>& x, tuple<Types...>& y)noexcept;
-
-    // 23.5.3.6, tuple helper classes
-    template<class T>
-    inline constexpr std::size_t tuple_size_v = tuple_size<T>::value;
 }
 
 #endif /* __TUPLE__ */

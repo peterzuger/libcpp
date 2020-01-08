@@ -1,0 +1,103 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/any
+ * @author Peter Züger
+ * @date   08.01.2020
+ * @brief  Storage for any type
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __ANY__
+#define __ANY__
+
+#include <initializer_list>
+#include <type_traits>
+#include <typeinfo>
+#include <utility>
+
+namespace std{
+    // 23.8.2, class bad_any_cast
+    class bad_any_cast: public std::bad_cast{
+        const char* what()const noexcept override;
+    };
+
+    // 23.8.3, class any
+    class any{
+    public:
+        // 23.8.3.1, construction and destruction
+        constexpr any()noexcept;
+
+        any(const any& other);
+        any(any&& other)noexcept;
+
+        template<class T>
+        any(T&& value);
+
+        template<class T, class... Args>
+        explicit any(in_place_type_t<T>, Args&&...);
+
+        template<class T, class U, class... Args>
+        explicit any(in_place_type_t<T>, std::initializer_list<U>, Args&&...);
+
+        ~any();
+
+        // 23.8.3.2, assignments
+        any& operator=(const any& rhs);
+        any& operator=(any&& rhs)noexcept;
+
+        template<class T>
+        any& operator=(T&& rhs);
+
+        // 23.8.3.3, modifiers
+        template<class T, class... Args>
+        std::decay_t<T>& emplace(Args&& ...);
+
+        template<class T, class U, class... Args>
+        std::decay_t<T>& emplace(std::initializer_list<U>, Args&&...);
+
+        void reset()noexcept;
+        void swap(any& rhs)noexcept;
+
+        // 23.8.3.4, observers
+        bool has_value()const noexcept;
+        const type_info& type()const noexcept;
+    };
+
+    // 23.8.4, non-member functions
+    void swap(any& x, any& y)noexcept;
+
+    template<class T, class... Args>
+    any make_any(Args&& ...args);
+
+    template<class T, class U, class... Args>
+    any make_any(initializer_list<U> il, Args&& ...args);
+
+    template<class T>
+    T any_cast(const any& operand);
+
+    template<class T>
+    T any_cast(any& operand);
+
+    template<class T>
+    T any_cast(any&& operand);
+
+    template<class T>
+    const T* any_cast(const any* operand)noexcept;
+
+    template<class T>
+    T* any_cast(any* operand)noexcept;
+}
+
+#endif /* __ANY__ */

@@ -23,7 +23,9 @@
 #define __TUPLE__
 
 #include <__tuple>
+#include <__uses_allocator>
 #include <cstddef>
+#include <type_traits>
 
 namespace std{
     // 23.5.3, class template tuple
@@ -80,11 +82,10 @@ namespace std{
     template<class... TTypes, class... UTypes>
     constexpr bool operator>=(const tuple<TTypes...>&, const tuple<UTypes...>&);
 
-    /*
     // 23.5.3.9, allocator-related traits
     template<class... Types, class Alloc>
-    struct uses_allocator<tuple<Types...>, Alloc>;
-    */
+    struct uses_allocator<tuple<Types...>, Alloc>:
+        public std::true_type{};
 
     // 23.5.3.10, specialized algorithms
     template<class... Types>

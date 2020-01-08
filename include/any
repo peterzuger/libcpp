@@ -33,6 +33,15 @@ namespace std{
         const char* what()const noexcept override;
     };
 
+    [[noreturn]] inline void __throw_bad_any_cast(){
+#if defined(__cpp_exceptions)
+        throw bad_any_cast();
+#else
+        terminate();
+#endif /* defined(__cpp_exceptions) */
+    }
+
+
     // 23.8.3, class any
     class any{
     public:

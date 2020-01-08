@@ -219,7 +219,12 @@ namespace std{
     tuple(allocator_arg_t, Alloc, tuple<UTypes...>) -> tuple<UTypes...>;
 
     // 23.5.3.4, tuple creation functions
-    //inline constexpr unspecified ignore;
+    struct __ignore_t{
+        struct __hidden{explicit __hidden() = default;};
+        constexpr explicit __ignore_t(__hidden)noexcept{}
+    };
+    inline constexpr __ignore_t ignore{__ignore_t::__hidden{}};
+
     template<class... TTypes>
     constexpr tuple<TTypes...> make_tuple(TTypes&&...);
 

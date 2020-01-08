@@ -46,6 +46,16 @@ namespace std{
         static constexpr intmax_t value = V >= 0 ? V : -V;
     };
 
+    template<intmax_t X, intmax_t Y>
+    struct __lcm{
+        static constexpr intmax_t value = __abs<X * Y>::value / __gcd<X, Y>::value;
+    };
+
+    template<>
+    struct __lcm<0, 0>{
+        static constexpr intmax_t value = 0;
+    };
+
     template<intmax_t V>
     struct __sign{
         static constexpr intmax_t value = (V == 0) ? 0 : ((V > 0) ? 1 : -1);

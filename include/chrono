@@ -1,0 +1,218 @@
+/** -*- mode: c++ -*-
+ * @file   libcpp/include/chrono
+ * @author Peter Züger
+ * @date   08.01.2020
+ * @brief  Time utilities
+ *
+ * This file is part of libcpp (https://gitlab.com/peterzuger/libcpp).
+ * Copyright (c) 2019 Peter Züger.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+#ifndef __CHRONO__
+#define __CHRONO__
+
+#include <ratio>
+#include <cstdint>
+
+namespace std{
+    namespace chrono{
+        // 23.17.5, class template duration
+        template<class Rep, class Period = std::ratio<1>>
+        class duration;
+
+        // 23.17.6, class template time_point
+        template<class Clock, class Duration = typename Clock::duration>
+        class time_point;
+    }
+
+    // 23.17.4.3, common_type specializations
+    template<class Rep1, class Period1, class Rep2, class Period2>
+    struct common_type<chrono::duration<Rep1, Period1>,
+                       chrono::duration<Rep2, Period2>>;
+
+    template<class Clock, class Duration1, class Duration2>
+    struct common_type<chrono::time_point<Clock, Duration1>,
+                       chrono::time_point<Clock, Duration2>>;
+
+    namespace chrono{
+        // 23.17.4, customization traits
+        template<class Rep>
+        struct treat_as_floating_point;
+
+        template<class Rep>
+        struct duration_values;
+
+        template<class Rep>
+        inline constexpr bool treat_as_floating_point_v = treat_as_floating_point<Rep>::value;
+
+        // 23.17.5.5,duration arithmetic
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        common_type_t<duration<Rep1, Period1>, duration<Rep2, Period2>>
+        constexpr operator+(const duration<Rep1, Period1>& lhs, const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        common_type_t<duration<Rep1, Period1>, duration<Rep2, Period2>>
+        constexpr operator-(const duration<Rep1, Period1>& lhs, const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period, class Rep2>
+        duration<common_type_t<Rep1, Rep2>, Period>
+        constexpr operator*(const duration<Rep1, Period>& d, const Rep2& s);
+
+        template<class Rep1, class Rep2, class Period>
+        duration<common_type_t<Rep1, Rep2>, Period>
+        constexpr operator*(const Rep1& s, const duration<Rep2, Period>& d);
+
+        template<class Rep1, class Period, class Rep2>
+        duration<common_type_t<Rep1, Rep2>, Period>
+        constexpr operator/(const duration<Rep1, Period>& d, const Rep2& s);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        common_type_t<Rep1, Rep2> constexpr operator/(const duration<Rep1, Period1>& lhs,
+                                                      const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period, class Rep2>
+        duration<common_type_t<Rep1, Rep2>, Period>
+        constexpr operator%(const duration<Rep1, Period>& d, const Rep2& s);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        common_type_t<duration<Rep1, Period1>, duration<Rep2, Period2>>
+        constexpr operator%(const duration<Rep1, Period1>& lhs, const duration<Rep2, Period2>& rhs);
+
+        // 23.17.5.6, duration comparisons
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        constexpr bool operator==(const duration<Rep1, Period1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        constexpr bool operator!=(const duration<Rep1, Period1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        constexpr bool operator< (const duration<Rep1, Period1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        constexpr bool operator<=(const duration<Rep1, Period1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        constexpr bool operator> (const duration<Rep1, Period1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period1, class Rep2, class Period2>
+        constexpr bool operator>=(const duration<Rep1, Period1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        // 23.17.5.7, duration_cast
+        template<class ToDuration, class Rep, class Period>
+        constexpr ToDuration duration_cast(const duration<Rep, Period>& d);
+
+        template<class ToDuration, class Rep, class Period>
+        constexpr ToDuration floor(const duration<Rep, Period>& d);
+
+        template<class ToDuration, class Rep, class Period>
+        constexpr ToDuration ceil(const duration<Rep, Period>& d);
+
+        template<class ToDuration, class Rep, class Period>
+        constexpr ToDuration round(const duration<Rep, Period>& d);
+
+        // convenience typedefs
+        using nanoseconds  = duration<std::int64_t, nano>;
+        using microseconds = duration<std::int64_t, micro>;
+        using milliseconds = duration<std::int64_t, milli>;
+        using seconds      = duration<std::int64_t>;
+        using minutes      = duration<std::int32_t, std::ratio<  60>>;
+        using hours        = duration<std::int32_t, std::ratio<3600>>;
+
+        // 23.17.6.5, time_point arithmetic
+        template<class Clock, class Duration1, class Rep2, class Period2>
+        constexpr time_point<Clock, common_type_t<Duration1, duration<Rep2, Period2>>>
+        operator+(const time_point<Clock, Duration1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        template<class Rep1, class Period1, class Clock, class Duration2>
+        constexpr time_point<Clock, common_type_t<duration<Rep1, Period1>, Duration2>>
+        operator+(const duration<Rep1, Period1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        template<class Clock, class Duration1, class Rep2, class Period2>
+        constexpr time_point<Clock, common_type_t<Duration1, duration<Rep2, Period2>>>
+        operator-(const time_point<Clock, Duration1>& lhs,const duration<Rep2, Period2>& rhs);
+
+        template<class Clock, class Duration1, class Duration2>
+        constexpr common_type_t<Duration1, Duration2>
+        operator-(const time_point<Clock, Duration1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        // 23.17.6.6, time_point comparisons
+        template<class Clock, class Duration1, class Duration2>
+        constexpr bool operator==(const time_point<Clock, Duration1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        template<class Clock, class Duration1, class Duration2>
+        constexpr bool operator!=(const time_point<Clock, Duration1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        template<class Clock, class Duration1, class Duration2>
+        constexpr bool operator< (const time_point<Clock, Duration1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        template<class Clock, class Duration1, class Duration2>
+        constexpr bool operator<=(const time_point<Clock, Duration1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        template<class Clock, class Duration1, class Duration2>
+        constexpr bool operator> (const time_point<Clock, Duration1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        template<class Clock, class Duration1, class Duration2>
+        constexpr bool operator>=(const time_point<Clock, Duration1>& lhs,const time_point<Clock, Duration2>& rhs);
+
+        // 23.17.6.7, time_point_cast
+        template<class ToDuration, class Clock, class Duration>
+        constexpr time_point<Clock, ToDuration>time_point_cast(const time_point<Clock, Duration>& t);
+
+        template<class ToDuration, class Clock, class Duration>
+        constexpr time_point<Clock, ToDuration>floor(const time_point<Clock, Duration>& tp);
+
+        template<class ToDuration, class Clock, class Duration>
+        constexpr time_point<Clock, ToDuration>ceil(const time_point<Clock, Duration>& tp);
+
+        template<class ToDuration, class Clock, class Duration>
+        constexpr time_point<Clock, ToDuration>round(const time_point<Clock, Duration>& tp);
+
+        // 23.17.5.9, specialized algorithms
+        template<class Rep, class Period>
+        constexpr duration<Rep, Period> abs(duration<Rep, Period> d);
+
+        // 23.17.7, clocks
+        class system_clock;
+
+        class steady_clock;
+
+        class high_resolution_clock;
+    }
+
+    inline
+    namespace literals{
+        inline
+        namespace chrono_literals{
+            // 23.17.5.8, suffixes for duration literals
+            constexpr chrono::hours                                operator""h(unsigned long long);
+            constexpr chrono::duration<long double, ratio<3600,1>> operator""h(long double);
+            constexpr chrono::minutes                              operator""min(unsigned long long);
+            constexpr chrono::duration<long double, ratio<60,1>>   operator""min(long double);
+            constexpr chrono::seconds                              operator""s(unsigned long long);
+            constexpr chrono::duration<long double>                operator""s(long double);
+            constexpr chrono::milliseconds                         operator""ms(unsigned long long);
+            constexpr chrono::duration<long double, milli>         operator""ms(long double);
+            constexpr chrono::microseconds                         operator""us(unsigned long long);
+            constexpr chrono::duration<long double, micro>         operator""us(long double);
+            constexpr chrono::nanoseconds                          operator""ns(unsigned long long);
+            constexpr chrono::duration<long double, nano>          operator""ns(long double);
+        }
+    }
+
+    namespace chrono{
+        using namespace literals::chrono_literals;
+    }
+}
+
+#endif /* __CHRONO__ */

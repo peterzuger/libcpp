@@ -650,10 +650,12 @@ namespace std{
     };
 
     template<class T>
-    shared_ptr(weak_ptr<T>) -> shared_ptr<T>;
+    shared_ptr(weak_ptr<T>)
+        -> shared_ptr<T>;
 
     template<class T, class D>
-    shared_ptr(unique_ptr<T, D>) -> shared_ptr<T>;
+    shared_ptr(unique_ptr<T, D>)
+        -> shared_ptr<T>;
 
     // 23.11.2.2.6, shared_ptr creation
     template<class T, class... Args>
@@ -832,7 +834,8 @@ namespace std{
     };
 
     template<class T>
-    weak_ptr(shared_ptr<T>) -> weak_ptr<T>;
+    weak_ptr(shared_ptr<T>)
+        -> weak_ptr<T>;
 
     // 23.11.2.3.6, weak_ptr specialized algorithms
     template<class T>

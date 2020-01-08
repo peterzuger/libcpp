@@ -58,7 +58,8 @@ namespace std{
     };
 
     template<class T>
-    reference_wrapper(reference_wrapper<T>) -> reference_wrapper<T>;
+    reference_wrapper(reference_wrapper<T>)
+        -> reference_wrapper<T>;
 
     template<class T>
     reference_wrapper<T> ref(T& t)noexcept{

@@ -204,19 +204,24 @@ namespace std{
     };
 
     template<class... UTypes>
-    tuple(UTypes...) -> tuple<UTypes...>;
+    tuple(UTypes...)
+        -> tuple<UTypes...>;
 
     template<class T1, class T2>
-    tuple(pair<T1, T2>) -> tuple<T1, T2>;
+    tuple(pair<T1, T2>)
+        -> tuple<T1, T2>;
 
     template<class Alloc, class... UTypes>
-    tuple(allocator_arg_t, Alloc, UTypes...) -> tuple<UTypes...>;
+    tuple(allocator_arg_t, Alloc, UTypes...)
+        -> tuple<UTypes...>;
 
     template<class Alloc, class T1, class T2>
-    tuple(allocator_arg_t, Alloc, pair<T1, T2>) -> tuple<T1, T2>;
+    tuple(allocator_arg_t, Alloc, pair<T1, T2>)
+        -> tuple<T1, T2>;
 
     template<class Alloc, class... UTypes>
-    tuple(allocator_arg_t, Alloc, tuple<UTypes...>) -> tuple<UTypes...>;
+    tuple(allocator_arg_t, Alloc, tuple<UTypes...>)
+        -> tuple<UTypes...>;
 
     // 23.5.3.4, tuple creation functions
     struct __ignore_t{

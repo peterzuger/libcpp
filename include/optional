@@ -254,7 +254,8 @@ namespace std{
         using base::reset;
     };
 
-    template<class T> optional(T) -> optional<T>;
+    template<class T> optional(T)
+        -> optional<T>;
 
     // 23.6.6, relational operators
     template<class T, class U>

@@ -70,7 +70,7 @@ namespace std{
         static constexpr intmax_t _gcd   = __gcd<_N_abs, _D_abs>::value;
 
     public:
-        static_assert(D == 0, "std::ratio<N, D> instantiated with D == 0");
+        static_assert(D != 0, "std::ratio<N, D> instantiated with D == 0");
 
         static constexpr intmax_t num = __sign<N>::value * __sign<D>::value * _N_abs / _gcd;
         static constexpr intmax_t den = _D_abs / _gcd;

@@ -30,11 +30,86 @@ namespace std{
     namespace chrono{
         // 23.17.5, class template duration
         template<class Rep, class Period = std::ratio<1>>
-        class duration;
+        class duration{
+        public:
+            using rep    = Rep;
+            using period = typename Period::type;
+
+        private:
+            rep rep_;
+
+        public:
+            // 23.17.5.1, construct/copy/destroy
+            constexpr duration() = default;
+
+            template<class Rep2>
+            constexpr explicit duration(const Rep2& r);
+
+            template<class Rep2, class Period2>
+            constexpr duration(const duration<Rep2, Period2>& d);
+
+            ~duration() = default;
+
+            duration(const duration&) = default;
+            duration& operator=(const duration&) = default;
+
+            // 23.17.5.2, observer
+            constexpr rep count()const;
+
+            // 23.17.5.3, arithmetic
+            constexpr common_type_t<duration> operator+()const;
+            constexpr common_type_t<duration> operator-()const;
+            constexpr duration& operator++();
+            constexpr duration  operator++(int);
+            constexpr duration& operator--();
+            constexpr duration  operator--(int);
+
+            constexpr duration& operator+=(const duration& d);
+            constexpr duration& operator-=(const duration& d);
+
+            constexpr duration& operator*=(const rep& rhs);
+            constexpr duration& operator/=(const rep& rhs);
+            constexpr duration& operator%=(const rep& rhs);
+            constexpr duration& operator%=(const duration& rhs);
+
+            // 23.17.5.4, special values
+            static constexpr duration zero();
+            static constexpr duration min();
+            static constexpr duration max();
+        };
 
         // 23.17.6, class template time_point
         template<class Clock, class Duration = typename Clock::duration>
-        class time_point;
+        class time_point{
+        public:
+            using clock    = Clock;
+            using duration = Duration;
+            using rep      = typename duration::rep;
+            using period   = typename duration::period;
+
+        private:
+            duration d_;
+
+        public:
+            // 23.17.6.1, construct
+            constexpr time_point();// has value epoch
+
+            constexpr explicit time_point(const duration& d); // same as time_point() + d
+
+            template<class Duration2>
+            constexpr time_point(const time_point<clock, Duration2>& t);
+
+            // 23.17.6.2, observer
+            constexpr duration time_since_epoch()const;
+
+            // 23.17.6.3, arithmetic
+            constexpr time_point& operator+=(const duration& d);
+            constexpr time_point& operator-=(const duration& d);
+
+            // 23.17.6.4, special values
+            static constexpr time_point min();
+            static constexpr time_point max();
+        };
     }
 
     // 23.17.4.3, common_type specializations
@@ -55,10 +130,16 @@ namespace std{
     namespace chrono{
         // 23.17.4, customization traits
         template<class Rep>
-        struct treat_as_floating_point;
+        struct treat_as_floating_point:
+            std::is_floating_point<Rep>{};
 
         template<class Rep>
-        struct duration_values;
+        struct duration_values{
+        public:
+            static constexpr Rep zero();
+            static constexpr Rep min();
+            static constexpr Rep max();
+        };
 
         template<class Rep>
         inline constexpr bool treat_as_floating_point_v = treat_as_floating_point<Rep>::value;
@@ -190,11 +271,42 @@ namespace std{
         constexpr duration<Rep, Period> abs(duration<Rep, Period> d);
 
         // 23.17.7, clocks
-        class system_clock;
+        class system_clock{
+        public:
+            using duration   = microseconds;
+            using rep        = duration::rep;
+            using period     = duration::period;
+            using time_point = chrono::time_point<system_clock>;
 
-        class steady_clock;
+            static constexpr bool is_steady = true;
+            static time_point now()noexcept;
 
-        class high_resolution_clock;
+            // Map to C API
+            static time_t to_time_t(const time_point& t)noexcept;
+            static time_point from_time_t(time_t t)noexcept;
+        };
+
+        class steady_clock{
+        public:
+            using duration   = milliseconds;
+            using rep        = duration::rep;
+            using period     = duration::period;
+            using time_point = chrono::time_point<steady_clock, duration>;
+
+            static constexpr bool is_steady = true;
+            static time_point now()noexcept;
+        };
+
+        class high_resolution_clock{
+        public:
+            using duration   = microseconds;
+            using rep        = duration::rep;
+            using period     = duration::period;
+            using time_point = chrono::time_point<high_resolution_clock, duration>;
+
+            static constexpr bool is_steady = true;
+            static time_point now()noexcept;
+        };
     }
 
     inline

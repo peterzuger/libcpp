@@ -229,8 +229,21 @@ namespace std{
 
         valarray shift(int)const;
         valarray cshift(int)const;
-        valarray apply(T func(T))const;
-        valarray apply(T func(const T&))const;
+
+        valarray apply(T func(T))const{
+            valarray<value_type> ret(size());
+            for(size_t i = 0; i < size(); i++)
+                ret._begin[i] = func(_begin[i]);
+            return ret;
+        }
+
+        valarray apply(T func(const T&))const{
+            valarray<value_type> ret(size());
+            for(size_t i = 0; i < size(); i++)
+                ret._begin[i] = func(_begin[i]);
+            return ret;
+        }
+
         void resize(size_t sz, T c = T());
 
         value_type* __begin()noexcept{

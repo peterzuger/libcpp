@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef ____COMPRESSED_PAIR___
+#ifndef ____COMPRESSED_PAIR__
 #define ____COMPRESSED_PAIR__
 
 #include <__swap>

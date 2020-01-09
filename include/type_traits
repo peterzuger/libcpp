@@ -345,7 +345,7 @@ namespace std{
 #endif /* defined(__int128_t) && defined(__uint128_t) */
 
     template<class T>
-    struct make_signed: public __make_signed_impl<remove_cv_t<T>>{};
+    struct make_signed: public __copy_cv<T, __make_signed_impl<remove_cv_t<T>>>{};
 
 
     template<class T> struct __make_unsigned_impl{};
@@ -373,7 +373,7 @@ namespace std{
 #endif /* defined(__int128_t) && defined(__uint128_t) */
 
     template<class T>
-    struct make_unsigned: public __make_unsigned_impl<remove_cv_t<T>>{};
+    struct make_unsigned: public __copy_cv<T, __make_unsigned_impl<remove_cv_t<T>>>{};
 
     template<class T> using make_signed_t   = typename make_signed<T>::type;
     template<class T> using make_unsigned_t = typename make_unsigned<T>::type;

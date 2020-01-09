@@ -91,7 +91,10 @@ namespace std{
 
         // 29.7.2.3, assignment
         valarray& operator=(const valarray&);
-        valarray& operator=(valarray&&)noexcept;
+        valarray& operator=(valarray&& other)noexcept{
+            __destroy(size());
+            swap(other);
+        }
         valarray& operator=(initializer_list<T>);
         valarray& operator=(const T&);
         valarray& operator=(const slice_array<T>&);

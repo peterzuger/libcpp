@@ -286,7 +286,7 @@ namespace std{
             }
         }
 
-        void __construct(size_t n, value_type val){
+        void __construct(size_t n, const value_type& val){
             __allocate(n);
             for(size_t i = 0; i < n; i++){
 #if defined(__cpp_exceptions)

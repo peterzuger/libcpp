@@ -47,15 +47,33 @@ namespace std{
         valarray():
             _begin{0}, _end{0}{}
 
-        explicit valarray(size_t n);
+        explicit valarray(size_t n){
+            __construct(n);
+        }
 
-        valarray(const T& v, size_t n);
+        valarray(const T& v, size_t n){
+            __construct(n, v);
+        }
 
-        valarray(const T* v, size_t n);
+        valarray(const T* v, size_t n){
+            __allocate(n);
 
-        valarray(const valarray& v);
+            for(size_t i = 0; i < n; i++)
+                _begin[i] = v[i];
+        }
 
-        valarray(valarray&& v)noexcept;
+        valarray(const valarray& v){
+            __construct(v.size());
+
+            for(size_t i = 0; i < v.size(); i++)
+                _begin[i] = v._begin[i];
+        }
+
+        valarray(valarray&& v)noexcept:
+            _begin{v._begin},
+            _end{v._end}{
+                v._begin = v._end = 0;
+            }
 
         valarray(const slice_array<T>& v);
 
@@ -67,7 +85,9 @@ namespace std{
 
         valarray(initializer_list<T> v);
 
-        ~valarray();
+        ~valarray(){
+            __destroy(size());
+        }
 
         // 29.7.2.3, assignment
         valarray& operator=(const valarray&);
@@ -244,7 +264,10 @@ namespace std{
             return ret;
         }
 
-        void resize(size_t sz, T c = T());
+        void resize(size_t sz, T c = T()){
+            __destroy(size());
+            __construct(sz, c);
+        }
 
         value_type* __begin()noexcept{
             return _begin;

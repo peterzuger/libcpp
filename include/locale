@@ -23,10 +23,77 @@
 #define __LOCALE__
 
 #include <iterator>
+#include <string>
 
 namespace std{
     // 25.3.1, locale
-    class locale;
+    class locale{
+    public:
+        // types:
+        class facet{
+        protected:
+            explicit facet(size_t refs = 0);
+
+            virtual~facet();
+
+            facet(const facet&) = delete;
+            void operator=(const facet&) = delete;
+        };
+
+        class id{
+        public:
+            id();
+
+            id(const id&) = delete;
+            void operator=(const id&) = delete;
+        };
+
+        using category = int;
+
+        static const category
+        none     = 0, // values assigned here are for exposition only
+            collate  = 0x010,
+            ctype    = 0x020,
+            monetary = 0x040,
+            numeric  = 0x080,
+            time     = 0x100,
+            messages = 0x200,
+            all = collate | ctype | monetary | numeric | time  | messages;
+
+        // construct/copy/destroy:
+        locale()noexcept;
+        locale(const locale& other)noexcept;
+
+        explicit locale(const char* std_name);
+        explicit locale(const std::string& std_name);
+        locale(const locale& other, const char* std_name, category);
+        locale(const locale& other, const std::string& std_name, category);
+
+        template<class Facet>
+        locale(const locale& other, Facet* f);
+        locale(const locale& other, const locale& one, category);
+
+        ~locale();
+
+        // not virtualconst
+        locale& operator=(const locale& other)noexcept;
+
+        template<class Facet>
+        locale combine(const locale& other) const;
+
+        // locale operations:
+        std::basic_string<char> name() const;
+        bool operator==(const locale& other) const;
+        bool operator!=(const locale& other) const;
+
+        template<class charT, class traits, class Allocator>
+        bool operator()(const std::basic_string<charT, traits, Allocator>& s1,
+                        const std::basic_string<charT, traits, Allocator>& s2)const;
+
+        // global locale objects:
+        static       locale  global(const locale&);
+        static const locale& classic();
+    };
 
     template<class Facet>
     const Facet& use_facet(const locale&);
@@ -51,24 +118,180 @@ namespace std{
     template<class charT> charT tolower(charT c, const locale& loc);
 
     // 25.4.1, ctype
-    class ctype_base;
+    class ctype_base{
+    public:
+        using mask = unsigned;
+
+        static const mask space  = 1 << 0;
+        static const mask print  = 1 << 1;
+        static const mask cntrl  = 1 << 2;
+        static const mask upper  = 1 << 3;
+        static const mask lower  = 1 << 4;
+        static const mask alpha  = 1 << 5;
+        static const mask digit  = 1 << 6;
+        static const mask punct  = 1 << 7;
+        static const mask xdigit = 1 << 8;
+        static const mask blank  = 1 << 9;
+        static const mask alnum  = alpha | digit;
+        static const mask graph  = alnum | punct;
+    };
 
     template<class charT>
-    class ctype;
+    class ctype:
+        public locale::facet,
+        public ctype_base{
+
+    public:
+        using char_type = charT;
+
+        explicit ctype(size_t refs = 0);
+
+        bool         is(mask m, charT c)const;
+        const charT* is(const charT* low, const charT* high, mask* vec)const;
+        const charT* scan_is(mask m, const charT* low, const charT* high)const;
+        const charT* scan_not(mask m, const charT* low, const charT* high)const;
+        charT        toupper(charT c)const;
+        const charT* toupper(charT* low, const charT* high)const;
+        charT        tolower(charT c)const;
+        const charT* tolower(charT* low, const charT* high)const;
+
+        charT        widen(char c)const;
+        const char*  widen(const char* low, const char* high, charT* to)const;
+        char         narrow(charT c, char dfault)const;
+        const charT* narrow(const charT* low, const charT* high, char dfault, char* to)const;
+
+        static locale::id id;
+
+    protected:
+        ~ctype();
+        virtual bool do_is(mask m, charT c)const;
+        virtual const charT* do_is(const charT* low, const charT* high, mask* vec)const;
+        virtual const charT* do_scan_is(mask m, const charT* low, const charT* high)const;
+        virtual const charT* do_scan_not(mask m, const charT* low, const charT* high)const;
+        virtual charT        do_toupper(charT)const;
+        virtual const charT* do_toupper(charT* low, const charT* high)const;
+        virtual charT        do_tolower(charT)const;
+        virtual const charT* do_tolower(charT* low, const charT* high)const;
+        virtual charT        do_widen(char)const;
+        virtual const char*  do_widen(const char* low, const char* high, charT* dest)const;
+        virtual char         do_narrow(charT, char dfault)const;
+        virtual const charT* do_narrow(const charT* low, const charT* high,char dfault, char* dest)const;
+    };
 
     template<>
-    class ctype<char>;
+    class ctype<char>:
+        public locale::facet,
+        public ctype_base{
+    public:
+        using char_type = char;
+
+        explicit ctype(const mask* tab = nullptr, bool del = false, size_t refs = 0);
+
+        bool is(mask m, char c)const;
+        const char* is(const char* low, const char* high, mask* vec)const;
+        const char* scan_is(mask m, const char* low, const char* high)const;
+        const char* scan_not(mask m, const char* low, const char* high)const;
+
+        char toupper(char c)const;
+        const char* toupper(char* low, const char* high)const;
+        char tolower(char c)const;
+        const char* tolower(char* low, const char* high)const;
+
+        char widen(char c)const;
+        const char* widen(const char* low, const char* high, char* to)const;
+        char narrow(char c, char dfault)const;
+        const char* narrow(const char* low, const char* high, char dfault, char* to)const;
+
+        static locale::id id;
+        static const size_t table_size = 256;
+
+        const mask* table()const noexcept;
+        static const mask* classic_table()noexcept;
+
+    protected:
+        ~ctype();
+
+        virtual char do_toupper(char c)const;
+        virtual const char* do_toupper(char* low, const char* high)const;
+        virtual char        do_tolower(char c)const;
+        virtual const char* do_tolower(char* low, const char* high)const;
+
+        virtual char        do_widen(char c)const;
+        virtual const char* do_widen(const char* low, const char* high, char* to)const;
+        virtual char        do_narrow(char c, char dfault)const;
+        virtual const char* do_narrow(const char* low, const char* high,char dfault, char* to)const;
+    };
 
     template<class charT>
-    class ctype_byname;
+    class ctype_byname: public ctype<charT>{
+    public:
+        using mask = typename ctype<charT>::mask;
 
-    class codecvt_base;
+        explicit ctype_byname(const char*, size_t refs = 0);
+        explicit ctype_byname(const std::string&, size_t refs = 0);
+
+    protected:
+        ~ctype_byname();
+    };
+
+    class codecvt_base{
+    public:
+        enum result{
+            ok,
+            partial,
+            error,
+            noconv
+        };
+    };
 
     template<class internT, class externT, class stateT>
-    class codecvt;
+    class codecvt:
+        public locale::facet,
+        public codecvt_base{
+    public:
+        using intern_type = internT;
+        using extern_type = externT;
+        using state_type  = stateT;
+
+        explicit codecvt(size_t refs = 0);
+
+        result out(stateT& state,const internT* from, const internT* from_end, const internT*& from_next,
+                   externT* to, externT* to_end, externT*& to_next)const;
+        result unshift(stateT& state, externT* to, externT* to_end, externT*& to_next)const;
+        result in(stateT& state,const externT* from, const externT* from_end, const externT*& from_next,
+                  internT* to, internT* to_end, internT*& to_next)const;
+
+        int encoding()const noexcept;
+        bool always_noconv()const noexcept;
+        int length(stateT&, const externT* from, const externT* end, size_t max)const;
+        int max_length()const noexcept;
+
+        static locale::id id;
+
+    protected:
+        ~codecvt();
+
+        virtual result do_out(stateT& state, const internT* from, const internT* from_end, const internT*& from_next,
+                              externT* to, externT* to_end, externT*& to_next)const;
+        virtual result do_in(stateT& state, const externT* from, const externT* from_end, const externT*& from_next,
+                             internT* to, internT* to_end, internT*& to_next)const;
+        virtual result do_unshift(stateT& state,externT* to, externT* to_end, externT*& to_next)const;
+
+        virtual int do_encoding()const noexcept;
+        virtual bool do_always_noconv()const noexcept;
+        virtual int do_length(stateT&, const externT* from, const externT* end, size_t max)const;
+        virtual int do_max_length()const noexcept;
+    };
 
     template<class internT, class externT, class stateT>
-    class codecvt_byname;
+    class codecvt_byname: public codecvt<internT, externT, stateT>{
+    public:
+        explicit codecvt_byname(const char*, size_t refs = 0);
+        explicit codecvt_byname(const std::string&, size_t refs = 0);
+
+    protected:
+        ~codecvt_byname();
+    };
 
     // 25.4.2, numeric
     template<class charT, class InputIterator = std::istreambuf_iterator<charT>>
@@ -78,17 +301,77 @@ namespace std{
     class num_put;
 
     template<class charT>
-    class numpunct;
+    class numpunct: public locale::facet{
+    public:
+        using char_type   = charT;
+        using string_type = std::basic_string<charT>;
+
+        explicit numpunct(size_t refs = 0);
+        char_type decimal_point()const;
+        char_type thousands_sep()const;
+        std::string grouping()const;
+        string_type truename()const;
+        string_type falsename()const;
+
+        static locale::id id;
+
+    protected:
+        ~numpunct();
+
+        virtual char_type do_decimal_point()const;
+        virtual char_type do_thousands_sep()const;
+        virtual std::string do_grouping()const;
+        virtual string_type do_truename()const;// for bool
+        virtual string_type do_falsename()const;// for bool
+    };
 
     template<class charT>
-    class numpunct_byname;
+    class numpunct_byname: public numpunct<charT>{
+    public:
+        using char_type   = charT;
+        using string_type = std::basic_string<charT>;
+
+        explicit numpunct_byname(const char*, size_t refs = 0);
+        explicit numpunct_byname(const std::string&, size_t refs = 0);
+
+    protected:
+        ~numpunct_byname();
+    };
 
     // 25.4.4, collation
     template<class charT>
-    class collate;
+    class collate: public locale::facet{
+    public:
+        using char_type   = charT;
+        using string_type = std::basic_string<charT>;
+
+        explicit collate(size_t refs = 0);
+        int compare(const charT* low1, const charT* high1,const charT* low2, const charT* high2)const;
+        string_type transform(const charT* low, const charT* high)const;
+        long hash(const charT* low, const charT* high)const;
+
+        static locale::id id;
+
+    protected:
+        ~collate();
+
+        virtual int do_compare(const charT* low1, const charT* high1,
+                               const charT* low2, const charT* high2)const;
+        virtual string_type do_transform(const charT* low, const charT* high)const;
+        virtual long do_hash(const charT* low, const charT* high)const;
+    };
 
     template<class charT>
-    class collate_byname;
+    class collate_byname: public collate<charT>{
+    public:
+        using string_type = std::basic_string<charT>;
+
+        explicit collate_byname(const char*, size_t refs = 0);
+        explicit collate_byname(const std::string&, size_t refs = 0);
+
+    protected:
+        ~collate_byname();
+    };
 
     // 25.4.5, date and time
     class time_base;

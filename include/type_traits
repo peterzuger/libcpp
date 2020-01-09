@@ -300,6 +300,26 @@ namespace std{
     // defined in __type_traits
 
     // 23.15.7.3, sign modifications
+    template<class T, class U>
+    struct __copy_cv{
+        using type = U;
+    };
+
+    template<class T, class U>
+    struct __copy_cv<const T, U>{
+        using type = const U;
+    };
+
+    template<class T, class U>
+    struct __copy_cv<volatile T, U>{
+        using type = volatile U;
+    };
+
+    template<class T, class U>
+    struct __copy_cv<const volatile T, U>{
+        using type = const volatile U;
+    };
+
     template<class T> struct __make_signed_impl{};
     template<> struct __make_signed_impl<bool>              {using type = bool;};
     template<> struct __make_signed_impl<char>              {using type = signed char;};

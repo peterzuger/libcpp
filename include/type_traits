@@ -166,9 +166,11 @@ namespace std{
     // TODO: implement without compiler intrinsic
     template<class T> struct is_abstract: public bool_constant<__is_abstract(T)>{};
 
-    template<class T> struct is_final;
+    // TODO: implement without compiler intrinsic
+    template<class T> struct is_final: public bool_constant<__is_final(T)>{};
 
-    template<class T> struct is_aggregate;
+    // TODO: implement without compiler intrinsic
+    template<class T> struct is_aggregate: public bool_constant<__is_aggregate(T)>{};
 
     template<class T, bool = is_arithmetic<T>::value>
     struct __is_signed_impl: bool_constant<T(-1) < T(0)>{};
@@ -283,7 +285,9 @@ namespace std{
     template<class T, class U> struct is_same: public false_type{};
     template<class T> struct is_same<T, T>: public true_type{};
 
-    template<class Base, class Derived> struct is_base_of;
+    // TODO: implement without compiler intrinsic
+    template<class Base, class Derived> struct is_base_of:
+        public bool_constant<__is_base_of(Base, Derived)>{};
 
     template<class From, class To> struct is_convertible;
 

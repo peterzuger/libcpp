@@ -260,6 +260,54 @@ namespace std{
         }
 
     private:
+        void __allocate(size_t n){
+            _begin = _end = ::operator new(n * sizeof(value_type));
+            _end += n;
+        }
+
+        void __deallocate(){
+            ::operator delete(_begin);
+            _begin = _end = 0;
+        }
+
+        void __construct(size_t n){
+            __allocate(n);
+            for(size_t i = 0; i < n; i++){
+#if defined(__cpp_exceptions)
+                try{
+#endif /* defined(__cpp_exceptions) */
+                    ::new(&_begin[i]) value_type{};
+#if defined(__cpp_exceptions)
+                }catch(...){
+                    __destroy(i);
+                    throw;
+                }
+#endif /* defined(__cpp_exceptions) */
+            }
+        }
+
+        void __construct(size_t n, value_type val){
+            __allocate(n);
+            for(size_t i = 0; i < n; i++){
+#if defined(__cpp_exceptions)
+                try{
+#endif /* defined(__cpp_exceptions) */
+                    ::new(&_begin[i]) value_type{val};
+#if defined(__cpp_exceptions)
+                }catch(...){
+                    __destroy(i);
+                    throw;
+                }
+#endif /* defined(__cpp_exceptions) */
+            }
+        }
+
+        void __destroy(size_t n){
+            for(size_t i = 0; i < n; i++)
+                ::delete(&_begin[i]);
+            __deallocate();
+        }
+
         value_type* _begin;
         value_type* _end;
     };

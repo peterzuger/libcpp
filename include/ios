@@ -42,9 +42,9 @@ namespace std{
     template<>
     struct is_error_code_enum<io_errc>: public std::true_type{};
 
-    error_code make_error_code(io_errc e)noexcept;
-    error_condition make_error_condition(io_errc e)noexcept;
-    const error_category& iostream_category()noexcept;
+    std::error_code make_error_code(io_errc e)noexcept;
+    std::error_condition make_error_condition(io_errc e)noexcept;
+    const std::error_category& iostream_category()noexcept;
 
     template<class stateT>
     class fpos{
@@ -58,10 +58,10 @@ namespace std{
 
     class ios_base{
     public:
-        class failure: public system_error{
+        class failure: public std::system_error{
         public:
-            explicit failure(const string& msg, const error_code& ec = io_errc::stream);
-            explicit failure(const char* msg, const error_code& ec = io_errc::stream);
+            explicit failure(const std::string& msg, const std::error_code& ec = io_errc::stream);
+            explicit failure(const char* msg, const std::error_code& ec = io_errc::stream);
         };
 
         // 30.5.3.1.2, fmtflags
@@ -130,8 +130,8 @@ namespace std{
         streamsize width(streamsize wide);
 
         // 30.5.3.3, locales
-        locale imbue(const locale& loc);
-        locale getloc()const;
+        std::locale imbue(const std::locale& loc);
+        std::locale getloc()const;
 
         // 30.5.3.5, storage
         static int xalloc();
@@ -190,22 +190,23 @@ namespace std{
         void exceptions(iostate except);
 
         // 30.5.5.2, constructor/destructor
-        explicit basic_ios(basic_streambuf<charT, traits>* sb);
-        virtual~basic_ios();
+        explicit basic_ios(std::basic_streambuf<charT, traits>* sb);
+
+        virtual ~basic_ios();
 
         // 30.5.5.3, members
-        basic_ostream<charT, traits>* tie()const;
-        basic_ostream<charT, traits>* tie(basic_ostream<charT, traits>* tiestr);
+        std::basic_ostream<charT, traits>* tie()const;
+        std::basic_ostream<charT, traits>* tie(std::basic_ostream<charT, traits>* tiestr);
 
-        basic_streambuf<charT, traits>* rdbuf()const;
-        basic_streambuf<charT, traits>* rdbuf(basic_streambuf<charT, traits>* sb);
+        std::basic_streambuf<charT, traits>* rdbuf()const;
+        std::basic_streambuf<charT, traits>* rdbuf(std::basic_streambuf<charT, traits>* sb);
 
         basic_ios& copyfmt(const basic_ios& rhs);
 
         char_type fill()const;
         char_type fill(char_type ch);
 
-        locale imbue(const locale& loc);
+        std::locale imbue(const std::locale& loc);
 
         char      narrow(char_type c, char dfault)const;
         char_type widen(char c)const;
@@ -215,11 +216,11 @@ namespace std{
 
     protected:
         basic_ios();
-        void init(basic_streambuf<charT, traits>* sb);
+        void init(std::basic_streambuf<charT, traits>* sb);
         void move(basic_ios& rhs);
         void move(basic_ios&& rhs);
         void swap(basic_ios& rhs)noexcept;
-        void set_rdbuf(basic_streambuf<charT, traits>* sb);
+        void set_rdbuf(std::basic_streambuf<charT, traits>* sb);
     };
 
     // 30.5.6, manipulators

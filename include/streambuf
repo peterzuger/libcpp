@@ -39,8 +39,8 @@ namespace std{
         virtual ~basic_streambuf();
 
         // 30.6.3.2.1, locales
-        locale pubimbue(const locale& loc);
-        locale getloc()const;
+        std::locale pubimbue(const std::locale& loc);
+        std::locale getloc()const;
 
         // 30.6.3.2.2, buffer and positioning
         basic_streambuf* pubsetbuf(char_type* s, streamsize n);
@@ -88,7 +88,7 @@ namespace std{
 
         // 30.6.3.4, virtual functions
         // 30.6.3.4.1, locales
-        virtual void imbue(const locale& loc);
+        virtual void imbue(const std::locale& loc);
 
         // 30.6.3.4.2, buffer management and positioning
         virtual basic_streambuf* setbuf(char_type* s, streamsize n);

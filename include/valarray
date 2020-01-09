@@ -22,7 +22,11 @@
 #ifndef __VALARRAY__
 #define __VALARRAY__
 
+#include <__minmax>
+#include <__swap>
 #include <initializer_list>
+#include <new>
+#include <numeric>
 
 namespace std{
     // forward declarations
@@ -40,17 +44,28 @@ namespace std{
         using value_type = T;
 
         // 29.7.2.2, construct/destroy
-        valarray();
-        explicit valarray(size_t);
-        valarray(const T&, size_t);
-        valarray(const T*, size_t);
-        valarray(const valarray&);
-        valarray(valarray&&)noexcept;
-        valarray(const slice_array<T>&);
-        valarray(const gslice_array<T>&);
-        valarray(const mask_array<T>&);
-        valarray(const indirect_array<T>&);
-        valarray(initializer_list<T>);
+        valarray():
+            _begin{0}, _end{0}{}
+
+        explicit valarray(size_t n);
+
+        valarray(const T& v, size_t n);
+
+        valarray(const T* v, size_t n);
+
+        valarray(const valarray& v);
+
+        valarray(valarray&& v)noexcept;
+
+        valarray(const slice_array<T>& v);
+
+        valarray(const gslice_array<T>& v);
+
+        valarray(const mask_array<T>& v);
+
+        valarray(const indirect_array<T>& v);
+
+        valarray(initializer_list<T> v);
 
         ~valarray();
 
@@ -65,8 +80,12 @@ namespace std{
         valarray& operator=(const indirect_array<T>&);
 
         // 29.7.2.4, element access
-        const T& operator[](size_t)const;
-        T& operator[](size_t);
+        const T& operator[](size_t n)const{
+            return _begin[n];
+        }
+        T& operator[](size_t n){
+            return _begin[n];
+        }
 
         // 29.7.2.5, subset operations
         valarray operator[](slice)const;
@@ -85,36 +104,128 @@ namespace std{
         valarray<bool> operator!()const;
 
         // 29.7.2.7, compound assignment
-        valarray& operator*=(const T&);
-        valarray& operator/=(const T&);
-        valarray& operator%=(const T&);
-        valarray& operator+=(const T&);
-        valarray& operator-=(const T&);
-        valarray& operator^=(const T&);
-        valarray& operator&=(const T&);
-        valarray& operator|=(const T&);
-        valarray& operator<<=(const T&);
-        valarray& operator>>=(const T&);
+        valarray& operator*=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp *= v;
+            return *this;
+        }
+        valarray& operator/=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp /= v;
+            return *this;
+        }
+        valarray& operator%=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp %= v;
+            return *this;
+        }
+        valarray& operator+=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp += v;
+            return *this;
+        }
+        valarray& operator-=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp -= v;
+            return *this;
+        }
+        valarray& operator^=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp ^= v;
+            return *this;
+        }
+        valarray& operator&=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp &= v;
+            return *this;
+        }
+        valarray& operator|=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp |= v;
+            return *this;
+        }
+        valarray& operator<<=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp <<= v;
+            return *this;
+        }
+        valarray& operator>>=(const T& v){
+            for(value_type* tmp = _begin; tmp != _end; ++tmp)
+                *tmp >>= v;
+            return *this;
+        }
 
-        valarray& operator*=(const valarray&);
-        valarray& operator/=(const valarray&);
-        valarray& operator%=(const valarray&);
-        valarray& operator+=(const valarray&);
-        valarray& operator-=(const valarray&);
-        valarray& operator^=(const valarray&);
-        valarray& operator|=(const valarray&);
-        valarray& operator&=(const valarray&);
-        valarray& operator<<=(const valarray&);
-        valarray& operator>>=(const valarray&);
+        valarray& operator*=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] *= v._begin[i];
+            return *this;
+        }
+        valarray& operator/=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] /= v._begin[i];
+            return *this;
+        }
+        valarray& operator%=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] %= v._begin[i];
+            return *this;
+        }
+        valarray& operator+=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] += v._begin[i];
+            return *this;
+        }
+        valarray& operator-=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] -= v._begin[i];
+            return *this;
+        }
+        valarray& operator^=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] ^= v._begin[i];
+            return *this;
+        }
+        valarray& operator|=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] |= v._begin[i];
+            return *this;
+        }
+        valarray& operator&=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] &= v._begin[i];
+            return *this;
+        }
+        valarray& operator<<=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] <<= v._begin[i];
+            return *this;
+        }
+        valarray& operator>>=(const valarray& v){
+            for(size_t i = 0; i < size(); ++i)
+                _begin[i] >>= v._begin[i];
+            return *this;
+        }
 
         // 29.7.2.8, member functions
-        void swap(valarray&)noexcept;
+        void swap(valarray& other)noexcept{
+            using std::swap;
+            swap(_begin, other._begin);
+            swap(_end, other._end);
+        }
 
-        size_t size()const;
+        size_t size()const{
+            return _end - _begin;
+        }
 
-        T sum()const;
-        T min()const;
-        T max()const;
+        T sum()const{
+            return std::accumulate(_begin, _end);
+        }
+        T min()const{
+            return *std::min_element(_begin, _end);
+        }
+        T max()const{
+            return *std::max_element(_begin, _end);
+        }
 
         valarray shift(int)const;
         valarray cshift(int)const;

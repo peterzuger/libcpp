@@ -730,29 +730,119 @@ namespace std{
         return tmp;
     }
 
-    template<class T>valarray<bool> operator==(const valarray<T>& x, const valarray<T>& y);
-    template<class T>valarray<bool> operator==(const valarray<T>& x, const T& y);
-    template<class T>valarray<bool> operator==(const T& x, const valarray<T>& y);
+    template<class T>valarray<bool> operator==(const valarray<T>& x, const valarray<T>& y){
+        valarray<bool> tmp(std::min(x.size(), y.size()));
+        for(std::size_t i = 0; i < tmp.size(); ++i)
+            tmp[i] = x[i] == y[i];
+        return tmp;
+    }
+    template<class T>valarray<bool> operator==(const valarray<T>& x, const T& y){
+        valarray<bool> tmp(x.size());
+        for(std::size_t i = 0; i < x.size(); ++i)
+            tmp[i] = x[i] == y;
+        return tmp;
+    }
+    template<class T>valarray<bool> operator==(const T& x, const valarray<T>& y){
+        valarray<bool> tmp(y.size());
+        for(std::size_t i = 0; i < y.size(); ++i)
+            tmp[i] = x == y[i];
+        return tmp;
+    }
 
-    template<class T>valarray<bool> operator!=(const valarray<T>& x, const valarray<T>& y);
-    template<class T>valarray<bool> operator!=(const valarray<T>& x, const T& y);
-    template<class T>valarray<bool> operator!=(const T& x, const valarray<T>& y);
+    template<class T>valarray<bool> operator!=(const valarray<T>& x, const valarray<T>& y){
+        valarray<bool> tmp(std::min(x.size(), y.size()));
+        for(std::size_t i = 0; i < tmp.size(); ++i)
+            tmp[i] = x[i] != y[i];
+        return tmp;
+    }
+    template<class T>valarray<bool> operator!=(const valarray<T>& x, const T& y){
+        valarray<bool> tmp(x.size());
+        for(std::size_t i = 0; i < x.size(); ++i)
+            tmp[i] = x[i] != y;
+        return tmp;
+    }
+    template<class T>valarray<bool> operator!=(const T& x, const valarray<T>& y){
+        valarray<bool> tmp(y.size());
+        for(std::size_t i = 0; i < y.size(); ++i)
+            tmp[i] = x != y[i];
+        return tmp;
+    }
 
-    template<class T>valarray<bool> operator<(const valarray<T>& x, const valarray<T>& y);
-    template<class T>valarray<bool> operator<(const valarray<T>& x, const T& y);
-    template<class T>valarray<bool> operator<(const T& x, const valarray<T>& y);
+    template<class T>valarray<bool> operator<(const valarray<T>& x, const valarray<T>& y){
+        valarray<bool> tmp(std::min(x.size(), y.size()));
+        for(std::size_t i = 0; i < tmp.size(); ++i)
+            tmp[i] = x[i] < y[i];
+        return tmp;
+    }
+    template<class T>valarray<bool> operator<(const valarray<T>& x, const T& y){
+        valarray<bool> tmp(x.size());
+        for(std::size_t i = 0; i < x.size(); ++i)
+            tmp[i] = x[i] < y;
+        return tmp;
+    }
+    template<class T>valarray<bool> operator<(const T& x, const valarray<T>& y){
+        valarray<bool> tmp(y.size());
+        for(std::size_t i = 0; i < y.size(); ++i)
+            tmp[i] = x < y[i];
+        return tmp;
+    }
 
-    template<class T>valarray<bool> operator>(const valarray<T>& x, const valarray<T>& y);
-    template<class T>valarray<bool> operator>(const valarray<T>& x, const T& y);
-    template<class T>valarray<bool> operator>(const T& x, const valarray<T>& y);
+    template<class T>valarray<bool> operator>(const valarray<T>& x, const valarray<T>& y){
+        valarray<bool> tmp(std::min(x.size(), y.size()));
+        for(std::size_t i = 0; i < tmp.size(); ++i)
+            tmp[i] = x[i] > y[i];
+        return tmp;
+    }
+    template<class T>valarray<bool> operator>(const valarray<T>& x, const T& y){
+        valarray<bool> tmp(x.size());
+        for(std::size_t i = 0; i < x.size(); ++i)
+            tmp[i] = x[i] > y;
+        return tmp;
+    }
+    template<class T>valarray<bool> operator>(const T& x, const valarray<T>& y){
+        valarray<bool> tmp(y.size());
+        for(std::size_t i = 0; i < y.size(); ++i)
+            tmp[i] = x > y[i];
+        return tmp;
+    }
 
-    template<class T>valarray<bool> operator<=(const valarray<T>& x, const valarray<T>& y);
-    template<class T>valarray<bool> operator<=(const valarray<T>& x, const T& y);
-    template<class T>valarray<bool> operator<=(const T& x, const valarray<T>& y);
+    template<class T>valarray<bool> operator<=(const valarray<T>& x, const valarray<T>& y){
+        valarray<bool> tmp(std::min(x.size(), y.size()));
+        for(std::size_t i = 0; i < tmp.size(); ++i)
+            tmp[i] = x[i] <= y[i];
+        return tmp;
+    }
+    template<class T>valarray<bool> operator<=(const valarray<T>& x, const T& y){
+        valarray<bool> tmp(x.size());
+        for(std::size_t i = 0; i < x.size(); ++i)
+            tmp[i] = x[i] <= y;
+        return tmp;
+    }
+    template<class T>valarray<bool> operator<=(const T& x, const valarray<T>& y){
+        valarray<bool> tmp(y.size());
+        for(std::size_t i = 0; i < y.size(); ++i)
+            tmp[i] = x <= y[i];
+        return tmp;
+    }
 
-    template<class T>valarray<bool> operator>=(const valarray<T>& x, const valarray<T>& y);
-    template<class T>valarray<bool> operator>=(const valarray<T>& x, const T& y);
-    template<class T>valarray<bool> operator>=(const T& x, const valarray<T>& y);
+    template<class T>valarray<bool> operator>=(const valarray<T>& x, const valarray<T>& y){
+        valarray<bool> tmp(std::min(x.size(), y.size()));
+        for(std::size_t i = 0; i < tmp.size(); ++i)
+            tmp[i] = x[i] >= y[i];
+        return tmp;
+    }
+    template<class T>valarray<bool> operator>=(const valarray<T>& x, const T& y){
+        valarray<bool> tmp(x.size());
+        for(std::size_t i = 0; i < x.size(); ++i)
+            tmp[i] = x[i] >= y;
+        return tmp;
+    }
+    template<class T>valarray<bool> operator>=(const T& x, const valarray<T>& y){
+        valarray<bool> tmp(y.size());
+        for(std::size_t i = 0; i < y.size(); ++i)
+            tmp[i] = x >= y[i];
+        return tmp;
+    }
 
     template<class T>valarray<T> abs(const valarray<T>& x);
 

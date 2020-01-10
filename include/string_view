@@ -189,20 +189,34 @@ namespace std{
         }
 
         constexpr size_type find(basic_string_view s, size_type pos = 0)const noexcept;
-        constexpr size_type find(charT c, size_type pos = 0)const noexcept;
+        constexpr size_type find(charT c, size_type pos = 0)const noexcept{
+            for(; pos < size(); ++pos)
+                if(traits_type::eq(_data[pos], c))
+                    return pos;
+            return npos;
+        }
         constexpr size_type find(const charT* s, size_type pos, size_type n)const;
         constexpr size_type find(const charT* s, size_type pos = 0)const;
         constexpr size_type rfind(basic_string_view s, size_type pos = npos)const noexcept;
-        constexpr size_type rfind(charT c, size_type pos = npos)const noexcept;
+        constexpr size_type rfind(charT c, size_type pos = npos)const noexcept{
+            for(size_type i = std::min(pos, size()) - 1; i; --i)
+                if(traits_type::eq(_data[pos], c))
+                    return pos;
+            return npos;
+        }
         constexpr size_type rfind(const charT* s, size_type pos, size_type n)const;
         constexpr size_type rfind(const charT* s, size_type pos = npos)const;
 
         constexpr size_type find_first_of(basic_string_view s, size_type pos = 0)const noexcept;
-        constexpr size_type find_first_of(charT c, size_type pos = 0)const noexcept;
+        constexpr size_type find_first_of(charT c, size_type pos = 0)const noexcept{
+            return find(c, pos);
+        }
         constexpr size_type find_first_of(const charT* s, size_type pos, size_type n)const;
         constexpr size_type find_first_of(const charT* s, size_type pos = 0)const;
         constexpr size_type find_last_of(basic_string_view s, size_type pos = npos)const noexcept;
-        constexpr size_type find_last_of(charT c, size_type pos = npos)const noexcept;
+        constexpr size_type find_last_of(charT c, size_type pos = npos)const noexcept{
+            return rfind(c, pos);
+        }
         constexpr size_type find_last_of(const charT* s, size_type pos, size_type n)const;
         constexpr size_type find_last_of(const charT* s, size_type pos = npos)const;
 

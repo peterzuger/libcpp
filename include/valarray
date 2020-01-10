@@ -136,7 +136,9 @@ namespace std{
 
         // 29.7.2.5, subset operations
         valarray operator[](slice)const;
-        slice_array<T> operator[](slice);
+        slice_array<T> operator[](slice sl){
+            return slice_array<T>(sl, *this);
+        }
         valarray operator[](const gslice&)const;
         gslice_array<T> operator[](const gslice&);
         valarray operator[](const valarray<bool>&)const;

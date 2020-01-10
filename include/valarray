@@ -382,24 +382,63 @@ namespace std{
     public:
         using value_type = T;
 
-        void operator=(const valarray<T>&)const;
-        void operator*=(const valarray<T>&)const;
-        void operator/=(const valarray<T>&)const;
-        void operator%=(const valarray<T>&)const;
-        void operator+=(const valarray<T>&)const;
-        void operator-=(const valarray<T>&)const;
-        void operator^=(const valarray<T>&)const;
-        void operator&=(const valarray<T>&)const;
-        void operator|=(const valarray<T>&)const;
-        void operator<<=(const valarray<T>&)const;
-        void operator>>=(const valarray<T>&)const;
+        void operator=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] = x[j];
+        }
+        void operator*=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] *= x[j];
+        }
+        void operator/=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] /= x[j];
+        }
+        void operator%=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] %= x[j];
+        }
+        void operator+=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] += x[j];
+        }
+        void operator-=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] -= x[j];
+        }
+        void operator^=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] ^= x[j];
+        }
+        void operator&=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] &= x[j];
+        }
+        void operator|=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] |= x[j];
+        }
+        void operator<<=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] <<= x[j];
+        }
+        void operator>>=(const valarray<T>& x)const{
+            for(size_t i = 0, j = 0; i < _size; i += _stride, j++)
+                _data[i] >>= x[j];
+        }
 
-        slice_array(const slice_array&);
+        slice_array(const slice_array&) = default;
 
-        ~slice_array();
+        const slice_array& operator=(const slice_array& other)const{
+            _data = other._data;
+            _size = other._size;
+            _stride = other._stride;
+        }
 
-        const slice_array& operator=(const slice_array&)const;
-        void operator=(const T&)const;
+        void operator=(const T& x)const{
+            for(size_t i = 0; i < _size; i += _stride)
+                _data[i] = x;
+        }
 
         slice_array() = delete;// as implied by declaring copy constructor above
     };

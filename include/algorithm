@@ -146,26 +146,47 @@ namespace std{
     }
 
     // 28.5.10, mismatch
-    template<class InputIterator1, class InputIterator2>
-    std::pair<InputIterator1, InputIterator2> mismatch(InputIterator1 first1,
-                                                       InputIterator1 last1,
-                                                       InputIterator2 first2);
     template<class InputIterator1, class InputIterator2, class BinaryPredicate>
     std::pair<InputIterator1, InputIterator2> mismatch(InputIterator1 first1,
                                                        InputIterator1 last1,
                                                        InputIterator2 first2,
-                                                       BinaryPredicate pred);
+                                                       BinaryPredicate pred){
+        for(; first1 != last1; ++first1, (void)++first2)
+            if(!pred(*first1, *first2))
+                break;
+        return std::pair<InputIterator1, InputIterator2>(first1, first2);
+    }
+
     template<class InputIterator1, class InputIterator2>
     std::pair<InputIterator1, InputIterator2> mismatch(InputIterator1 first1,
                                                        InputIterator1 last1,
-                                                       InputIterator2 first2,
-                                                       InputIterator2 last2);
+                                                       InputIterator2 first2){
+        using value_type = typename std::iterator_traits<InputIterator1>::value_type;
+
+        return mismatch(first1, last1, first2, std::equal_to<value_type>());
+    }
+
     template<class InputIterator1, class InputIterator2, class BinaryPredicate>
     std::pair<InputIterator1, InputIterator2> mismatch(InputIterator1 first1,
                                                        InputIterator1 last1,
                                                        InputIterator2 first2,
                                                        InputIterator2 last2,
-                                                       BinaryPredicate pred);
+                                                       BinaryPredicate pred){
+        for(; first1 != last1 && first2 != last2; ++first1, (void)++first2)
+            if(!pred(*first1, *first2))
+                break;
+        return std::pair<InputIterator1, InputIterator2>(first1, first2);
+    }
+
+    template<class InputIterator1, class InputIterator2>
+    std::pair<InputIterator1, InputIterator2> mismatch(InputIterator1 first1,
+                                                       InputIterator1 last1,
+                                                       InputIterator2 first2,
+                                                       InputIterator2 last2){
+        using value_type = typename std::iterator_traits<InputIterator1>::value_type;
+
+        return mismatch(first1, last1, first2, last2, std::equal_to<value_type>());
+    }
 
     // 28.5.11, equal
     template<class InputIterator1, class InputIterator2, class BinaryPredicate>

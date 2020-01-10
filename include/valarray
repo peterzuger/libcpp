@@ -31,12 +31,35 @@
 
 namespace std{
     // forward declarations
-    class slice;
     template<class T>class slice_array;
     class gslice;
     template<class T>class gslice_array;
     template<class T>class mask_array;
     template<class T>class indirect_array;
+
+    class slice{
+        std::size_t _start;
+        std::size_t _size;
+        std::size_t _stride;
+
+    public:
+        slice() = default;
+
+        slice(size_t st, size_t sz, size_t sr):
+            _start{st},
+            _size{sz},
+            _stride{sr}{}
+
+        size_t start()const{
+            return _start;
+        }
+        size_t size()const{
+            return _size;
+        }
+        size_t stride()const{
+            return _stride;
+        }
+    };
 
     // An array of type T
     template<class T>
@@ -344,30 +367,6 @@ namespace std{
         -> valarray<T>;
 
     // a BLAS-like slice out of an array
-    class slice{
-        std::size_t _start;
-        std::size_t _size;
-        std::size_t _stride;
-
-    public:
-        slice() = default;
-
-        slice(size_t st, size_t sz, size_t sr):
-            _start{st},
-            _size{sz},
-            _stride{sr}{}
-
-        size_t start()const{
-            return _start;
-        }
-        size_t size()const{
-            return _size;
-        }
-        size_t stride()const{
-            return _stride;
-        }
-    };
-
     template<class T>
     class slice_array{
         T* _data;

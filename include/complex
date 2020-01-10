@@ -375,27 +375,31 @@ namespace std{
     template<class T> complex<T> tan(const complex<T>&);
     template<class T> complex<T> tanh(const complex<T>&);
 
+#ifndef __clang__
+#pragma GCC system_header
+#endif /* __clang__ */
+
     // 29.5.10, complex literals
     inline
     namespace literals{
         inline
         namespace complex_literals{
-            constexpr complex<long double> operator""il(long double im){
+            constexpr complex<long double> operator ""il(long double im){
                 return {0.0l, im};
             }
-            constexpr complex<long double> operator""il(unsigned long long im){
+            constexpr complex<long double> operator ""il(unsigned long long im){
                 return {0.0l, static_cast<long double>(im)};
             }
-            constexpr complex<double> operator""i(long double im){
+            constexpr complex<double> operator ""i(long double im){
                 return {0.0l, static_cast<double>(im)};
             }
-            constexpr complex<double> operator""i(unsigned long long im){
+            constexpr complex<double> operator ""i(unsigned long long im){
                 return {0.0l, static_cast<double>(im)};
             }
-            constexpr complex<float> operator""if(long double im){
+            constexpr complex<float> operator ""if(long double im){
                 return {0.0l, static_cast<float>(im)};
             }
-            constexpr complex<float> operator""if(unsigned long long im){
+            constexpr complex<float> operator ""if(unsigned long long im){
                 return {0.0l, static_cast<float>(im)};
             }
         }

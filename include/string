@@ -575,18 +575,22 @@ namespace std{
         using wstring   = basic_string<wchar_t>;
     }
 
+#ifndef __clang__
+#pragma GCC system_header
+#endif /* __clang__ */
+
     inline
     namespace literals{
         inline
         namespace string_literals{
             // 24.3.6, suffix for basic_string literals
-            string    operator""s(const char* str, std::size_t len);
+            string    operator ""s(const char* str, std::size_t len);
 #if defined(char8_t)
-            u8string  operator""s(const char8_t* str, std::size_t len);
+            u8string  operator ""s(const char8_t* str, std::size_t len);
 #endif /* defined(char8_t) */
-            u16string operator""s(const char16_t* str, std::size_t len);
-            u32string operator""s(const char32_t* str, std::size_t len);
-            wstring   operator""s(const wchar_t* str, std::size_t len);
+            u16string operator ""s(const char16_t* str, std::size_t len);
+            u32string operator ""s(const char32_t* str, std::size_t len);
+            wstring   operator ""s(const wchar_t* str, std::size_t len);
         }
     }
 }

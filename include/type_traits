@@ -73,12 +73,10 @@ namespace std{
     template<> struct __is_integral_impl<unsigned long>: public true_type{};
     template<> struct __is_integral_impl<long long>: public true_type{};
     template<> struct __is_integral_impl<unsigned long long>: public true_type{};
-#if defined(__int128_t)
+#if defined(__SIZEOF_INT128__)
     template<> struct __is_integral_impl<__int128_t>: public true_type{};
-#endif /* defined(__int128_t) */
-#if defined(__uint128_t)
     template<> struct __is_integral_impl<__uint128_t>: public true_type{};
-#endif /* defined(__uint128_t) */
+#endif /* defined(__SIZEOF_INT128__) */
 
     template<class T> struct is_integral: public __is_integral_impl<remove_cv_t<T>>{};
 
@@ -343,10 +341,10 @@ namespace std{
     template<> struct __make_signed_impl<unsigned long>     {using type = long;};
     template<> struct __make_signed_impl<long long>         {using type = long long;};
     template<> struct __make_signed_impl<unsigned long long>{using type = long long;};
-#if defined(__int128_t) && defined(__uint128_t)
+#if defined(__SIZEOF_INT128__)
     template<> struct __make_signed_impl<__int128_t>        {using type = __int128_t;};
     template<> struct __make_signed_impl<__uint128_t>       {using type = __int128_t;};
-#endif /* defined(__int128_t) && defined(__uint128_t) */
+#endif /* defined(__SIZEOF_INT128__) */
 
     template<class T>
     struct make_signed: public __copy_cv<T, __make_signed_impl<remove_cv_t<T>>>{};
@@ -371,10 +369,10 @@ namespace std{
     template<> struct __make_unsigned_impl<unsigned long>     {using type = unsigned long;};
     template<> struct __make_unsigned_impl<long long>         {using type = unsigned long long;};
     template<> struct __make_unsigned_impl<unsigned long long>{using type = unsigned long long;};
-#if defined(__int128_t) && defined(__uint128_t)
+#if defined(__SIZEOF_INT128__)
     template<> struct __make_unsigned_impl<__int128_t>        {using type = __uint128_t;};
     template<> struct __make_unsigned_impl<__uint128_t>       {using type = __uint128_t;};
-#endif /* defined(__int128_t) && defined(__uint128_t) */
+#endif /* defined(__SIZEOF_INT128__) */
 
     template<class T>
     struct make_unsigned: public __copy_cv<T, __make_unsigned_impl<remove_cv_t<T>>>{};

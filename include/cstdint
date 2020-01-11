@@ -26,6 +26,11 @@
 #include <stdint.h>
 
 namespace std{
+#if defined(__SIZEOF_INT128__)
+    using ::int128_t;
+    using ::uint128_t;
+#endif /* defined(__SIZEOF_INT128__) */
+
     using ::int64_t;
     using ::uint64_t;
     using ::int_least64_t;

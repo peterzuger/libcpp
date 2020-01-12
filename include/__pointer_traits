@@ -23,6 +23,7 @@
 #ifndef ____POINTER_TRAITS__
 #define ____POINTER_TRAITS__
 
+#include <__addressof>
 #include <type_traits>
 
 namespace std{
@@ -97,8 +98,7 @@ namespace std{
         using rebind = U*;
 
         static pointer pointer_to(element_type& r)noexcept{
-            return reinterpret_cast<T*>(
-                const_cast<char*>(&reinterpret_cast<const volatile char&>(r)));
+            return std::addressof(r);
         }
     };
 }

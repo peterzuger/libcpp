@@ -26,7 +26,7 @@
 #include <type_traits>
 
 namespace std{
-    namespace __uses_allocator{
+    namespace impl{
         template<typename T, typename = void>
         struct __has_allocator_type: std::false_type{};
 
@@ -43,7 +43,7 @@ namespace std{
 
     // 23.10.7, uses_allocator
     template<class T, class Alloc>
-    struct uses_allocator: public __uses_allocator::__uses_allocator<T, Alloc>{};
+    struct uses_allocator: public impl::__uses_allocator<T, Alloc>{};
 
     // 23.10.7.1, uses_allocator
     template<class T, class Alloc>

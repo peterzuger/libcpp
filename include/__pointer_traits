@@ -27,7 +27,7 @@
 #include <type_traits>
 
 namespace std{
-    namespace __pointer_traits{
+    namespace impl{
         template<typename T, typename = void>
         struct __has_element_type: std::false_type{};
 
@@ -77,11 +77,11 @@ namespace std{
     template<class Ptr>
     struct pointer_traits{
         using pointer         = Ptr;
-        using element_type    = typename __pointer_traits::__element_type<pointer>::type;
-        using difference_type = typename __pointer_traits::__difference_type<pointer>::type;
+        using element_type    = typename impl::__element_type<pointer>::type;
+        using difference_type = typename impl::__difference_type<pointer>::type;
 
         template<class U>
-        using rebind = typename __pointer_traits::__rebind<pointer, U>::type;
+        using rebind = typename impl::__rebind<pointer, U>::type;
 
         static pointer pointer_to(element_type& r){
             return pointer::pointer_to(r);

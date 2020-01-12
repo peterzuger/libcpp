@@ -284,7 +284,7 @@ namespace std{
     // array specialized algorithms
     template<class T, std::size_t N>
     bool operator==(const array<T, N>& x, const array<T, N>& y){
-        for(size_t i = 0; i < N; i++)
+        for(std::size_t i = 0; i < N; i++)
             if(!(x[i] == y[i]))
                 return false;
         return true;
@@ -297,7 +297,7 @@ namespace std{
 
     template<class T, std::size_t N>
     bool operator< (const array<T, N>& x, const array<T, N>& y){
-        for(size_t i = 0; i < N; i++){
+        for(std::size_t i = 0; i < N; i++){
             if(x[i] < y[i])return true;
             if(y[i] < x[i])return false;
         }

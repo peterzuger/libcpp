@@ -44,7 +44,7 @@ namespace std{
 
     template<class T>
     struct iterator_traits<T*>{
-        using difference_type   = ptrdiff_t;
+        using difference_type   = std::ptrdiff_t;
         using value_type        = T;
         using pointer           = T*;
         using reference         = T&;
@@ -53,7 +53,7 @@ namespace std{
 
     template<class T>
     struct iterator_traits<const T*>{
-        using difference_type   = ptrdiff_t;
+        using difference_type   = std::ptrdiff_t;
         using value_type        = T;
         using pointer           = const T*;
         using reference         = const T&;

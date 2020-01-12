@@ -28,15 +28,15 @@
 #include <ostream>   // see 30.7.2
 
 namespace std{
-    extern istream cin;
-    extern ostream cout;
-    extern ostream cerr;
-    extern ostream clog;
+    extern std::istream cin;
+    extern std::ostream cout;
+    extern std::ostream cerr;
+    extern std::ostream clog;
 
-    extern wistream wcin;
-    extern wostream wcout;
-    extern wostream wcerr;
-    extern wostream wclog;
+    extern std::wistream wcin;
+    extern std::wostream wcout;
+    extern std::wostream wcerr;
+    extern std::wostream wclog;
 }
 
 #endif /* __IOSTREAM__ */

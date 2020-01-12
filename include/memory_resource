@@ -28,7 +28,7 @@
 namespace std::pmr{
     // 23.12.2, class memory_resource
     class memory_resource{
-        static constexpr std::size_t max_align = alignof(max_align_t);
+        static constexpr std::size_t max_align = alignof(std::max_align_t);
 
     public:
         virtual ~memory_resource();

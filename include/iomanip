@@ -22,6 +22,7 @@
 #ifndef __IOMANIP__
 #define __IOMANIP__
 
+#include <ctime>
 #include <ios>
 #include <string_view>
 
@@ -32,13 +33,13 @@ namespace std{
     };
 
     template<class CharT, class Traits>
-    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t1& x){
+    std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is, const __iomanip_t1& x){
         is.setf(ios_base::fmtflags(0), x.mask);
         return is;
     }
 
     template<class CharT, class Traits>
-    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t1& x){
+    std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const __iomanip_t1& x){
         os.setf(ios_base::fmtflags(0), x.mask);
         return os;
     }
@@ -50,13 +51,13 @@ namespace std{
     };
 
     template<class CharT, class Traits>
-    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t2& x){
+    std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is, const __iomanip_t2& x){
         is.setf(x.mask);
         return is;
     }
 
     template<class CharT, class Traits>
-    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t2& x){
+    std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const __iomanip_t2& x){
         os.setf(x.mask);
         return os;
     }
@@ -68,7 +69,7 @@ namespace std{
     };
 
     template<class CharT, class Traits>
-    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t3& x){
+    std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is, const __iomanip_t3& x){
         is.setf(x.base ==  8 ? ios_base::oct :
                 x.base == 10 ? ios_base::dec :
                 x.base == 16 ? ios_base::hex :
@@ -77,7 +78,7 @@ namespace std{
     }
 
     template<class CharT, class Traits>
-    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t3& x){
+    std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const __iomanip_t3& x){
         os.setf(x.base ==  8 ? ios_base::oct :
                 x.base == 10 ? ios_base::dec :
                 x.base == 16 ? ios_base::hex :
@@ -93,13 +94,15 @@ namespace std{
     };
 
     template<class CharT, class Traits>
-    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t4<CharT>& x){
+    std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is,
+                                                  const __iomanip_t4<CharT>& x){
         is.fill(x.c);
         return is;
     }
 
     template<class CharT, class Traits>
-    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t4<CharT>& x){
+    std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                                  const __iomanip_t4<CharT>& x){
         os.fill(x.c);
         return os;
     }
@@ -111,13 +114,13 @@ namespace std{
     };
 
     template<class CharT, class Traits>
-    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t5& x){
+    std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is, const __iomanip_t5& x){
         is.precision(x.n);
         return is;
     }
 
     template<class CharT, class Traits>
-    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t5& x){
+    std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const __iomanip_t5& x){
         os.precision(x.n);
         return os;
     }
@@ -129,13 +132,13 @@ namespace std{
     };
 
     template<class CharT, class Traits>
-    basic_istream<CharT, Traits>& operator>>(basic_istream<CharT, Traits>& is, const __iomanip_t6& x){
+    std::basic_istream<CharT, Traits>& operator>>(std::basic_istream<CharT, Traits>& is, const __iomanip_t6& x){
         is.width(x.n);
         return is;
     }
 
     template<class CharT, class Traits>
-    basic_ostream<CharT, Traits>& operator<<(basic_ostream<CharT, Traits>& os, const __iomanip_t6& x){
+    std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const __iomanip_t6& x){
         os.width(x.n);
         return os;
     }
@@ -187,15 +190,15 @@ namespace std{
     __iomanip_t11 quoted(const charT* s, charT delim = charT('"'), charT escape = charT('\\'));
 
     template<class charT, class traits, class Allocator>
-    __iomanip_t12 quoted(const basic_string<charT, traits, Allocator>& s,
+    __iomanip_t12 quoted(const std::basic_string<charT, traits, Allocator>& s,
                          charT delim = charT('"'), charT escape = charT('\\'));
 
     template<class charT, class traits, class Allocator>
-    __iomanip_t13 quoted(basic_string<charT, traits, Allocator>& s,
+    __iomanip_t13 quoted(std::basic_string<charT, traits, Allocator>& s,
                          charT delim = charT('"'), charT escape = charT('\\'));
 
     template<class charT, class traits>
-    __iomanip_t14 quoted(basic_string_view<charT, traits> s,
+    __iomanip_t14 quoted(std::basic_string_view<charT, traits> s,
                          charT delim = charT('"'), charT escape = charT('\\'));
 }
 

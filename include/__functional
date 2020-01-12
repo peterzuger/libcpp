@@ -81,7 +81,6 @@ namespace std{
         using is_transparent = void;
     };
 
-
     template<>
     struct minus<void>{
         template<class T, class U>
@@ -180,6 +179,7 @@ namespace std{
         }
     };
 
+
     template<>
     struct equal_to<void>{
         template<class T, class U>
@@ -268,6 +268,7 @@ namespace std{
         }
     };
 
+
     template<>
     struct logical_and<void>{
         template<class T, class U>
@@ -329,6 +330,7 @@ namespace std{
             return ~x;
         }
     };
+
 
     template<>
     struct bit_and<void>{

@@ -34,6 +34,7 @@ namespace std{
 
     template<class T>
     constexpr T&& forward(std::remove_reference_t<T>&& t)noexcept{
+        static_assert(!std::is_lvalue_reference_v<T>, "can not forward an lvalue reference");
         return static_cast<T&&>(t);
     }
 

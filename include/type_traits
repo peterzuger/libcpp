@@ -380,18 +380,6 @@ namespace std{
     template<class T> using make_signed_t   = typename make_signed<T>::type;
     template<class T> using make_unsigned_t = typename make_unsigned<T>::type;
 
-    // 23.15.7.4, array modifications
-    template<class T> struct remove_extent{using type = T;};
-    template<class T> struct remove_extent<T[]>{using type = T;};
-    template<class T, std::size_t N> struct remove_extent<T[N]>{using type = T;};
-
-    template<class T> struct remove_all_extents{using type = T;};
-    template<class T> struct remove_all_extents<T[]>{using type = typename remove_all_extents<T>::type;};
-    template<class T, std::size_t N> struct remove_all_extents<T[N]>{using type = typename remove_all_extents<T>::type;};
-
-    template<class T> using remove_extent_t      = typename remove_extent<T>::type;
-    template<class T> using remove_all_extents_t = typename remove_all_extents<T>::type;
-
     // 23.15.7.5, pointer modifications
     template<class T> struct remove_pointer{using type = T;};
     template<class T> struct remove_pointer<T*>{using type = T;};

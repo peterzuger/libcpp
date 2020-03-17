@@ -23,6 +23,8 @@
 #ifndef ____TYPE_TRAITS__
 #define ____TYPE_TRAITS__
 
+#include <cstddef>
+
 namespace std{
     // 23.15.7.1, const-volatile modifications
     template<class T> struct remove_const{using type = T;};
@@ -69,6 +71,18 @@ namespace std{
     template<class T> using remove_reference_t     = typename remove_reference<T>::type;
     template<class T> using add_lvalue_reference_t = typename add_lvalue_reference<T>::type;
     template<class T> using add_rvalue_reference_t = typename add_rvalue_reference<T>::type;
+
+    // 23.15.7.4, array modifications
+    template<class T> struct remove_extent{using type = T;};
+    template<class T> struct remove_extent<T[]>{using type = T;};
+    template<class T, std::size_t N> struct remove_extent<T[N]>{using type = T;};
+
+    template<class T> struct remove_all_extents{using type = T;};
+    template<class T> struct remove_all_extents<T[]>{using type = typename remove_all_extents<T>::type;};
+    template<class T, std::size_t N> struct remove_all_extents<T[N]>{using type = typename remove_all_extents<T>::type;};
+
+    template<class T> using remove_extent_t      = typename remove_extent<T>::type;
+    template<class T> using remove_all_extents_t = typename remove_all_extents<T>::type;
 }
 
 #endif /* ____TYPE_TRAITS__ */

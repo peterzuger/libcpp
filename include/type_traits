@@ -220,7 +220,20 @@ namespace std{
 
     template<class T> struct is_trivially_move_assignable;
 
-    template<class T> struct is_trivially_destructible;
+
+    template<class T>
+    struct __trivial_destructor_impl:
+        public integral_constant<bool,
+                                 is_scalar<T>::value || is_reference<T>::value>{};
+
+    template<class T>
+    struct is_trivially_destructible:
+        public __trivial_destructor_impl<typename std::remove_all_extents<T>::type>{};
+
+    template<class T>
+    struct is_trivially_destructible<T[]>:
+        public std::false_type{};
+
 
     template<typename T, typename... Args>
     struct __is_nothrow_constructible_impl:

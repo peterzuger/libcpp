@@ -102,7 +102,7 @@ namespace std{
 
         // 23.6.3.1, constructors
         constexpr optional()noexcept = default;
-        constexpr optional(nullopt_t)noexcept = default;
+        constexpr optional(nullopt_t)noexcept{}
 
         constexpr optional(const optional& other):
             base::has{other.has_value()}{

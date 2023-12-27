@@ -24,6 +24,8 @@ CXXSRC += $(wildcard src/typeinfo/*.cpp)
 OBJECTS  = $(patsubst %.c,$(BUILD)/%.o,$(CSRC))
 OBJECTS += $(patsubst %.cpp,$(BUILD)/%.o,$(CXXSRC))
 
+DEPENDENCIES  = $(patsubst %.c,$(BUILD)/%.d,$(CSRC))
+DEPENDENCIES += $(patsubst %.cpp,$(BUILD)/%.d,$(CXXSRC))
 
 # Commands
 ifeq ($(VERBOSE),1)
@@ -118,12 +120,14 @@ all: $(TARGET)
 $(BUILD)/%.o: %.c
 	$(ECHO) "GCC\t$@"
 	$(MKDIR) --parents ${dir $@}
-	$(GCC) $(GCCFLAGS) $< -o $@
+	$(GCC) $(GCCFLAGS) -MD -MF $(@:.o=.d) $< -o $@
 
 $(BUILD)/%.o: %.cpp
 	$(ECHO) "G++\t$@"
 	$(MKDIR) --parents ${dir $@}
-	$(GXX) $(CXXFLAGS) $< -o $@
+	$(GXX) $(CXXFLAGS) -MD -MF $(@:.o=.d) $< -o $@
+
+-include $(DEPENDENCIES)
 
 $(TARGET): $(OBJECTS)
 	$(ECHO) "AR\t$@"
@@ -131,5 +135,5 @@ $(TARGET): $(OBJECTS)
 
 .PHONY: clean
 clean:
-	$(RM) -f $(OBJECTS) $(TARGET)
+	$(RM) -f $(OBJECTS) $(DEPENDENCIES) $(TARGET)
 	$(Q)find $(BUILD) -type d -empty -delete || true

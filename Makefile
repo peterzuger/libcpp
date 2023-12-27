@@ -12,6 +12,8 @@ EXCEPTIONS ?=
 RTTI       ?=
 THREADING  ?=
 
+BUILD       ?= build
+TARGET = $(BUILD)/$(TARGET_NAME).a
 
 #
 CXXSRC += $(wildcard src/exception/*.cpp)
@@ -19,8 +21,8 @@ CXXSRC += $(wildcard src/memory/*.cpp)
 CXXSRC += $(wildcard src/new/*.cpp)
 CXXSRC += $(wildcard src/typeinfo/*.cpp)
 
-OBJECTS  = $(CSRC:.c=.o)
-OBJECTS += $(CXXSRC:.cpp=.o)
+OBJECTS  = $(patsubst %.c,$(BUILD)/%.o,$(CSRC))
+OBJECTS += $(patsubst %.cpp,$(BUILD)/%.o,$(CXXSRC))
 
 
 # Commands
@@ -113,20 +115,21 @@ endif
 # Targets
 all: $(TARGET)
 
-%.o: %.c
+$(BUILD)/%.o: %.c
 	$(ECHO) "GCC\t$@"
+	$(MKDIR) --parents ${dir $@}
 	$(GCC) $(GCCFLAGS) $< -o $@
 
-%.o: %.cpp
+$(BUILD)/%.o: %.cpp
 	$(ECHO) "G++\t$@"
+	$(MKDIR) --parents ${dir $@}
 	$(GXX) $(CXXFLAGS) $< -o $@
 
-$(TARGET_NAME).a: $(OBJECTS)
-	$(RM) -f $@
+$(TARGET): $(OBJECTS)
 	$(ECHO) "AR\t$@"
-	$(AR)  $(ARFLAGS) rcs $@ $^
+	$(AR) $(ARFLAGS) rcs $@ $^
 
 .PHONY: clean
 clean:
-	$(RM) -f $(OBJECTS)
-	$(RM) -f $(TARGET_NAME).a
+	$(RM) -f $(OBJECTS) $(TARGET)
+	$(Q)find $(BUILD) -type d -empty -delete || true
